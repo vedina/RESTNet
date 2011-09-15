@@ -9,4 +9,39 @@
   <artifactId>restnet-c</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>RESTNet core classes</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>net.ideaconsult.restnet</groupId>
+  		<artifactId>restnet-i</artifactId>
+  		<version>${project.version}</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+   <dependency>
+    	<groupId>org.restlet.jee</groupId>
+    	<artifactId>org.restlet</artifactId>
+    	<version>${restlet.version}</version>
+    	<scope>compile</scope>
+    </dependency>
+   <dependency>
+   	<groupId>net.idea</groupId>
+   	<artifactId>modbcum-i</artifactId>
+   	<version>0.0.1-SNAPSHOT</version>
+   	<scope>compile</scope>
+   </dependency>
+   <dependency>
+   	<groupId>net.idea</groupId>
+   	<artifactId>modbcum-r</artifactId>
+   	<version>0.0.1-SNAPSHOT</version>
+   	<scope>compile</scope>
+   </dependency>
+   
+   <dependency>
+   	<groupId>ambit</groupId>
+   	<artifactId>opentox-opensso</artifactId>
+   	<version>1.0.1</version>
+   	<type>jar</type>
+   	<scope>compile</scope>
+   </dependency>
+  </dependencies>
 </project>

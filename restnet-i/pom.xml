@@ -9,4 +9,12 @@
   <artifactId>restnet-i</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>RESTNet interfaces</name>
+  <dependencies>
+     <dependency>
+    	<groupId>org.restlet.jee</groupId>
+    	<artifactId>org.restlet</artifactId>
+    	<version>${restlet.version}</version>
+    	<scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>
