@@ -28,7 +28,14 @@ public abstract class CallableQueryProcessor<Target,Result,USERID> extends Calla
 	protected Reference sourceReference;
 	//protected AmbitApplication application;
 	protected Context context;
+	protected String configFile= "conf/restnet-db.pref";
 
+	public String getConfigFile() {
+		return configFile;
+	}
+	public void setConfigFile(String configFile) {
+		this.configFile = configFile;
+	}
 	public CallableQueryProcessor(Form form,Context context,USERID token) {
 		this(null,form,context,token);
 	}
@@ -62,7 +69,7 @@ public abstract class CallableQueryProcessor<Target,Result,USERID> extends Calla
 		Context.getCurrentLogger().info("Start()");
 		Connection connection = null;
 		try {
-			DBConnection dbc = new DBConnection(context);
+			DBConnection dbc = new DBConnection(context,getConfigFile());
 			connection = dbc.getConnection();
 			try {
 				target = createTarget(sourceReference);

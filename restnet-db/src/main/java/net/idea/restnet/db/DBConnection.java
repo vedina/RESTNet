@@ -27,9 +27,7 @@ public class DBConnection {
 		this.context = context;
 	}
 	
-	public DBConnection(Context context) {
-		this(context,"conf/restnet-db.pref");
-	}
+
 	public DBConnection(Context context,String configFile) {
 		super();
 		setContext(context);

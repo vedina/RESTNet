@@ -61,7 +61,15 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>,T extends Seria
 	protected RDF_WRITER rdfwriter = RDF_WRITER.jena;
 	protected boolean dataset_prefixed_compound_uri = false;
 	public final static String query_resource = "/query";
+	protected String configFile= "conf/restnet-db.pref";
 	
+	public String getConfigFile() {
+		return configFile;
+	}
+	public void setConfigFile(String configFile) {
+		this.configFile = configFile;
+	}
+
 	/**TODO
 	 * http://markmail.org/search/?q=restlet+statusservice+variant#query:restlet%20statusservice%20variant+page:1+mid:2qrzgzbendopxg5t+state:results
 an alternate design where you would leverage the new RepresentationInfo class added to Restlet 2.0 
@@ -148,7 +156,7 @@ Then, when the "get(Variant)" method calls you back,
 	        	int retry=0;
 	        	while (retry <maxRetry) {
 		        	try {
-		        		DBConnection dbc = new DBConnection(getContext());
+		        		DBConnection dbc = new DBConnection(getContext(),getConfigFile());
 		        		configureRDFWriterOption(dbc.rdfWriter());
 		        		configureDatasetMembersPrefixOption(dbc.dataset_prefixed_compound_uri());
 		        		convertor = createConvertor(variant);
@@ -232,7 +240,7 @@ Then, when the "get(Variant)" method calls you back,
 		//TODO it is inefficient to instantiate executor in all classes
 		UpdateExecutor executor = new UpdateExecutor();
 		try {
-    		DBConnection dbc = new DBConnection(getContext());
+    		DBConnection dbc = new DBConnection(getContext(),getConfigFile());
     		c = dbc.getConnection(getRequest());			
 
 			executor.setConnection(c);
@@ -443,7 +451,7 @@ Then, when the "get(Variant)" method calls you back,
 						}
 				};
 			
-				DBConnection dbc = new DBConnection(getApplication().getContext());
+				DBConnection dbc = new DBConnection(getApplication().getContext(),getConfigFile());
 				conn = dbc.getConnection(getRequest());	
 				
 				List<UUID> r = null;
