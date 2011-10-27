@@ -40,7 +40,7 @@
     <dependency>
     	<groupId>net.ideaconsult</groupId>
     	<artifactId>opentox-dsl</artifactId>
-    	<version>1.0.1-SNAPSHOT</version>
+    	<version>1.0.3-SNAPSHOT</version>
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
