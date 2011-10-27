@@ -5,6 +5,7 @@ import javax.xml.stream.XMLStreamWriter;
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.p.DefaultAmbitProcessor;
+import net.idea.restnet.db.QueryURIReporter;
 
 import org.opentox.rdf.OT;
 import org.opentox.rdf.OT.OTClass;

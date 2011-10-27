@@ -10,6 +10,7 @@ import net.idea.modbcum.p.DefaultAmbitProcessor;
 import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.c.html.HTMLBeauty;
+import net.idea.restnet.db.QueryURIReporter;
 
 import org.restlet.Request;
 

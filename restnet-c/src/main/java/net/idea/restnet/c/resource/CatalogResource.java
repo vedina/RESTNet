@@ -10,7 +10,7 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.c.AbstractResource;
-import net.idea.restnet.c.OpenTox;
+import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.StringConvertor;
 import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.reporters.CatalogHTMLReporter;
@@ -153,8 +153,8 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 	
 	protected void setPaging(Form form) {
 		String max = form.getFirstValue(max_hits);
-		String page = form.getFirstValue(OpenTox.params.page.toString());
-		String pageSize = form.getFirstValue(OpenTox.params.pagesize.toString());
+		String page = form.getFirstValue(PageParams.params.page.toString());
+		String pageSize = form.getFirstValue(PageParams.params.pagesize.toString());
 		if (max != null)
 		try {
 			setPage(0);

@@ -225,8 +225,8 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 	
 	protected void setPaging(Form form) {
 		String max = form.getFirstValue(max_hits);
-		String page = form.getFirstValue(OpenTox.params.page.toString());
-		String pageSize = form.getFirstValue(OpenTox.params.pagesize.toString());
+		String page = form.getFirstValue(PageParams.params.page.toString());
+		String pageSize = form.getFirstValue(PageParams.params.pagesize.toString());
 		if (max != null)
 		try {
 			setPage(0);

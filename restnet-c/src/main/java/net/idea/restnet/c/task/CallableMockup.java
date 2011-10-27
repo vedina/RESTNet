@@ -2,7 +2,7 @@ package net.idea.restnet.c.task;
 
 import java.util.UUID;
 
-import net.idea.restnet.c.OpenTox;
+import net.idea.restnet.c.PageParams;
 import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.data.Form;
@@ -32,17 +32,18 @@ public class CallableMockup<USERID> extends CallableProtectedTask<USERID> {
 	public CallableMockup(Form form,USERID token) {
 		super(token);
 		try {
-			this.delay = Long.parseLong(OpenTox.params.delay.getFirstValue(form).toString());
+			this.delay = Long.parseLong(PageParams.params.delay.getFirstValue(form).toString());
 		} catch (Exception x) {
 			this.delay = 30000;
 		}
 		try {
-			this.error = new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,OpenTox.params.error.getFirstValue(form).toString());
+			this.error = new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,PageParams.params.error.getFirstValue(form).toString());
 		} catch (Exception x) {
 			this.error = null;
 		}		
-		resultURI = OpenTox.params.dataset_uri.getFirstValue(form);
-		if (resultURI==null) resultURI = OpenTox.params.model_uri.getFirstValue(form);
+		///resultURI = PageParams.params.dataset_uri.getFirstValue(form);
+		//if (resultURI==null) resultURI = PageParams.params.model_uri.getFirstValue(form);
+		resultURI = null;
 	}
 	@Override
 	public TaskResult doCall() throws Exception {

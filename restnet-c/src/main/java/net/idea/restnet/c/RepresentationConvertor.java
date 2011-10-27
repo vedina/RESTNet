@@ -29,7 +29,7 @@ public abstract class RepresentationConvertor<Item,Content,Output,R extends Repo
 	public RepresentationConvertor(R reporter, MediaType media) {
 		super(reporter,media);
 	}
-	/*
+	
 	public String getLicenseURI() {
 		return getReporter()==null?null:getReporter().getLicenseURI();
 	}
@@ -37,6 +37,5 @@ public abstract class RepresentationConvertor<Item,Content,Output,R extends Repo
 	public void setLicenseURI(String uri) {
 		if (getReporter()!=null) getReporter().setLicenseURI(uri);
 	}
-	*/
 	
 }
