@@ -78,22 +78,17 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 			Variant variant) throws AmbitException, ResourceException {
 
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
-			return new StringConvertor(
-					createHTMLReporter(),MediaType.TEXT_HTML);
+			return new StringConvertor(	createHTMLReporter(),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
-			return new StringConvertor(	new CatalogURIReporter<T>(getRequest(),getDocumentation()) {
-				@Override
-				public void processItem(T src, Writer output) {
-					super.processItem(src, output);
-					try {
-					output.write('\n');
-					} catch (Exception x) {}
-				}
-			},MediaType.TEXT_URI_LIST);
-			
-		} else //html 	
-			return new StringConvertor(createHTMLReporter(),MediaType.TEXT_HTML);
+			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST);
+		} else //uri 	
+			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST);
 		
+	}
+	
+	protected Reporter createURIReporter() {
+		return
+		new CatalogURIReporter<T>(getRequest(),getDocumentation());
 	}
 	
 	protected Reporter createHTMLReporter() {
