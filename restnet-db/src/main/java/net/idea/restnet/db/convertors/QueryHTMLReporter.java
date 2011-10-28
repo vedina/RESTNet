@@ -67,12 +67,16 @@ public abstract class QueryHTMLReporter<T,Q extends IQueryRetrieval<T>>  extends
 	}	
 	protected abstract QueryURIReporter createURIReporter(Request request, ResourceDoc doc);
 	
+	protected HTMLBeauty createHTMLBeauty() {
+		return new HTMLBeauty();
+	}
 	@Override
 	public void header(Writer w, Q query) {
 		try {
-			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
+			if (htmlBeauty==null) htmlBeauty = createHTMLBeauty();
 			
-			htmlBeauty.writeHTMLHeader(output, "AMBIT",uriReporter.getRequest(),
+			
+			htmlBeauty.writeHTMLHeader(output, htmlBeauty.getTitle(),uriReporter.getRequest(),
 					getUriReporter()==null?null:getUriReporter().getDocumentation());
 
 		} catch (IOException x) {}

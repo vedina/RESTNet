@@ -139,8 +139,8 @@ public class HTMLBeauty {
 		//w.write(String.format("<a href='%s/depict?search=c1ccccc1' title='Structure diagram'>Depiction</a>&nbsp;",baseReference));
 		//w.write(String.format("<a href='%s/depict/reaction?search=c1ccccc1' title='SMIRKS test'>Reactions</a>&nbsp;",baseReference));
 
-		w.write(String.format("<a href='%s%s'>Tasks</a>&nbsp;",TaskResource.resource,baseReference));
-
+	
+		writeTopLinks(w, title, request, meta, doc, baseReference);
 		//w.write(String.format("&nbsp;<a href='%s/help'>Help</a>&nbsp;",baseReference));
 
 		w.write("</div>");
@@ -150,6 +150,9 @@ public class HTMLBeauty {
 		//w.write("\n<textarea id=\"targetDiv\"></textarea>\n");
 	}
 	
+	public void writeTopLinks(Writer w,String title,Request request,String meta,ResourceDoc doc, Reference baseReference) throws IOException {
+		w.write(String.format("<a href='%s%s'>Tasks</a>&nbsp;",TaskResource.resource,baseReference));
+	}
 	public void writeSearchForm(Writer w,String title,Request request ,String meta) throws IOException {
 		writeSearchForm(w, title, request, meta,Method.GET);
 	}
@@ -166,12 +169,22 @@ public class HTMLBeauty {
 	public void writeSearchForm(Writer w,String title,Request request ,String meta,Method method) throws IOException {
 		writeSearchForm(w, title, request, meta,method,null);
 	}
+	
+	protected String getLogoURI(String root) {
+		return String.format("%s/images/ambit-logo.png",root==null?"":root);
+	}
+
+	protected String getHomeURI() {
+		return "/";
+	}
+	
 	public void writeSearchForm(Writer w,String title,Request request ,String meta,Method method,Form params) throws IOException {
 		Reference baseReference = request==null?null:request.getRootRef();
 		w.write("<table width='100%' bgcolor='#ffffff'>");
 		w.write("<tr>");
 		w.write("<td align='left' width='256px'>");
-		w.write(String.format("<a href=\"http://ambit.sourceforge.net/intro.html\"><img src='%s/images/ambit-logo.png' width='256px' alt='%s' title='%s' border='0'></a>\n",baseReference,getTitle(),baseReference));
+		w.write(String.format("<a href=\"%s\"><img src='%s' width='256px' alt='%s' title='%s' border='0'></a>\n",
+						getHomeURI(),getLogoURI(baseReference.toString()),getTitle(),baseReference));
 		w.write("</td>");
 		w.write("<td align='center'>");
 		String query_smiles = "";
