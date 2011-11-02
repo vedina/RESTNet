@@ -1,7 +1,6 @@
 package net.idea.restnet.c.resource;
 
 import java.io.Serializable;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
@@ -23,6 +22,7 @@ import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
+import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -96,7 +96,7 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 	}
 	
 	
-	protected ICallableTask createCallable(Form form, T item) throws ResourceException {
+	protected ICallableTask createCallable(Method method,Form form, T item) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 	
@@ -104,11 +104,37 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 
+
+	@Override
+	protected Representation post(Representation entity)
+			throws ResourceException {
+		return post(entity,null);
+	}
 	
 	@Override
 	protected Representation post(Representation entity, Variant variant)
 			throws ResourceException {
 		synchronized (this) {
+			return processAndGenerateTask(Method.POST, entity, variant,true);
+		}
+	}
+	
+	@Override
+	protected Representation put(Representation entity, Variant variant)
+			throws ResourceException {
+		synchronized (this) {
+			return processAndGenerateTask(Method.PUT, entity, variant,true);
+		}
+	}
+	
+	@Override
+	protected Representation delete(Variant variant) throws ResourceException {
+		synchronized (this) {
+			return processAndGenerateTask(Method.DELETE, null, variant,true);
+		}
+	}
+	@Override
+	protected Representation processAndGenerateTask(Method method,Representation entity, final Variant variant, final boolean async) throws ResourceException {
 			
 			Form form = entity.isAvailable()?new Form(entity):new Form();
 			
@@ -121,7 +147,7 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 			try {
 				T model = query.next();
 				Reference reference = getSourceReference(form,model);
-				ICallableTask callable= createCallable(form,model);
+				ICallableTask callable= createCallable(method,form,model);
 				Task<TaskResult,String> task =  ((TaskApplication)getApplication()).addTask(
 						String.format("Apply %s %s %s",model.toString(),reference==null?"":"to",reference==null?"":reference),
 						callable,
@@ -148,7 +174,7 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 				else
 					return tc.createTaskRepresentation(tasks.iterator(), variant, getRequest(),getResponse(),getDocumentation());				
 			}
-		}
+	
 	}
 	
 	protected void setPaging(Form form) {

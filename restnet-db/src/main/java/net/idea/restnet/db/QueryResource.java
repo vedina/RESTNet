@@ -1,7 +1,5 @@
 package net.idea.restnet.db;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,21 +22,24 @@ import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.exception.RResourceException;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
-import net.idea.restnet.c.task.TaskCreator;
+import net.idea.restnet.c.task.TaskCreatorForm;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.rdf.RDFObjectIterator;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
+import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.representation.EmptyRepresentation;
+import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -277,7 +278,7 @@ Then, when the "get(Variant)" method calls you back,
 	/**
 	 * POST - create entity based on parameters in the query, creates a new entry in the databaseand returns an url to it
 	 * TODO Refactor to allow multiple objects 
-	 */
+
 	public void createNewObject(Representation entity) throws ResourceException {
 		T entry = createObjectFromHeaders(null, entity);
 		executeUpdate(entity, 
@@ -285,7 +286,7 @@ Then, when the "get(Variant)" method calls you back,
 				createUpdateObject(entry));
 	
 	}
-	
+	*/
 	
 	/**
 	 * DELETE - create entity based on parameters in the query, creates a new entry in the database and returns an url to it
@@ -299,7 +300,7 @@ Then, when the "get(Variant)" method calls you back,
 	
 	}	
 	*/
-	
+	/*
 	protected Representation delete(Variant variant) throws ResourceException {
 		Representation entity = getRequestEntity();
 		Form queryForm = null;
@@ -312,9 +313,11 @@ Then, when the "get(Variant)" method calls you back,
 		getResponse().setStatus(Status.SUCCESS_OK);
 		return new EmptyRepresentation();
 	};
+	*/
 	protected QueryURIReporter<T, Q>  getURUReporter(Request baseReference) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED,String.format("%s getURUReporter()", getClass().getName()) );
 	}
+	/*
 	protected  AbstractUpdate createUpdateObject(T entry) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED,String.format("%s createUpdateObject()", getClass().getName()));
 	}
@@ -328,6 +331,7 @@ Then, when the "get(Variant)" method calls you back,
 	protected RDFObjectIterator<T> createObjectIterator(Representation entity) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED,String.format("%s createObjectIterator", getClass().getName()));
 	}
+	*/
 	/**
 	 * Return this object if can't parse source_uri
 	 * @param uri
@@ -336,9 +340,7 @@ Then, when the "get(Variant)" method calls you back,
 	protected T onError(String uri) {
 		return null;
 	}
-	/**
-	 * either entity in RDF/XML or ?source_uri=URI
-	 */
+	/*
 	protected T createObjectFromHeaders(Form queryForm, Representation entity) throws ResourceException {
 		RDFObjectIterator<T> iterator = null;
 		if (!entity.isAvailable()) { //using URI
@@ -375,12 +377,8 @@ Then, when the "get(Variant)" method calls you back,
 	protected boolean accept(T object) throws ResourceException  {
 		return true;
 	}
-	protected String getObjectURI(Form queryForm) throws ResourceException {
-		return getParameter(queryForm,
-				PageParams.params.source_uri.toString(),
-				PageParams.params.source_uri.getDescription(),
-				true);		
-	}
+
+
 	protected T createObjectFromWWWForm(Representation entity) throws ResourceException {
 		Form queryForm = new Form(entity);
 		String sourceURI = getObjectURI(queryForm);
@@ -418,10 +416,35 @@ Then, when the "get(Variant)" method calls you back,
 		}
 		
 	}
+	*/
 	
-	protected Representation process(Representation entity, final Variant variant, final boolean async)
+	protected String getObjectURI(Form queryForm) throws ResourceException {
+		return getParameter(queryForm,
+				PageParams.params.source_uri.toString(),
+				PageParams.params.source_uri.getDescription(),
+				true);		
+	}
+	
+	protected void processRepresentation(Representation entity, Variant variant) throws FileUploadException, ResourceException {
+		if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
+			return;
+		} else if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),true)) {
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+	        RestletFileUpload restletUpload = new RestletFileUpload(factory);
+	        List<FileItem> items = restletUpload.parseRequest(getRequest());
+		} else if (isAllowedMediaType4Upload(entity.getMediaType())) {
+			
+		} else throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+	}
+	
+	protected boolean isAllowedMediaType4Upload(MediaType mediaType) {
+		return false;
+	}
+	
+	@Override
+	protected Representation processAndGenerateTask(final Method method,
+			Representation entity, Variant variant, boolean async)
 			throws ResourceException {
-		synchronized (this) {
 			
 			Connection conn = null;
 			try {
@@ -432,11 +455,11 @@ Then, when the "get(Variant)" method calls you back,
 				IQueryRetrieval<T> query = createQuery(getContext(),getRequest(),getResponse());
 				if (query==null) throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST);
 				
-				TaskCreator<Object,T> taskCreator = new TaskCreator<Object,T>(form,async) {
+				TaskCreatorForm<Object,T> taskCreator = new TaskCreatorForm<Object,T>(form,async) {
 					@Override
 					protected ICallableTask getCallable(Form form,
 							T item) throws ResourceException {
-						return createCallable(form,item);
+						return createCallable(method,form,item);
 					}
 					@Override
 					protected Task<Reference, Object> createTask(
@@ -490,11 +513,11 @@ Then, when the "get(Variant)" method calls you back,
 			} finally {
 				try { if (conn != null) conn.close(); } catch  (Exception x) {}
 			}
-		}
+		
 	}
 	
 	
-	protected CallableQueryProcessor createCallable(Form form,T item) throws ResourceException  {
+	protected CallableQueryProcessor createCallable(Method method,Form form,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 	

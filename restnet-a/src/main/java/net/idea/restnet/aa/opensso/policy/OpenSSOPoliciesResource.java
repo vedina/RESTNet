@@ -28,6 +28,7 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
+import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -111,7 +112,7 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 	 * curl -d "uri= " -d "name= " -d "type=group|user" -d "get=on" -d "post=on"
 	 */
 	@Override
-	protected ICallableTask createCallable(Form form, Policy item)
+	protected ICallableTask createCallable(Method method,Form form, Policy item)
 			throws ResourceException {
 		return new CallablePolicyCreator<String>(form, getToken(),getRequest().getRootRef());
 	}
@@ -137,7 +138,7 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 			try {
 			Form form = entity.isAvailable()?new Form(entity):new Form();
 			
-				ICallableTask callable= createCallable(form,null);
+				ICallableTask callable= createCallable(Method.POST,form,null);
 				Task<TaskResult,String> task =  ((TaskApplication)getApplication()).addTask(
 						String.format("Create policy"),
 						callable,

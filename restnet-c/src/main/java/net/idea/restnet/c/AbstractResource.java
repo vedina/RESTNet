@@ -17,6 +17,7 @@ import org.restlet.data.Cookie;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
+import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
@@ -196,11 +197,37 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 	}
 	
 	@Override
+	protected Representation post(Representation entity)
+			throws ResourceException {
+		return post(entity,null);
+	}
+	
+	@Override
 	protected Representation post(Representation entity, Variant variant)
 			throws ResourceException {
-		return post(entity);
+		synchronized (this) {
+			return processAndGenerateTask(Method.POST, entity, variant,true);
+		}
 	}
+	
+	@Override
+	protected Representation put(Representation entity, Variant variant)
+			throws ResourceException {
+		synchronized (this) {
+			return processAndGenerateTask(Method.PUT, entity, variant,true);
+		}
+	}
+	
+	@Override
+	protected Representation delete(Variant variant) throws ResourceException {
+		synchronized (this) {
+			return processAndGenerateTask(Method.DELETE, null, variant,true);
+		}
+	}
+	protected abstract Representation processAndGenerateTask(final Method method,Representation entity, final Variant variant, final boolean async) throws ResourceException ;
 	/*
+	 * 
+	 * 
 	@Override
 	protected void describeGet(MethodInfo info) {
         info.setIdentifier("item");

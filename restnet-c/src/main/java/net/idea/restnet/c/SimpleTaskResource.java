@@ -19,6 +19,7 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
+import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -245,6 +246,14 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 		} catch (Exception x) {
 			setPageSize(1000);
 		}			
+	}
+	
+	@Override
+	protected Representation processAndGenerateTask(Method method,
+			Representation entity, Variant variant, boolean async)
+			throws ResourceException {
+
+		return null;
 	}
 }
 

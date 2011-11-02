@@ -12,9 +12,16 @@ import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.TaskResult;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.data.Form;
+import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
+import org.restlet.ext.fileupload.RestletFileUpload;
+import org.restlet.representation.Representation;
+import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
 /**
@@ -22,16 +29,23 @@ import org.restlet.resource.ResourceException;
  * @author nina
  *
  */
-public class TaskCreator<USERID,T> extends QueryReporter<T,IQueryRetrieval<T>, List<UUID>> {
+public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval<T>, List<UUID>> {
 	protected boolean async;
-	protected Form form;
+	protected INPUT input;
+	public INPUT getInput() {
+		return input;
+	}
+	public void setInput(INPUT input) {
+		this.input = input;
+	}
+
 	protected List<UUID> tasks;
 	
-	public TaskCreator(Form form, boolean async) throws AmbitException {
+	public TaskCreator(INPUT input, boolean async) throws AmbitException {
 		super();
 		tasks = new ArrayList<UUID>();
 		setAsync(async);
-		setForm(form);
+		setInput(input);
 	}
 	@Override
 	public void setOutput(List<UUID> output)
@@ -49,14 +63,6 @@ public class TaskCreator<USERID,T> extends QueryReporter<T,IQueryRetrieval<T>, L
 		this.async = async;
 	}
 
-	public Form getForm() {
-		return form;
-	}
-
-	public void setForm(Form form) {
-		this.form = form;
-	}
-
 	/**
 	 * 
 	 */
@@ -66,7 +72,7 @@ public class TaskCreator<USERID,T> extends QueryReporter<T,IQueryRetrieval<T>, L
 	@Override
 	public Object processItem(T item) throws AmbitException {
 		try {
-			ICallableTask callable = getCallable(form,item);
+			ICallableTask callable = getCallable(input,item);
 			if (async)	{
 				Task<Reference,USERID> task = createTask(callable,item);
 				tasks.add(task.getUuid());
@@ -86,7 +92,7 @@ public class TaskCreator<USERID,T> extends QueryReporter<T,IQueryRetrieval<T>, L
 	public void open() throws DbAmbitException {
 	}
 	
-	protected ICallableTask getCallable(Form form,T item) throws ResourceException  {
+	protected ICallableTask getCallable(INPUT input,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 	protected Task<Reference,USERID> createTask(ICallableTask callable, T item) throws ResourceException  {
@@ -99,5 +105,18 @@ public class TaskCreator<USERID,T> extends QueryReporter<T,IQueryRetrieval<T>, L
 	@Override
 	public void header(List<UUID> output, IQueryRetrieval<T> query) {
 		
+	}
+	
+	
+	protected void processRepresentation(Representation entity, Variant variant) throws FileUploadException {
+		if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
+			return;
+		} else if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),true)) {
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+	        RestletFileUpload restletUpload = new RestletFileUpload(factory);
+	        List<FileItem> items = restletUpload.parseRequest(getRequest());
+		} else if (isAllowedMediaType(entity.getMediaType())) {
+			
+		}
 	}
 }

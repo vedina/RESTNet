@@ -23,6 +23,11 @@
     	<version>${restlet.version}</version>
     	<scope>compile</scope>
     </dependency>
+      	<dependency>
+  		<groupId>org.restlet.jee</groupId>
+  		<artifactId>org.restlet.ext.fileupload</artifactId>
+  		<version>${restlet.version}</version>
+  	</dependency>
    <dependency>
    	<groupId>net.idea</groupId>
    	<artifactId>modbcum-i</artifactId>
@@ -43,5 +48,12 @@
    	<type>jar</type>
    	<scope>compile</scope>
    </dependency>
+   
+     	<dependency>
+  		<groupId>commons-fileupload</groupId>
+  		<artifactId>commons-fileupload</artifactId>
+  		<version>1.2.1</version>
+  		
+  	</dependency>
   </dependencies>
 </project>
