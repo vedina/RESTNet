@@ -1,5 +1,7 @@
 package net.idea.restnet.db;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,13 +24,15 @@ import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.exception.RResourceException;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
+import net.idea.restnet.c.task.TaskCreator;
+import net.idea.restnet.c.task.TaskCreatorFile;
 import net.idea.restnet.c.task.TaskCreatorForm;
+import net.idea.restnet.c.task.TaskCreatorMultiPartForm;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Context;
 import org.restlet.Request;
@@ -424,19 +428,7 @@ Then, when the "get(Variant)" method calls you back,
 				PageParams.params.source_uri.getDescription(),
 				true);		
 	}
-	
-	protected void processRepresentation(Representation entity, Variant variant) throws FileUploadException, ResourceException {
-		if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
-			return;
-		} else if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),true)) {
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-	        RestletFileUpload restletUpload = new RestletFileUpload(factory);
-	        List<FileItem> items = restletUpload.parseRequest(getRequest());
-		} else if (isAllowedMediaType4Upload(entity.getMediaType())) {
-			
-		} else throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
-	}
-	
+
 	protected boolean isAllowedMediaType4Upload(MediaType mediaType) {
 		return false;
 	}
@@ -465,12 +457,7 @@ Then, when the "get(Variant)" method calls you back,
 					protected Task<Reference, Object> createTask(
 							ICallableTask callable,
 							T item) throws ResourceException {
-	
-							return ((TaskApplication)getApplication()).addTask(
-								String.format("Apply %s %s %s",item.toString(),reference==null?"":"to",reference==null?"":reference),									
-								callable,
-								getRequest().getRootRef(),
-								getToken());		
+							return addTask(callable, item,reference);
 						}
 				};
 			
@@ -516,10 +503,158 @@ Then, when the "get(Variant)" method calls you back,
 		
 	}
 	
+	protected TaskCreator getTaskCreator(Representation entity, Variant variant, Method method, boolean async) throws Exception {
+
+		if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
+			Form form = new Form(entity);
+			final Reference reference = new Reference(getObjectURI(form));
+			return getTaskCreator(form, method,async,reference);
+		} else if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),true)) {
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+            //factory.setSizeThreshold(100);
+	        RestletFileUpload upload = new RestletFileUpload(factory);
+	        List<FileItem> items = upload.parseRequest((Request)getRequest());
+			return getTaskCreator(items, method,async);
+		} else if (isAllowedMediaType(entity.getMediaType())) {
+			return getTaskCreator(downloadRepresentation(entity, variant), entity.getMediaType(), method,async);
+			
+		} else throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+
+	}
 	
+	protected File downloadRepresentation(Representation entity, Variant variant) throws Exception{
+
+			String extension = getExtension(entity.getMediaType());
+			File file = null;
+			if (entity.getDownloadName() == null) {
+				file = File.createTempFile(String.format("_download_%s",UUID.randomUUID()), extension);
+				file.deleteOnExit();
+			} else
+				file = new File(String
+						.format("%s/%s", System.getProperty("java.io.tmpdir"),
+								entity.getDownloadName()));
+			FileOutputStream out = new FileOutputStream(file);
+			entity.write(out);
+			out.flush();
+			out.close();
+			
+			return file;
+
+	}
+	
+
+	protected String getExtension(MediaType mediaType) {
+		
+		if (MediaType.APPLICATION_RDF_XML.equals(mediaType))
+			return ".rdf";
+		else if (MediaType.APPLICATION_RDF_TURTLE.equals(mediaType))
+			return ".turtle";
+		else if (MediaType.TEXT_RDF_N3.equals(mediaType))
+			return ".n3";
+		else if (MediaType.APPLICATION_EXCEL.equals(mediaType))
+			return ".xls";
+		else if (MediaType.TEXT_CSV.equals(mediaType))
+			return ".csv";
+		else if (MediaType.TEXT_PLAIN.equals(mediaType))
+			return ".txt";		
+		else if (MediaType.APPLICATION_EXCEL.equals(mediaType))
+			return ".xls";
+		else if (MediaType.APPLICATION_PDF.equals(mediaType))
+			return ".pdf";				
+		else
+			return null;
+	}
+	
+	/**
+	 * Create a task, given a file
+	 * @param form
+	 * @param method
+	 * @param async
+	 * @param reference
+	 * @return
+	 * @throws Exception
+	 */
+	protected TaskCreator getTaskCreator(File file, MediaType mediaType, final Method method, boolean async) throws Exception {
+		return new TaskCreatorFile<Object,T>(file,mediaType,async) {
+			protected ICallableTask getCallable(File file, T item) throws ResourceException {
+				return createCallable(method,file,mediaType,item);
+			}
+			@Override
+			protected Task<Reference, Object> createTask(
+					ICallableTask callable,
+					T item) throws ResourceException {
+					return addTask(callable, item,null);
+				}
+		};
+	}	
+
+	/**
+	 * Create a task, given a web form
+	 * @param form
+	 * @param method
+	 * @param async
+	 * @param reference
+	 * @return
+	 * @throws Exception
+	 */
+	protected TaskCreator getTaskCreator(Form form, final Method method, boolean async, final Reference reference) throws Exception {
+		return new TaskCreatorForm<Object,T>(form,async) {
+			@Override
+			protected ICallableTask getCallable(Form form,
+					T item) throws ResourceException {
+				return createCallable(method,form,item);
+			}
+			@Override
+			protected Task<Reference, Object> createTask(
+					ICallableTask callable,
+					T item) throws ResourceException {
+					return addTask(callable, item,reference);
+				}
+		};
+	}
+	/**
+	 * Create task, given multipart web form (file uploads)
+	 * @param fileItems
+	 * @param method
+	 * @param async
+	 * @param reference
+	 * @return
+	 * @throws Exception
+	 */
+	protected TaskCreator getTaskCreator(List<FileItem> fileItems,  final Method method, boolean async) throws Exception {
+		return new TaskCreatorMultiPartForm<Object,T>(fileItems,async) {
+			protected ICallableTask getCallable(java.util.List<FileItem> input, T item) throws ResourceException {
+				return createCallable(method,input,item);
+			};
+			@Override
+			protected Task createTask(ICallableTask callable, T item)
+					throws ResourceException {
+				return addTask(callable, item, (Reference)null);
+			}
+		};
+	} 
+	
+	protected Task<Reference, Object> addTask(
+			ICallableTask callable,
+			T item,
+			Reference reference) throws ResourceException {
+
+			return ((TaskApplication)getApplication()).addTask(
+				String.format("Apply %s %s %s",item.toString(),reference==null?"":"to",reference==null?"":reference),									
+				callable,
+				getRequest().getRootRef(),
+				getToken());		
+		
+	}
+	protected CallableQueryProcessor createCallable(Method method,File file,MediaType mediaType,T item) throws ResourceException  {
+		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
+	}
 	protected CallableQueryProcessor createCallable(Method method,Form form,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
+	protected CallableQueryProcessor createCallable(Method method,List<FileItem> input,T item) throws ResourceException  {
+		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
+	}	
 	
 	protected void setPaging(Form form, IQueryObject queryObject) {
 		String max = form.getFirstValue(max_hits);
@@ -600,5 +735,9 @@ Then, when the "get(Variant)" method calls you back,
 	
 	protected String getLicenseURI() {
 		return null;
+	}
+	
+	protected boolean isAllowedMediaType(MediaType mediaType) throws ResourceException {
+		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 }
