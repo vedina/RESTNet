@@ -41,6 +41,14 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
   		<name>ambit-plovdiv-snapshots</name>
   		<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
   	</repository>
+  	    <repository>
+			<id>maven-restlet</id>
+			<name>Public online Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+	  		<snapshots>
+  			<enabled>false</enabled>
+  			</snapshots>
+		</repository>
   </repositories>
   <dependencies>
     <dependency>
