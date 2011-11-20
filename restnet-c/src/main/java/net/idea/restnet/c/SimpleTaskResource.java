@@ -218,8 +218,7 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 			Variant variant) throws AmbitException, ResourceException {
 
 		ITaskStorage<USERID> storage = ((TaskApplication)getApplication()).getTaskStorage();
-		FactoryTaskConvertor<USERID> tc = new FactoryTaskConvertor<USERID>(storage);
-	
+		FactoryTaskConvertor<USERID> tc = getFactoryTaskConvertor(storage);	
 		return tc.createTaskConvertor(variant, getRequest(),getDocumentation());
 
 	}

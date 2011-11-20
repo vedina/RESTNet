@@ -8,7 +8,9 @@ import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.exception.RResourceException;
 import net.idea.restnet.c.task.ClientResourceWrapper;
+import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.aa.IAuthToken;
+import net.idea.restnet.i.task.ITaskStorage;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -92,6 +94,9 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 	
 	protected   abstract  Q createQuery(Context context, Request request, Response response) throws ResourceException;
 	
+	protected  Q createPOSTQuery(Context context, Request request, Response response) throws ResourceException {
+		return createQuery(context,request,response);
+	}
 	@Override
 	public List<Variant> getVariants() {
 		List<Variant> vars = super.getVariants();
@@ -223,6 +228,9 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 		synchronized (this) {
 			return processAndGenerateTask(Method.DELETE, null, variant,true);
 		}
+	}
+	protected FactoryTaskConvertor getFactoryTaskConvertor(ITaskStorage storage) throws ResourceException {
+		return new FactoryTaskConvertor<Object>(storage);
 	}
 	protected abstract Representation processAndGenerateTask(final Method method,Representation entity, final Variant variant, final boolean async) throws ResourceException ;
 	/*

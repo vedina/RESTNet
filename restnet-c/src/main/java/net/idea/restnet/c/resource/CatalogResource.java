@@ -168,7 +168,7 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 			else {
 				
 				ITaskStorage storage = ((TaskApplication)getApplication()).getTaskStorage();
-				FactoryTaskConvertor<Object> tc = new FactoryTaskConvertor<Object>(storage);
+				FactoryTaskConvertor<Object> tc = getFactoryTaskConvertor(storage);
 				if (tasks.size()==1)
 					return tc.createTaskRepresentation(tasks.get(0), variant, getRequest(),getResponse(),getDocumentation());
 				else
