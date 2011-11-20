@@ -57,7 +57,6 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-    
   </dependencies>  
     <build>
         <finalName>RESTNet</finalName>
@@ -67,6 +66,33 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
 			<filtering>true</filtering>
 		</resource>
 	</resources>	
+	<plugins>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>jar</goal>
+                        <goal>test-jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>test-jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    
+	</plugins>
   	<pluginManagement>
   		<plugins>
   			<plugin>
@@ -284,6 +310,37 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
 			</plugins>
 		</build>
 	</profile>
+	    <!--  release build, with AA -->
+    <profile>
+      <id>aa-enabled</id>
+
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+      	<aa.opensso>http://opensso.in-silico.ch/opensso/identity</aa.opensso>
+        <aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
+        <aa.user>guest</aa.user>
+        <aa.pass>guest</aa.pass>      
+        <aa.enabled>true</aa.enabled>
+      </properties>
+    </profile>
+    
+    
+    <!--  release build, without AA -->
+    <profile>
+      <id>aa-disabled</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <aa.enabled>false</aa.enabled>
+      	<aa.opensso>http://opensso.in-silico.ch/opensso/identity</aa.opensso>
+        <aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
+        <aa.user>guest</aa.user>
+        <aa.pass>guest</aa.pass>     
+      </properties>
+    </profile>    
 </profiles>
 
 </project>
