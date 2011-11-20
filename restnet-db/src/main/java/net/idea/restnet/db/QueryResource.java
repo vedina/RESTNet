@@ -23,6 +23,7 @@ import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.exception.RResourceException;
+import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.TaskCreator;
 import net.idea.restnet.c.task.TaskCreatorFile;
@@ -36,6 +37,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Context;
 import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
@@ -233,12 +235,10 @@ Then, when the "get(Variant)" method calls you back,
 		}
 	}	
 
-	protected void customizeEntry(T entry, Connection conection) throws ResourceException {
-		
-	}
+
 	/**
 	 * POST - create entity based on parameters in http header, creates a new entry in the databaseand returns an url to it
-	 */
+	 *
 	public void executeUpdate(Representation entity, T entry, AbstractUpdate updateObject) throws ResourceException {
 
 		Connection c = null;
@@ -429,9 +429,7 @@ Then, when the "get(Variant)" method calls you back,
 				true);		
 	}
 
-	protected boolean isAllowedMediaType4Upload(MediaType mediaType) {
-		return false;
-	}
+	
 	
 	@Override
 	protected Representation processAndGenerateTask(final Method method,
@@ -440,45 +438,37 @@ Then, when the "get(Variant)" method calls you back,
 			
 			Connection conn = null;
 			try {
+	
+				IQueryRetrieval<T> query = createPOSTQuery(getContext(),getRequest(),getResponse());
 				
-				final Form form = new Form(entity);
-				final Reference reference = new Reference(getObjectURI(form));
-				//models
-				IQueryRetrieval<T> query = createQuery(getContext(),getRequest(),getResponse());
-				if (query==null) throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST);
-				
-				TaskCreatorForm<Object,T> taskCreator = new TaskCreatorForm<Object,T>(form,async) {
-					@Override
-					protected ICallableTask getCallable(Form form,
-							T item) throws ResourceException {
-						return createCallable(method,form,item);
-					}
-					@Override
-					protected Task<Reference, Object> createTask(
-							ICallableTask callable,
-							T item) throws ResourceException {
-							return addTask(callable, item,reference);
-						}
-				};
+				TaskCreator taskCreator = getTaskCreator(entity, variant, method, async);
 			
-				DBConnection dbc = new DBConnection(getApplication().getContext(),getConfigFile());
-				conn = dbc.getConnection(getRequest());	
-				
 				List<UUID> r = null;
-				try {
-					taskCreator.setConnection(conn);
-					r =  taskCreator.process(query);
-				} finally {
+				if (query==null) { //no db querying, just return the task
+					r =  taskCreator.process(null);
+				} else {
+					DBConnection dbc = new DBConnection(getApplication().getContext(),getConfigFile());
+					conn = dbc.getConnection(getRequest());	
+					
+					
 					try {
-			    		taskCreator.setConnection(null);
-			    		taskCreator.close();
-					} catch (Exception x) {}
-		    		try { conn.close(); conn=null;} catch  (Exception x) {}
+						taskCreator.setConnection(conn);
+						r =  taskCreator.process(query);
+					} finally {
+						try {
+				    		taskCreator.setConnection(null);
+				    	
+				    		
+				    		taskCreator.close();
+						} catch (Exception x) {}
+			    		try { conn.close(); conn=null;} catch  (Exception x) {}
+					}
 				}
+				
 				if ((r==null) || (r.size()==0)) throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
 				else {
 					ITaskStorage storage = ((TaskApplication)getApplication()).getTaskStorage();
-					FactoryTaskConvertor<Object> tc = new FactoryTaskConvertor<Object>(storage);
+					FactoryTaskConvertor<Object> tc = getFactoryTaskConvertor(storage);
 					if (r.size()==1) {
 						Task<Reference,Object> task = storage.findTask(r.get(0));
 						task.update();
@@ -502,6 +492,7 @@ Then, when the "get(Variant)" method calls you back,
 			}
 		
 	}
+	
 	
 	protected TaskCreator getTaskCreator(Representation entity, Variant variant, Method method, boolean async) throws Exception {
 
@@ -640,19 +631,21 @@ Then, when the "get(Variant)" method calls you back,
 			Reference reference) throws ResourceException {
 
 			return ((TaskApplication)getApplication()).addTask(
-				String.format("Apply %s %s %s",item.toString(),reference==null?"":"to",reference==null?"":reference),									
+				String.format("Apply %s %s %s",
+						item==null?"":item.toString(),
+						reference==null?"":"to",reference==null?"":reference),									
 				callable,
 				getRequest().getRootRef(),
 				getToken());		
 		
 	}
-	protected CallableQueryProcessor createCallable(Method method,File file,MediaType mediaType,T item) throws ResourceException  {
+	protected CallableProtectedTask<String> createCallable(Method method,File file,MediaType mediaType,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
-	protected CallableQueryProcessor createCallable(Method method,Form form,T item) throws ResourceException  {
+	protected CallableProtectedTask<String> createCallable(Method method,Form form,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
-	protected CallableQueryProcessor createCallable(Method method,List<FileItem> input,T item) throws ResourceException  {
+	protected CallableProtectedTask<String>  createCallable(Method method,List<FileItem> input,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}	
 	
