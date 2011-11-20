@@ -41,9 +41,11 @@ public class CallableMockup<USERID> extends CallableProtectedTask<USERID> {
 		} catch (Exception x) {
 			this.error = null;
 		}		
-		///resultURI = PageParams.params.dataset_uri.getFirstValue(form);
-		//if (resultURI==null) resultURI = PageParams.params.model_uri.getFirstValue(form);
-		resultURI = null;
+		try {
+			resultURI = PageParams.params.resulturi.getFirstValue(form);
+		} catch (Exception x) {
+			resultURI = null;
+		}
 	}
 	@Override
 	public TaskResult doCall() throws Exception {

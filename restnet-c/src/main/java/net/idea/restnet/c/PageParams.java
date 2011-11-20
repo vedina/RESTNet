@@ -27,7 +27,14 @@ public class PageParams {
 				return "Error to be thrown by /algorithm/mockup";
 			}			
 		},			
-	
+		resulturi {
+			public boolean isMandatory() {
+				return false;
+			}
+			public String getDescription() {
+				return "Result URI for /algorithm/mockup";
+			}			
+		},	
 		page {
 			public String getDescription() {
 				return "Page";
