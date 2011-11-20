@@ -12,15 +12,8 @@ import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.TaskResult;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
 /**
@@ -108,6 +101,14 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 		
 	}
 	
+	@Override
+	public List<UUID> process(IQueryRetrieval<T> query) throws AmbitException {
+		if (query==null) {
+			processItem(null);
+			return tasks;
+		} else	
+			return super.process(query);
+	}
 	/*
 	protected void processRepresentation(Representation entity, Variant variant) throws FileUploadException {
 		if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
