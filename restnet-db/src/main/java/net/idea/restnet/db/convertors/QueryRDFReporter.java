@@ -9,7 +9,7 @@ import net.idea.restnet.db.QueryURIReporter;
 import org.restlet.Request;
 import org.restlet.data.MediaType;
 
-import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * Parent class for RDF reporters
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.ontology.OntModel;
  * @param <T>
  * @param <Q>
  */
-public abstract class QueryRDFReporter<T,Q extends IQueryRetrieval<T>> extends QueryReporter<T, Q, OntModel> {
+public abstract class QueryRDFReporter<T,Q extends IQueryRetrieval<T>> extends QueryReporter<T, Q, Model> {
 	
 	/**
 	 * 
@@ -38,12 +38,12 @@ public abstract class QueryRDFReporter<T,Q extends IQueryRetrieval<T>> extends Q
 		uriReporter = createURIReporter(request,doc);
 		this.mediaType = mediaType;
 	}
-	public OntModel getJenaModel() {
+	public Model getJenaModel() {
 		return output;
 	}
 	
 	@Override
-	public void setOutput(OntModel output) throws AmbitException {
+	public void setOutput(Model output) throws AmbitException {
 		super.setOutput(output);
 		if (output!=null)
 		try {
@@ -64,8 +64,8 @@ public abstract class QueryRDFReporter<T,Q extends IQueryRetrieval<T>> extends Q
 		}
 		
 	}
-	public void header(OntModel output, Q query) {};
-	public void footer(OntModel output, Q query) {};
+	public void header(Model output, Q query) {};
+	public void footer(Model output, Q query) {};
 	
 
 }

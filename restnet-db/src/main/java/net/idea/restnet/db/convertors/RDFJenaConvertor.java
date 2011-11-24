@@ -13,7 +13,8 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
-import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 
 /**
@@ -24,7 +25,7 @@ import com.hp.hpl.jena.rdf.model.RDFWriter;
  * @param <Q>
  * @param <R>
  */
-public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractObjectConvertor<T,Q,OntModel>  {
+public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractObjectConvertor<T,Q,Model>  {
 	protected boolean xml_abbreviation = true;
 	public boolean isXml_abbreviation() {
 		return xml_abbreviation;
@@ -39,18 +40,18 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 	private static final long serialVersionUID = -6566828643076743577L;
 
 	
-	public RDFJenaConvertor(QueryReporter<T,Q,OntModel> reporter) {
+	public RDFJenaConvertor(QueryReporter<T,Q,Model> reporter) {
 		this(reporter,MediaType.APPLICATION_RDF_XML);
-		if (this.reporter != null) ((QueryReporter<T,Q,OntModel>)this.reporter).setMaxRecords(5000);
+		if (this.reporter != null) ((QueryReporter<T,Q,Model>)this.reporter).setMaxRecords(5000);
 	}
-	public RDFJenaConvertor(QueryReporter<T,Q,OntModel> reporter,MediaType media) {
+	public RDFJenaConvertor(QueryReporter<T,Q,Model> reporter,MediaType media) {
 		super(reporter,media);
 	}
 
 	@Override
-	protected OntModel createOutput(Q query) throws AmbitException {
+	protected Model createOutput(Q query) throws AmbitException {
 		try {
-			return OT.createModel();
+			return ModelFactory.createDefaultModel(); //OT.createModel();
 		} catch (Exception x) {
 			throw new AmbitException(x);
 		}
@@ -59,7 +60,7 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 		return "http://opentox.org/api/1.1";
 	}
 	@Override
-	public Representation process(final OntModel jenaModel) throws AmbitException {
+	public Representation process(final Model jenaModel) throws AmbitException {
 		/*
 		To optimise the speed of writing RDF/XML it is suggested that all URI processing is turned off. 
 		Also do not use RDF/XML-ABBREV. 
