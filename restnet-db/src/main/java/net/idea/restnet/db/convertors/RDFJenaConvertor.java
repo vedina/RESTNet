@@ -55,7 +55,9 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 			throw new AmbitException(x);
 		}
 	}
-
+	protected String getDefaultNameSpace() {
+		return "http://opentox.org/api/1.1";
+	}
 	@Override
 	public Representation process(final OntModel jenaModel) throws AmbitException {
 		/*
@@ -104,7 +106,7 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 	        				fasterWriter.setProperty("xmlbase",jenaModel.getNsPrefixURI(""));	        				
 	        			}
 	        			
-	        			fasterWriter.write(jenaModel,output,"http://opentox.org/api/1.1");
+	        			fasterWriter.write(jenaModel,output,getDefaultNameSpace());
 	            	} catch (Exception x) {
 	            		Throwable ex = x;
 	            		while (ex!=null) {
