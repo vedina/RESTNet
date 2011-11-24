@@ -83,7 +83,7 @@ public class TaskHTMLReporter<USERID> extends CatalogURIReporter<UUID> {
 							item.getUuid(),
 							t,item.getName(),
 							baseReference.toString(),
-							item.isDone()?"tick.png":"24x24_ambit.gif",
+							item.isDone()?"tick.png":"progress.gif",
 							status,
 							item.getError()==null?"":item.getError().getMessage(),
 							item.getPolicyError()==null?"":item.getPolicyError().getMessage()		
