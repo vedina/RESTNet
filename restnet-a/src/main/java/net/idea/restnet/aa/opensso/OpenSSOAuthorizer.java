@@ -78,7 +78,7 @@ public class OpenSSOAuthorizer extends Authorizer {
 			uri = uri.getParentRef();
 			if (uri.toString().length()<prefix_len) return null; //smth wrong
 		}
-		u = uri2check.toString();
+		u = uri.toString();
 		if (u.lastIndexOf("/")==(u.length()-1))
 			return u.substring(0,u.length()-1);
 		else return u;
