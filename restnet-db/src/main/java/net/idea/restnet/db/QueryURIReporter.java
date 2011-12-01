@@ -64,7 +64,10 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 	public Object processItem(T item) throws AmbitException {
 		try {
 			String o = getURI(item);
-			if (o != null) 	output.write(o);
+			if (o != null) 	{
+				output.write(o);
+				output.write("\n");
+			}
 			output.flush();
 		} catch (IOException x) {
 			Context.getCurrentLogger().severe(x.getMessage());
