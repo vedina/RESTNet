@@ -11,7 +11,7 @@ import net.idea.restnet.i.task.TaskResult;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-public abstract class CallableDBUpdateTask<Group,Target,INPUT,T,USERID> extends CallableProtectedTask<USERID> {
+public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends CallableProtectedTask<USERID> {
 	protected Connection connection;
 	protected UpdateExecutor exec;
 	protected INPUT input;
@@ -24,14 +24,14 @@ public abstract class CallableDBUpdateTask<Group,Target,INPUT,T,USERID> extends 
 	}
 
 	protected abstract Target getTarget(INPUT input) throws Exception ;
-	protected abstract IQueryUpdate<Group,Target> createUpdate(Target target) throws Exception ;
+	protected abstract IQueryUpdate<Object,Target> createUpdate(Target target) throws Exception ;
 	protected abstract String getURI(Target target) throws Exception ;
 	
 	@Override
 	public TaskResult doCall() throws Exception {
 		try {
 			Target target = getTarget(input);
-			IQueryUpdate<Group,Target> q = createUpdate(target);
+			IQueryUpdate<Object,Target> q = createUpdate(target);
 			if (q!= null) {
 				exec = new UpdateExecutor<IQueryUpdate>();
 				exec.setConnection(connection);
