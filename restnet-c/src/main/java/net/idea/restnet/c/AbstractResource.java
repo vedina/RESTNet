@@ -231,7 +231,7 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 		}
 	}
 	protected FactoryTaskConvertor getFactoryTaskConvertor(ITaskStorage storage) throws ResourceException {
-		return new FactoryTaskConvertor<Object>(storage);
+		return new FactoryTaskConvertor<Object>(storage,getHTMLBeauty());
 	}
 	protected abstract Representation processAndGenerateTask(final Method method,Representation entity, final Variant variant, final boolean async) throws ResourceException ;
 	/*
