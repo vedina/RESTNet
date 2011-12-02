@@ -26,14 +26,18 @@ public class OpenSSOUserHTMLReporter extends OpenSSOUsersURIReporter {
 	protected final static String cookie_warning = "HTTP cookie is used to transfer the OpenSSO token between web browser and the server.";
     protected HTMLBeauty htmlBeauty;
     
-	public OpenSSOUserHTMLReporter(Request ref, ResourceDoc doc) {
+    public OpenSSOUserHTMLReporter(Request ref, ResourceDoc doc) {
+    	this(ref,doc,null);
+    }
+	public OpenSSOUserHTMLReporter(Request ref, ResourceDoc doc,HTMLBeauty htmlBeauty) {
 		super(ref,doc);
+		this.htmlBeauty = htmlBeauty;
 	}
 	@Override
 	public void header(Writer output, Iterator<OpenSSOUser> query) {
 		try {
 			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
-			htmlBeauty.writeHTMLHeader(output, "AMBIT", getRequest(),getDocumentation()
+			htmlBeauty.writeHTMLHeader(output, htmlBeauty.getTitle(), getRequest(),getDocumentation()
 					);//,"<meta http-equiv=\"refresh\" content=\"10\">");
 			
 			

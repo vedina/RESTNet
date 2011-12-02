@@ -32,8 +32,12 @@ public class TaskHTMLReporter<USERID> extends CatalogURIReporter<UUID> {
 	 */
 	private static final long serialVersionUID = 7644836050657868159L;
 	public TaskHTMLReporter(ITaskStorage<USERID> storage,Request ref,ResourceDoc doc) {
+		this(storage,ref,doc,null);
+	}
+	public TaskHTMLReporter(ITaskStorage<USERID> storage,Request ref,ResourceDoc doc,HTMLBeauty htmlbeauty) {
 		super(ref,doc);
 		this.storage = storage;
+		this.htmlBeauty = htmlbeauty;
 	}
 	
 
@@ -46,7 +50,7 @@ public class TaskHTMLReporter<USERID> extends CatalogURIReporter<UUID> {
 			max = max==null?"10":max;
 			
 			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
-			htmlBeauty.writeHTMLHeader(output, "AMBIT", getRequest(),"",
+			htmlBeauty.writeHTMLHeader(output, htmlBeauty.getTitle(), getRequest(),"",
 					getDocumentation()
 					);//,"<meta http-equiv=\"refresh\" content=\"10\">");
 			output.write("<h4>Tasks:");

@@ -9,6 +9,7 @@ import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.c.StringConvertor;
+import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.reporters.TaskHTMLReporter;
 import net.idea.restnet.c.reporters.TaskURIReporter;
 import net.idea.restnet.i.task.ITaskStorage;
@@ -22,11 +23,15 @@ import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
 public  class FactoryTaskConvertor<USERID> {
-	
+	private HTMLBeauty htmlBeauty;
 	protected ITaskStorage<USERID> storage;
 	public FactoryTaskConvertor(ITaskStorage<USERID> storage) {
+		this(storage,null);
+	}
+	public FactoryTaskConvertor(ITaskStorage<USERID> storage,HTMLBeauty htmlbeauty) {
 		super();
 		this.storage = storage;
+		this.htmlBeauty = htmlbeauty;
 	}
 	
 	public synchronized IProcessor<Iterator<UUID>, Representation> createTaskConvertor(
@@ -50,7 +55,7 @@ public  class FactoryTaskConvertor<USERID> {
 		else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) 
 			reporter = createTaskReporterURI(request,doc);		
 		else if (variant.getMediaType().equals(MediaType.TEXT_HTML)) 
-			reporter = createTaskReporterHTML( request,doc);	
+			reporter = createTaskReporterHTML( request,doc,htmlBeauty);	
 		else  //MediaType.TEXT_URI_LIST
 			reporter = createTaskReporterURI(request,doc);
 		return reporter;
@@ -74,8 +79,8 @@ public  class FactoryTaskConvertor<USERID> {
    }	
 
 	public synchronized Reporter<Iterator<UUID>, Writer> createTaskReporterHTML(
-			Request request,ResourceDoc doc) throws AmbitException, ResourceException {
-		return	new TaskHTMLReporter<USERID>(storage,request,doc);
+			Request request,ResourceDoc doc,HTMLBeauty htmlbeauty) throws AmbitException, ResourceException {
+		return	new TaskHTMLReporter<USERID>(storage,request,doc,htmlbeauty);
 	}
 	
 	public synchronized Representation createTaskRepresentation(UUID task, 

@@ -29,7 +29,11 @@ public class CatalogHTMLReporter<T> extends CatalogURIReporter<T> {
 		this.htmlBeauty = htmlBeauty;
 	}
 	public CatalogHTMLReporter(Request request,ResourceDoc doc) {
+		this(request,doc,null);
+	}
+	public CatalogHTMLReporter(Request request,ResourceDoc doc,HTMLBeauty htmlbeauty) {
 		super(request,doc);
+		this.htmlBeauty = htmlbeauty;
 	}
 	@Override
 	public void header(Writer output, Iterator<T> query) {

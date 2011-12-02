@@ -26,6 +26,12 @@ public abstract class QueryHTMLReporter<T,Q extends IQueryRetrieval<T>>  extends
 
 	protected HTMLBeauty htmlBeauty;
 	
+	public HTMLBeauty getHtmlBeauty() {
+		return htmlBeauty;
+	}
+	public void setHtmlBeauty(HTMLBeauty htmlBeauty) {
+		this.htmlBeauty = htmlBeauty;
+	}
 	public QueryURIReporter getUriReporter() {
 		return uriReporter;
 	}
@@ -43,9 +49,12 @@ public abstract class QueryHTMLReporter<T,Q extends IQueryRetrieval<T>>  extends
 	 * 
 	 */
 	public QueryHTMLReporter() {
-		this(null,true,null);
+		this(null,true,null,null);
 	}
 	public QueryHTMLReporter(Request request, boolean collapsed,ResourceDoc doc) {
+		this(request,collapsed,doc,null);
+	}
+	public QueryHTMLReporter(Request request, boolean collapsed,ResourceDoc doc, HTMLBeauty htmlBeauty) {
 		super();
 		uriReporter =  createURIReporter(request, doc);
 		this.collapsed = collapsed;

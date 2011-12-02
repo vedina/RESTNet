@@ -69,7 +69,7 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
 
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
 			return new StringConvertor(
-					new OpenSSOUserHTMLReporter(getRequest(),getDocumentation()),MediaType.TEXT_HTML);
+					new OpenSSOUserHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty()),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor(	new OpenSSOUsersURIReporter(getRequest(),getDocumentation()) {
 				@Override
@@ -83,7 +83,7 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
 			
 		} else //html 	
 			return new StringConvertor(
-					new OpenSSOUserHTMLReporter(getRequest(),getDocumentation()),MediaType.TEXT_HTML);
+					new OpenSSOUserHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty()),MediaType.TEXT_HTML);
 		
 	}
 	

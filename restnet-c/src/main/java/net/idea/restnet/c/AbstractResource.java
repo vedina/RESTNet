@@ -7,6 +7,7 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.exception.RResourceException;
+import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.ClientResourceWrapper;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.aa.IAuthToken;
@@ -301,4 +302,7 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 		 
 	}
 
+	protected HTMLBeauty getHTMLBeauty() {
+		return new HTMLBeauty();
+	}
 }
