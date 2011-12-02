@@ -101,7 +101,7 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 	}
 	
 	protected Reporter createHTMLReporter() {
-		return new CatalogHTMLReporter(getRequest(),getDocumentation());
+		return new CatalogHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty());
 	}
 	
 	
