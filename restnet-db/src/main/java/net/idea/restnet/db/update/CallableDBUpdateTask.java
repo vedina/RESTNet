@@ -39,7 +39,10 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 				exec.setConnection(connection);
 				exec.process(q);
 				
-				return new TaskResult(getURI(target),Method.POST.equals(method));
+				if (Method.DELETE.equals(method)) 
+					return new TaskResult(null,false);
+				else
+					return new TaskResult(getURI(target),Method.POST.equals(method));
 			} else
 				return new TaskResult(getURI(target),false);
 
