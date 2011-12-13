@@ -492,7 +492,9 @@ Then, when the "get(Variant)" method calls you back,
 	
 	protected TaskCreator getTaskCreator(Representation entity, Variant variant, Method method, boolean async) throws Exception {
 
-		if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
+		if (entity==null) {
+			return getTaskCreator(null, method,async,null);
+		} else if (MediaType.APPLICATION_WWW_FORM.equals(entity.getMediaType())) {
 			Form form = new Form(entity);
 			final Reference reference = new Reference(getObjectURI(form));
 			return getTaskCreator(form, method,async,reference);

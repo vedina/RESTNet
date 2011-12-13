@@ -8,6 +8,7 @@ import net.idea.modbcum.p.UpdateExecutor;
 import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.i.task.TaskResult;
 
+import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
@@ -15,12 +16,13 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 	protected Connection connection;
 	protected UpdateExecutor exec;
 	protected INPUT input;
-
+	protected Method method;
 	
-	public CallableDBUpdateTask(INPUT input, Connection connection,USERID token) {
+	public CallableDBUpdateTask(Method method,INPUT input, Connection connection,USERID token) {
 		super(token);
 		this.connection = connection;
 		this.input = input;
+		this.method = method;
 	}
 
 	protected abstract Target getTarget(INPUT input) throws Exception ;
@@ -36,12 +38,12 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 				exec = new UpdateExecutor<IQueryUpdate>();
 				exec.setConnection(connection);
 				exec.process(q);
-				return new TaskResult(getURI(target),true);
+				
+				return new TaskResult(getURI(target),Method.POST.equals(method));
 			} else
 				return new TaskResult(getURI(target),false);
 
 		} catch (ProcessorException x) {
-			x.printStackTrace();
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,x);
 		} catch (Exception x) {
 			throw new ResourceException(Status.SERVER_ERROR_INTERNAL,x);
