@@ -15,9 +15,6 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
-import net.idea.modbcum.p.ProcessorException;
-import net.idea.modbcum.p.UpdateExecutor;
-import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
@@ -37,7 +34,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.restlet.Context;
 import org.restlet.Request;
-import org.restlet.Response;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
@@ -439,7 +435,7 @@ Then, when the "get(Variant)" method calls you back,
 			Connection conn = null;
 			try {
 	
-				IQueryRetrieval<T> query = createPOSTQuery(getContext(),getRequest(),getResponse());
+				IQueryRetrieval<T> query = createUpdateQuery(method,getContext(),getRequest(),getResponse());
 				
 				TaskCreator taskCreator = getTaskCreator(entity, variant, method, async);
 			

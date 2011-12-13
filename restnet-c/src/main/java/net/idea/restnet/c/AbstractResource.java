@@ -95,7 +95,7 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 	
 	protected   abstract  Q createQuery(Context context, Request request, Response response) throws ResourceException;
 	
-	protected  Q createPOSTQuery(Context context, Request request, Response response) throws ResourceException {
+	protected  Q createUpdateQuery(Method method,Context context, Request request, Response response) throws ResourceException {
 		return createQuery(context,request,response);
 	}
 	@Override
