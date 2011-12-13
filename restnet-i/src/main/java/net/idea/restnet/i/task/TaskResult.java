@@ -18,7 +18,7 @@ public class TaskResult {
 		return uri;
 	}
 	public Reference getReference() {
-		return new Reference(uri);
+		return uri==null?null:new Reference(uri);
 	}
 	public void setUri(String uri) {
 		this.uri = uri;
