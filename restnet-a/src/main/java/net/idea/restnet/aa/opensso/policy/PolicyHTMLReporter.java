@@ -31,8 +31,13 @@ public class PolicyHTMLReporter extends PolicyURIReporter {
 	private static final long serialVersionUID = -1395741382892340760L;
 
 	public PolicyHTMLReporter(Request ref, boolean collapsed,ResourceDoc doc) {
+		this(ref,collapsed,doc,null);
+		
+	}
+	public PolicyHTMLReporter(Request ref, boolean collapsed,ResourceDoc doc,HTMLBeauty htmlBeauty) {
 		super(ref,doc);
 		this.collapsed = collapsed;
+		this.htmlBeauty = htmlBeauty;
 	}
 	
 	/*

@@ -21,6 +21,7 @@ import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
+import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
@@ -147,9 +148,8 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 			        	
 			        	return r;
 		        	} catch (NotFoundException x) {
-
-		    			getResponse().setStatus(Status.CLIENT_ERROR_NOT_FOUND, new NotFoundException(x.getMessage()));
-		    			return null;
+		        		Representation r = processNotFound(x,variant);
+		        		return r;
 		    			
 		        	} catch (RResourceException x) {
 		    			getResponse().setStatus(x.getStatus());
@@ -175,7 +175,13 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 			getResponse().setStatus(Status.SERVER_ERROR_INTERNAL,x);
 			return null;
 		}
-	}				
+	}		
+	
+	protected Representation processNotFound(NotFoundException x,Variant variant) throws Exception {
+
+		throw new NotFoundException(x.getMessage());
+
+	}
 	/**
 	 * Returns parameter value and throwsan exception if value is missing of mandatory parameter
 	 * @param requestHeaders
@@ -305,4 +311,9 @@ public abstract class AbstractResource<Q,T extends Serializable,P extends IProce
 	protected HTMLBeauty getHTMLBeauty() {
 		return new HTMLBeauty();
 	}
+	
+	protected Reference getResourceRef(Request request) {
+		//return request.getOriginalRef()==null?request.getResourceRef():request.getResourceRef();
+		return request.getResourceRef();
+	}	
 }

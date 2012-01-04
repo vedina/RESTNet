@@ -1,5 +1,6 @@
 package net.idea.restnet.aa.opensso.policy;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
+import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.aa.opensso.OpenSSOServicesConfig;
@@ -32,6 +34,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.security.User;
@@ -46,11 +49,12 @@ import org.restlet.security.User;
 public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 	public static final String resource = "policy";
 
+	
 	@Override
 	protected Iterator<Policy> createQuery(Context context, Request request,
 			Response response) throws ResourceException {
 		List<Policy> p = new ArrayList<Policy>();
-		Form form = request.getResourceRef().getQueryAsForm();
+		Form form = getResourceRef(request).getQueryAsForm();
 		String uri = form.getFirstValue(search_param);
 		if (uri==null) return p.iterator(); //throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"Parameter missing: ?search=<uri-to-retrieve-policy-for>");
 		
@@ -73,7 +77,21 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 				OpenSSOToken ssotoken = new OpenSSOToken(config.getOpenSSOService());
 				ssotoken.setToken(token);
 				policy.getURIOwner(ssotoken,uri,(OpenSSOUser)user, policies);
-				if (policies.size()==0) throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
+				if (policies.size()==0) {
+					return new Iterator<Policy>() {
+						@Override
+						public boolean hasNext() {
+							return false;
+						}
+						@Override
+						public Policy next() {
+							return null;
+						}
+						@Override
+						public void remove() {
+						}
+					};
+				}
 				//too bad, refactor the policy class to not use hashtable
 				
 				Enumeration<String> e = policies.keys();
@@ -91,7 +109,6 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 			
 		} else throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST);
 	} 
-	
 	@Override
 	public IProcessor<Iterator<Policy>, Representation> createConvertor(
 			Variant variant) throws AmbitException, ResourceException {
@@ -118,9 +135,7 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 	}
 	
 	protected Reporter createHTMLReporter() {
-		PolicyHTMLReporter reporter =  new PolicyHTMLReporter(getRequest(),true,getDocumentation());
-		reporter.setHtmlBeauty(getHTMLBeauty());
-		return reporter;
+		return new PolicyHTMLReporter(getRequest(),true,getDocumentation(),getHTMLBeauty());
 	}
 	
 
@@ -169,4 +184,18 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 			}
 		}
 	}	
+	
+	@Override
+	protected Representation processNotFound(NotFoundException x,Variant variant)
+			throws Exception {
+		if (MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+			StringWriter output = new StringWriter();
+			PolicyHTMLReporter r = new PolicyHTMLReporter(getRequest(),true,getDocumentation(),getHTMLBeauty());
+			r.setOutput(output);
+			r.header(output, null);
+			r.footer(output, null);
+			output.flush();
+			return new StringRepresentation(output.toString(),MediaType.TEXT_HTML);
+		} else return super.processNotFound(x, variant);
+	}
 }
