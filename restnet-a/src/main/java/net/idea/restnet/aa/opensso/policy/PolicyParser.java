@@ -91,21 +91,23 @@ public class PolicyParser {
 			for (int j=0; j < rules.getLength(); j++) {
 				Element rule = ((Element) rules.item(j));
 
-				b.append(String.format("<h4>Rule %s</h4>\n", rule.getAttribute("name")));
+				b.append(String.format("<h4>&nbsp;Rule %s</h4>\n", rule.getAttribute("name")));
 				
 				org.w3c.dom.NodeList ResourceName = rule.getElementsByTagName(tags.ResourceName.toString());
 				for (int k=0; k < ResourceName.getLength(); k++) {
 					Element attr = ((Element) ResourceName.item(k));
-					b.append(String.format("Resource %s<br>\n", attr.getAttribute("name")));
+					b.append(String.format("&nbsp;&nbsp;Resource <a href='%s' target=_blank>%s</a><br>\n", attr.getAttribute("name"),attr.getAttribute("name")));
 				}	
 				
 				b.append("<table>");
 				org.w3c.dom.NodeList attrs = rule.getElementsByTagName(tags.AttributeValuePair.toString());
+				b.append("<tr>\n");
 				for (int k=0; k < attrs.getLength(); k++) {
 					Element attr = ((Element) attrs.item(k));
 					//System.out.println(">>>AttributeValuePair "+attr.getAttribute("name"));
 					processAttrValuePair(attr,b);
-				}				
+				}
+				b.append("</tr>\n");
 				b.append("</table>");
 			}
 			//subjects
@@ -139,7 +141,7 @@ Values	uid=nina, ou=people, dc=opentox,dc=org
 					} catch (Exception x) {
 						
 					}					
-					b.append(String.format("%s <b>%s</b> [%s]<br>\n",
+					b.append(String.format("&nbsp;&nbsp;&nbsp;%s <b>%s</b> [%s]<br>\n",
 							t,
 							name,
 							s.getAttribute("includeType")));
@@ -165,14 +167,17 @@ Values	uid=nina, ou=people, dc=opentox,dc=org
 	
 	public void processAttrValuePair(Element vp, StringBuilder b) {
 		org.w3c.dom.NodeList attr = vp.getElementsByTagName(tags.Attribute.toString());
-		b.append("<tr>\n");
+		//b.append("<tr>\n");
+		String n="name";
 		for (int k=0; k < attr.getLength(); k++) {
-			b.append(String.format("<th>%s</th>",((Element)attr.item(k)).getAttribute("name")));
+			n = ((Element)attr.item(k)).getAttribute("name");
+			b.append(String.format("<th>%s</th>",n));
 		}
 		org.w3c.dom.NodeList val = vp.getElementsByTagName(tags.Value.toString());
 		for (int k=0; k < val.getLength(); k++) {
-			b.append(String.format("<td>%s</td>",((Element)val.item(k)).getTextContent()));
+			String v = ((Element)val.item(k)).getTextContent();
+			b.append(String.format("<td><input type=CHECKBOX title='%s' name='%s' %s readonly='true'></td>",v,n,"allow".equals(v)?"checked":""));
 		}	
-		b.append("</tr>\n");
+		//b.append("</tr>\n");
 	}	
 }

@@ -115,8 +115,8 @@ PolicyParser parser = new PolicyParser(policies.get(input));
 					PolicyParser parser = new PolicyParser(item.getXml());
 					output.write(parser.getHTML());
 				}
-				output.write("<h4>XML</h4>");
-				output.write(String.format("<textarea rows='10' cols='80'>%s</textarea>",item.getXml()==null?"Policy XML Not retrieved!":item.getXml()));
+				output.write("<h5>&nbsp;&nbsp;&nbsp;XML</h5>");
+				output.write(String.format("&nbsp;&nbsp;&nbsp;<textarea rows='10' cols='80'>%s</textarea>",item.getXml()==null?"Policy XML Not retrieved!":item.getXml()));
 			}
 			output.write("<br>");
 		} catch (Exception x) {
@@ -130,7 +130,7 @@ PolicyParser parser = new PolicyParser(policies.get(input));
 
 			output.write(String.format(records==0?"<h4>%sCreate a new policy for this resource.</h4>":"<h4>%d policies found.</h4>",records==0?"Not found! ":records));
 			
-			output.write(String.format("<a href='%s/%s/%s'>Back</a>",getRequest().getRootRef(),"../",OpenSSOPoliciesResource.resource));
+			output.write(String.format("<a href='%s'>Back</a>",getRequest().getResourceRef().getParentRef()));
 			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
 			htmlBeauty.writeHTMLFooter(output, OpenSSOPoliciesResource.resource, getRequest());
 			output.flush();
