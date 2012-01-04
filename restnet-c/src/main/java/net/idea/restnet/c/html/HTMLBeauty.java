@@ -110,9 +110,10 @@ public class HTMLBeauty {
 		w.write("</span>");
 	
 		
-		w.write(String.format("	<span class=\"right\">%s&nbsp;<a style=\"color:#99CC00\" href='%s/opentoxuser'>%s</a>",
+		w.write(String.format("	<span class=\"right\">%s&nbsp;<a style=\"color:#99CC00\" href='%s/%s'>%s</a>",
 				top,
 				baseReference.toString(),
+				getLoginLink(),
 				request.getClientInfo().getUser()==null?"Login":"My account"));
 		
 		
@@ -240,6 +241,9 @@ public class HTMLBeauty {
 		output.write("</html>");
 
 	}	
+	public String getLoginLink() {
+		return "opentoxuser";
+	}
 	public String getTitle() {
 		return "RESTNet";
 	}

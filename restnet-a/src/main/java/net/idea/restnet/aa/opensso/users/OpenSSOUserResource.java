@@ -24,7 +24,7 @@ import org.restlet.resource.ResourceException;
 import org.restlet.security.User;
 
 public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
-	public static final String resource = "session";
+	public static final String resource = "openssouser";
 	
 	@Override
 	protected Iterator<OpenSSOUser> createQuery(Context context,
