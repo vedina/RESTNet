@@ -118,7 +118,9 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 	}
 	
 	protected Reporter createHTMLReporter() {
-		return new PolicyHTMLReporter(getRequest(),true,getDocumentation());
+		PolicyHTMLReporter reporter =  new PolicyHTMLReporter(getRequest(),true,getDocumentation());
+		reporter.setHtmlBeauty(getHTMLBeauty());
+		return reporter;
 	}
 	
 

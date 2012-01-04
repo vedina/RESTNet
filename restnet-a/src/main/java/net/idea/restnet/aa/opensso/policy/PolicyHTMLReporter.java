@@ -17,6 +17,14 @@ import org.restlet.data.Form;
 public class PolicyHTMLReporter extends PolicyURIReporter {
 	protected boolean collapsed = false;
 	protected HTMLBeauty htmlBeauty;
+	public HTMLBeauty getHtmlBeauty() {
+		return htmlBeauty;
+	}
+
+	public void setHtmlBeauty(HTMLBeauty htmlBeauty) {
+		this.htmlBeauty = htmlBeauty;
+	}
+	protected int records  = 0;
 	/**
 	 * 
 	 */
@@ -90,6 +98,7 @@ PolicyParser parser = new PolicyParser(policies.get(input));
 
 	public void processItem(Policy item, Writer output) {
 		try {
+			records++;
 			String t = super.getURI(item);
 			output.write(String.format("Policy:&nbsp;<a href='%s'>%s</a>&nbsp;", t,item.getId()));
 			
@@ -113,6 +122,8 @@ PolicyParser parser = new PolicyParser(policies.get(input));
 	public void footer(Writer output, Iterator<Policy> query) {
 		try {
 			output.write("</tbody></table>");
+
+			output.write(String.format(records==0?"<h4>%sCreate a new policy for this resource.</h4>":"<h4>%d policies found.</h4>",records==0?"Not found! ":records));
 			
 			output.write(String.format("<a href='%s/%s/%s'>Back</a>",getRequest().getRootRef(),"../",OpenSSOPoliciesResource.resource));
 			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
@@ -121,5 +132,6 @@ PolicyParser parser = new PolicyParser(policies.get(input));
 		} catch (Exception x) {
 			
 		}
+		
 	}	
 }

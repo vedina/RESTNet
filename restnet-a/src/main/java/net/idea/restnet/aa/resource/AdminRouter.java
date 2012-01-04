@@ -15,6 +15,10 @@ public class AdminRouter extends MyRouter {
 
 	public AdminRouter(Context context) {
 		super(context);
+		init();
+	}
+
+	protected void init() {
 		attachDefault(AdminResource.class);
 
 		/**
@@ -24,5 +28,4 @@ public class AdminRouter extends MyRouter {
 		attach(String.format("/%s/{%s}",OpenSSOPoliciesResource.resource,OpenSSOPolicyResource.policyKey),OpenSSOPolicyResource.class);
 		
 	}
-
 }
