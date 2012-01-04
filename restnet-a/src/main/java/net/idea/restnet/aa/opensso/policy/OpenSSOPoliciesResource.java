@@ -1,6 +1,7 @@
 package net.idea.restnet.aa.opensso.policy;
 
 import java.io.StringWriter;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -56,6 +57,12 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 		List<Policy> p = new ArrayList<Policy>();
 		Form form = getResourceRef(request).getQueryAsForm();
 		String uri = form.getFirstValue(search_param);
+		/*
+		if (uri==null) {
+			Object key = request.getAttributes().get(OpenSSOPolicyResource.policyKey);
+			if (key!=null) uri = URLDecoder.decode(key.toString());
+		}
+		*/
 		if (uri==null) return p.iterator(); //throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,"Parameter missing: ?search=<uri-to-retrieve-policy-for>");
 		
 		User user = request.getClientInfo().getUser();
