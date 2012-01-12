@@ -60,4 +60,8 @@ public abstract class QueryStaXReporter<T,Q extends IQueryRetrieval<T>,R extends
 		
 	}
    
+	@Override
+	public String getFileExtension() {
+		return "rdf";
+	}
 }

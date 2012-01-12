@@ -22,11 +22,15 @@ public class OutputStreamConvertor <T,Q extends IQueryRetrieval<T>>  extends Que
 	private static final long serialVersionUID = -7974532412944774457L;
 	
 	public OutputStreamConvertor(QueryReporter<T, Q, OutputStream> reporter,MediaType mediaType) {
-		super(reporter,mediaType);
+		this(reporter,mediaType,null);
 	}
+	
+	public OutputStreamConvertor(QueryReporter<T, Q, OutputStream> reporter,MediaType mediaType,String fileNamePrefix) {
+		super(reporter,mediaType,fileNamePrefix);
+	}	
 
 	public Representation process(final Q query) throws AmbitException {
-		 return new OutputRepresentation(mediaType) {
+		OutputRepresentation rep = new OutputRepresentation(mediaType) {
 	            @Override
 	            public void write(OutputStream stream) throws IOException {
    	
@@ -53,7 +57,9 @@ public class OutputStreamConvertor <T,Q extends IQueryRetrieval<T>>  extends Que
 	            		try {getReporter().close(); } catch (Exception x) { x.printStackTrace();}
 	            	}
 	            }
-	        };		
+	        };	
+	        setDisposition(rep);
+	        return rep;
 	};	
 
 

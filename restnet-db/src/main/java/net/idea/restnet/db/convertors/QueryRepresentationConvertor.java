@@ -27,11 +27,14 @@ public abstract class QueryRepresentationConvertor<T,Q extends IQueryRetrieval<T
 
 
 	public QueryRepresentationConvertor(QueryAbstractReporter<T,Q,Output> reporter) {
-		this(reporter,MediaType.TEXT_PLAIN);
-		if (this.reporter != null) ((QueryAbstractReporter<T,Q,Output>)this.reporter).setMaxRecords(5000);
+		this(reporter,MediaType.TEXT_PLAIN,null);
 	}
 	public QueryRepresentationConvertor(QueryAbstractReporter<T,Q,Output> reporter,MediaType media) {
-		super(reporter,media);
+		this(reporter,media,null);
+	}
+	public QueryRepresentationConvertor(QueryAbstractReporter<T,Q,Output> reporter,MediaType media,String fileNamePrefix) {
+		super(reporter,media,fileNamePrefix);
+		if (this.reporter != null) ((QueryAbstractReporter<T,Q,Output>)this.reporter).setMaxRecords(5000);
 	}
 	
 

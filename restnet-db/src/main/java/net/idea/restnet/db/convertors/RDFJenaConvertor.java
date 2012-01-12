@@ -41,11 +41,14 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 
 	
 	public RDFJenaConvertor(QueryReporter<T,Q,Model> reporter) {
-		this(reporter,MediaType.APPLICATION_RDF_XML);
-		if (this.reporter != null) ((QueryReporter<T,Q,Model>)this.reporter).setMaxRecords(5000);
+		this(reporter,MediaType.APPLICATION_RDF_XML,null);
 	}
 	public RDFJenaConvertor(QueryReporter<T,Q,Model> reporter,MediaType media) {
-		super(reporter,media);
+		this(reporter,media,null);
+	}
+	public RDFJenaConvertor(QueryReporter<T,Q,Model> reporter,MediaType media,String fileNamePrefix) {
+		super(reporter,media,fileNamePrefix);
+		if (this.reporter != null) ((QueryReporter<T,Q,Model>)this.reporter).setMaxRecords(5000);
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 	   fasterWriter.setProperty("tab","0");
 
 		 */
-		 return new OutputRepresentation(mediaType) {
+		OutputRepresentation rep = new OutputRepresentation(mediaType) {
 	            @Override
 	            public void write(OutputStream output) throws IOException {
 	            	try {
@@ -125,7 +128,8 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 	            	}
 	            }
 	        };				
-
+	        setDisposition(rep);
+	        return rep;
 	}
 	/**
 	 * using http://code.google.com/p/linked-data-api/

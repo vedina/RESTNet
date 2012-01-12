@@ -76,7 +76,7 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 	@Override
 	public IProcessor<Iterator<T>, Representation> createConvertor(
 			Variant variant) throws AmbitException, ResourceException {
-
+		String filenamePrefix = getRequest().getResourceRef().getPath();
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
 			return new StringConvertor(	createHTMLReporter(),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
@@ -86,13 +86,13 @@ public abstract class CatalogResource<T extends Serializable> extends AbstractRe
 				variant.getMediaType().equals(MediaType.TEXT_RDF_N3) ||
 				variant.getMediaType().equals(MediaType.TEXT_RDF_NTRIPLES)
 				) {
-			return createRDFConvertor(variant);
+			return createRDFConvertor(variant,filenamePrefix);
 		} else //uri 	
-			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST);
+			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST,filenamePrefix);
 		
 	}
 	public IProcessor<Iterator<T>, Representation> createRDFConvertor(
-			Variant variant) throws AmbitException, ResourceException {
+			Variant variant,String filenamePrefix) throws AmbitException, ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}	
 	protected Reporter createURIReporter() {

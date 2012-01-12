@@ -29,6 +29,9 @@ public abstract class RepresentationConvertor<Item,Content,Output,R extends Repo
 	public RepresentationConvertor(R reporter, MediaType media) {
 		super(reporter,media);
 	}
+	public RepresentationConvertor(R reporter,MediaType media,String fileNamePrefix) {
+		super(reporter,media,fileNamePrefix);
+	}
 	
 	public String getLicenseURI() {
 		return getReporter()==null?null:getReporter().getLicenseURI();
@@ -37,5 +40,12 @@ public abstract class RepresentationConvertor<Item,Content,Output,R extends Repo
 	public void setLicenseURI(String uri) {
 		if (getReporter()!=null) getReporter().setLicenseURI(uri);
 	}
-	
+	protected void setDisposition(Representation rep) {
+        if (getReporter().getFileExtension()!=null) {
+        	rep.setDownloadable(true);
+        	rep.setDownloadName(String.format("%s.%s",
+        						fileNamePrefix==null?"download":fileNamePrefix,
+        						getReporter().getFileExtension()));
+        }
+	}
 }

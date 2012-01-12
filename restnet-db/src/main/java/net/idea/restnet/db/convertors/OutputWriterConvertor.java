@@ -23,11 +23,14 @@ public class OutputWriterConvertor<T,Q extends IQueryRetrieval<T>>  extends Quer
 	private static final long serialVersionUID = -7974532412944774457L;
 	
 	public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter,MediaType mediaType) {
-		super(reporter,mediaType);
+		this(reporter,mediaType,null);
 	}
-
+	public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter,MediaType mediaType,String fileNamePrefix) {
+		super(reporter,mediaType,fileNamePrefix);
+	}
+	
 	public Representation process(final Q query) throws AmbitException {
-		 return new OutputRepresentation(mediaType) {
+		 OutputRepresentation rep = new OutputRepresentation(mediaType) {
 	            @Override
 	            public void write(OutputStream stream) throws IOException {
             		OutputStreamWriter writer = null;          	
@@ -55,6 +58,8 @@ public class OutputWriterConvertor<T,Q extends IQueryRetrieval<T>>  extends Quer
 	            	}
 	            }
 	        };		
+	        setDisposition(rep);
+	        return rep;
 	};	
 
 
