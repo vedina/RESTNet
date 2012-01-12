@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>RESTNet</name>
     <description>Skeleton REST application
@@ -13,7 +13,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
   	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   	<junit.version>4.8.1</junit.version>
 	<restlet.version>2.0-M6</restlet.version>
-	<modbcum.version>0.0.1-SNAPSHOT</modbcum.version>
+	<modbcum.version>0.0.2-SNAPSHOT</modbcum.version>
   </properties>
  <issueManagement>
   	<system>GitHub</system>
