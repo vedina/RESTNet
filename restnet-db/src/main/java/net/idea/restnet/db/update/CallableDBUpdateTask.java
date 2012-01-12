@@ -13,31 +13,48 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends CallableProtectedTask<USERID> {
+	protected String baseReference;
 	protected Connection connection;
 	protected UpdateExecutor exec;
 	protected INPUT input;
 	protected Method method;
+	protected boolean autoCommit = false;
 	
+	public boolean isAutoCommit() {
+		return autoCommit;
+	}
+
+	public void setAutoCommit(boolean autoCommit) {
+		this.autoCommit = autoCommit;
+	}
 	public CallableDBUpdateTask(Method method,INPUT input, Connection connection,USERID token) {
+		this(method,input,null,connection,token);
+	}
+	public CallableDBUpdateTask(Method method,INPUT input, String baseReference, Connection connection,USERID token) {
 		super(token);
 		this.connection = connection;
 		this.input = input;
 		this.method = method;
+		this.baseReference = baseReference;
 	}
 
 	protected abstract Target getTarget(INPUT input) throws Exception ;
 	protected abstract IQueryUpdate<Object,Target> createUpdate(Target target) throws Exception ;
 	protected abstract String getURI(Target target) throws Exception ;
 	
+	
 	@Override
 	public TaskResult doCall() throws Exception {
+		boolean save = connection.getAutoCommit();
 		try {
+			connection.setAutoCommit(isAutoCommit());
 			Target target = getTarget(input);
 			IQueryUpdate<Object,Target> q = createUpdate(target);
 			if (q!= null) {
-				exec = new UpdateExecutor<IQueryUpdate>();
-				exec.setConnection(connection);
-				exec.process(q);
+				executeQuery(q);
+				
+				if (!isAutoCommit())
+					connection.commit();
 				
 				if (Method.DELETE.equals(method)) 
 					return new TaskResult(null,false);
@@ -47,13 +64,24 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 				return new TaskResult(getURI(target),false);
 
 		} catch (ProcessorException x) {
+			if (!isAutoCommit())
+				try { connection.rollback();} catch (Exception xx) {}
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,x);
 		} catch (Exception x) {
+			if (!isAutoCommit())
+				try {connection.rollback();} catch (Exception xx) {}
 			throw new ResourceException(Status.SERVER_ERROR_INTERNAL,x);
 		} finally {
 			try {exec.close();} catch (Exception x) {}
+			try {connection.setAutoCommit(save);} catch (Exception x) {}
 			try {connection.close();} catch (Exception x) {}
 		}
+	}
+	
+	protected Object executeQuery(IQueryUpdate<Object,Target> q) throws Exception {
+		exec = new UpdateExecutor<IQueryUpdate>();
+		exec.setConnection(connection);
+		return exec.process(q);
 	}
 
 	/**
