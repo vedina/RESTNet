@@ -7,7 +7,14 @@ import org.restlet.data.Reference;
 public class TaskResult {
 	protected String uri;
 	protected boolean newResource = true;
+	protected String policy = null;
 
+	public String getPolicy() {
+		return policy;
+	}
+	public void setPolicy(String policy) {
+		this.policy = policy;
+	}
 	public boolean isNewResource() {
 		return newResource;
 	}
