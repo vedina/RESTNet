@@ -72,7 +72,8 @@ public class PolicyProtectedTask extends Task<TaskResult, String> {
 					if (getUri().getPolicy()==null)
 						policy.createUserPolicy(results.get("uid"), ssoToken, newUri.toString(), new String[] {"GET","PUT","POST","DELETE"});
 					else 
-						policy.sendPolicy(ssoToken, getUri().getPolicy());
+						for (String pxml: getUri().getPolicy())
+							policy.sendPolicy(ssoToken, pxml);
 				} catch (Exception x ) {
 					//TODO write smth in the db why policy creation failed
 					//x.printStackTrace();

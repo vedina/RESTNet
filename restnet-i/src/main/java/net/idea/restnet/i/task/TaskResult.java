@@ -1,5 +1,7 @@
 package net.idea.restnet.i.task;
 
+import java.util.List;
+
 import org.restlet.data.Reference;
 
 
@@ -7,13 +9,13 @@ import org.restlet.data.Reference;
 public class TaskResult {
 	protected String uri;
 	protected boolean newResource = true;
-	protected String policy = null;
+	protected List<String> policies = null;
 
-	public String getPolicy() {
-		return policy;
+	public List<String> getPolicy() {
+		return policies;
 	}
-	public void setPolicy(String policy) {
-		this.policy = policy;
+	public void setPolicy(List<String> policies) {
+		this.policies = policies;
 	}
 	public boolean isNewResource() {
 		return newResource;
