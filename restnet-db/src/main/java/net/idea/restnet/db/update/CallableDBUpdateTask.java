@@ -42,6 +42,9 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 	protected abstract IQueryUpdate<Object,Target> createUpdate(Target target) throws Exception ;
 	protected abstract String getURI(Target target) throws Exception ;
 	
+	protected boolean isNewResource() {
+		return Method.POST.equals(method);
+	}
 	
 	@Override
 	public TaskResult doCall() throws Exception {
@@ -59,7 +62,7 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 				if (Method.DELETE.equals(method)) 
 					return new TaskResult(null,false);
 				else
-					return new TaskResult(getURI(target),Method.POST.equals(method));
+					return new TaskResult(getURI(target),isNewResource());
 			} else
 				return new TaskResult(getURI(target),false);
 
