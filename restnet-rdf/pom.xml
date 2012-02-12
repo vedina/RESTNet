@@ -3,11 +3,11 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.5</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-rdf</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.0.5</version>
   <name>RDF related classes</name>
   <dependencies>
       <dependency>
@@ -40,7 +40,7 @@
     <dependency>
     	<groupId>net.ideaconsult</groupId>
     	<artifactId>opentox-dsl</artifactId>
-    	<version>1.0.3-SNAPSHOT</version>
+    	<version>1.0.3</version>
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
