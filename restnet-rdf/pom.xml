@@ -3,11 +3,11 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>0.0.5</version>
+    <version>0.0.6-SNAPSHOT</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-rdf</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6-SNAPSHOT</version>
   <name>RDF related classes</name>
   <dependencies>
       <dependency>
