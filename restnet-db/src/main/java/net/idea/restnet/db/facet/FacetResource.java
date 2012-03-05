@@ -6,6 +6,7 @@ import net.idea.modbcum.i.facet.IFacet;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.db.QueryResource;
 import net.idea.restnet.db.convertors.OutputWriterConvertor;
+import net.idea.restnet.db.convertors.QueryHTMLReporter;
 
 import org.restlet.Request;
 import org.restlet.data.MediaType;
@@ -60,7 +61,7 @@ public abstract class FacetResource<Q extends IQueryRetrieval<IFacet<String>>> e
 						MediaType.TEXT_HTML);
 	}
 	
-	protected FacetHTMLReporter getHTMLReporter(Request request) {
+	protected QueryHTMLReporter getHTMLReporter(Request request) {
 		return new FacetHTMLReporter(request,getHTMLBeauty());
 	}
 
