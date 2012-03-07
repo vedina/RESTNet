@@ -29,6 +29,7 @@ import net.idea.restnet.c.task.TaskCreatorMultiPartForm;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
+import net.idea.restnet.i.task.TaskResult;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -466,12 +467,18 @@ Then, when the "get(Variant)" method calls you back,
 					ITaskStorage storage = ((TaskApplication)getApplication()).getTaskStorage();
 					FactoryTaskConvertor<Object> tc = getFactoryTaskConvertor(storage);
 					if (r.size()==1) {
-						Task<Reference,Object> task = storage.findTask(r.get(0));
+						Task<TaskResult,Object> task = storage.findTask(r.get(0));
 						task.update();
-						setStatus(task.isDone()?Status.SUCCESS_OK:Status.SUCCESS_ACCEPTED);
-						return tc.createTaskRepresentation(r.get(0), variant,getRequest(), getResponse(),getDocumentation());
+						if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
+							getResponse().redirectSeeOther(task.getUri().getUri());
+							return null;
+						} else {
+							setStatus(task.isDone()?Status.SUCCESS_OK:Status.SUCCESS_ACCEPTED);
+							return tc.createTaskRepresentation(r.get(0), variant,getRequest(), getResponse(),getDocumentation());
+						}
 					} else 
 						return tc.createTaskRepresentation(r.iterator(), variant,getRequest(), getResponse(),getDocumentation());
+					
 				}
 			} catch (RResourceException x) {				
 				throw x;
