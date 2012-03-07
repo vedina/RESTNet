@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.c.ResourceDoc;
+import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.rdf.reporter.TaskRDFReporter;
@@ -23,6 +24,9 @@ import org.restlet.resource.ResourceException;
  */
 public class FactoryTaskConvertorRDF<USERID> extends FactoryTaskConvertor<USERID> {
 
+	public FactoryTaskConvertorRDF(ITaskStorage<USERID> storage,HTMLBeauty htmlbeauty) {
+		super(storage,htmlbeauty);
+	}
 	public FactoryTaskConvertorRDF(ITaskStorage<USERID> storage) {
 		super(storage);
 	}
