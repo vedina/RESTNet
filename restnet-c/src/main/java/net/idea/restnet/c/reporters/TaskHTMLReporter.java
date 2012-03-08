@@ -52,16 +52,16 @@ public class TaskHTMLReporter<USERID> extends CatalogURIReporter<UUID> {
 
 	@Override
 	public void header(Writer output, Iterator<UUID> query) {
-		if (headless) return;
+		
 		try {
-			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
-			htmlBeauty.writeHTMLHeader(output, htmlBeauty.getTitle(), getRequest(),"<meta http-equiv=\"refresh\" content=\"10\">",
+			if (!headless) {
+				if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
+				htmlBeauty.writeHTMLHeader(output, htmlBeauty.getTitle(), getRequest(),
+					"<meta http-equiv=\"refresh\" content=\"10\">",
 					getDocumentation()
 					);//,"<meta http-equiv=\"refresh\" content=\"10\">");
-			
+			}
 			printNavigation();
-			output.write("<table>");
-			output.write("<tr><th>Start time</th><th>Elapsed time,ms</th><th>Task</th><th>Name</th><th colspan='2'>Status</th><th></th></tr>");
 		} catch (Exception x) {
 			
 		}
@@ -75,6 +75,9 @@ public class TaskHTMLReporter<USERID> extends CatalogURIReporter<UUID> {
 			output.write(String.format("<a href='%s%s?search=%s&%s=%s'>%s</a>&nbsp;",
 					baseReference,SimpleTaskResource.resource,status,AbstractResource.max_hits,max,status));
 		output.write("</h4><p>");
+		output.write("<table>");
+		output.write("<tr><th>Start time</th><th>Elapsed time,ms</th><th>Task</th><th>Name</th><th colspan='2'>Status</th><th></th></tr>");
+
 	}
 	@Override
 	public void processItem(UUID name, Writer output) {
