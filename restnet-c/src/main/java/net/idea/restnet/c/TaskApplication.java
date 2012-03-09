@@ -1,5 +1,7 @@
 package net.idea.restnet.c;
 
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import net.idea.restnet.c.task.TaskStorage;
@@ -12,6 +14,12 @@ import org.restlet.Application;
 import org.restlet.data.Reference;
 
 public class TaskApplication<USERID> extends Application {
+	/**
+	 * Properties specific to the application, loaded by config file
+	 */
+	private Properties properties = null;
+	protected String configFile = "www.properties";
+
 	protected ITaskStorage<USERID> taskStorage;
 	public TaskApplication() {
 		super();
@@ -72,5 +80,37 @@ public class TaskApplication<USERID> extends Application {
 	        return result;
     }
     */
+	protected synchronized void loadProperties()  {
+		try {
+		if (properties == null) {
+			properties = new Properties();
+			InputStream in = this.getClass().getClassLoader().getResourceAsStream(configFile);
+			properties.load(in);
+			in.close();		
+		}
+		} catch (Exception x) {
+			properties = null;
+		}
+	}
 	
+	public synchronized String getProperty(String key) {
+		try {
+			if (properties==null) loadProperties();
+			return properties.getProperty(key);  	
+		} catch (Exception x) {
+			return null;
+		}
+	}
+	
+	
+	public String getConfigFile() {
+		return configFile;
+	}
+	/**
+	 * Config file to load properties
+	 * @param configFile
+	 */
+	public void setConfigFile(String configFile) {
+		this.configFile = configFile;
+	}
 }
