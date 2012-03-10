@@ -1,8 +1,16 @@
 package net.idea.restnet.c;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import net.idea.restnet.c.task.TaskStorage;
 import net.idea.restnet.i.task.ICallableTask;
@@ -11,7 +19,13 @@ import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.Application;
+import org.restlet.Restlet;
 import org.restlet.data.Reference;
+import org.restlet.resource.Finder;
+import org.restlet.routing.Filter;
+import org.restlet.routing.Route;
+import org.restlet.routing.Router;
+import org.restlet.util.RouteList;
 
 public class TaskApplication<USERID> extends Application {
 	/**
@@ -113,4 +127,92 @@ public class TaskApplication<USERID> extends Application {
 	public void setConfigFile(String configFile) {
 		this.configFile = configFile;
 	}
+	
+	protected static final String insecure = "insecure";
+   	protected boolean isInsecure() {
+		try {
+			boolean aa = Boolean.parseBoolean(getProperty(insecure));
+			if ((getContext()!=null) && 
+				(getContext().getParameters()!=null) && 
+				(getContext().getParameters().getFirstValue(insecure))!=null)
+				aa = Boolean.parseBoolean(getContext().getParameters().getFirstValue(insecure));
+			return aa;
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
+		return false;
+	}   	
+
+	/**
+	 * Allow connections to SSL sites without certs (similar to curl -k )
+	 * @throws Exception
+	 */
+	protected void insecureConfig()  {
+		// Create a trust manager that does not validate certificate chains
+		TrustManager[] trustAllCerts = new TrustManager[]{
+		    new X509TrustManager() {
+		        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+		            return null;
+		        }
+		        public void checkClientTrusted(
+		            java.security.cert.X509Certificate[] certs, String authType) {
+		        }
+		        public void checkServerTrusted(
+		            java.security.cert.X509Certificate[] certs, String authType) {
+		        }
+		    }
+		};
+
+		// Install the all-trusting trust manager
+		try {
+		    SSLContext sc = SSLContext.getInstance("SSL");
+		    sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+		}
+		HttpsURLConnection.setDefaultHostnameVerifier( 
+				new HostnameVerifier(){
+					public boolean verify(String string,SSLSession ssls) {
+						return true;
+					}
+				});
+	}
+	
+
+	   public static String printRoutes(Restlet re,String delimiter,StringWriter b) {
+		   		
+		 		while (re != null) {
+		 			
+		 			b.append(re.getClass().toString());
+		 			b.append('\t');
+		 			if (re instanceof Finder) {
+		 				b.append(((Finder)re).getTargetClass().getName());
+		 				b.append('\n');
+		 				re = null;
+		 			} else if (re instanceof Filter)
+			 			re = ((Filter)re).getNext();
+			 		else if (re instanceof Router) {
+			 			b.append('\n');
+			 			RouteList list = ((Router)re).getRoutes();
+			 		 	for (Route r : list) { 
+			 		 		
+			 		 		b.append(delimiter);
+			 		 		b.append(r.getTemplate().getPattern());
+			 		 		b.append('\t');
+			 		 		b.append(r.getTemplate().getVariableNames().toString());
+			 		 		printRoutes(r.getNext(),'\t'+delimiter+r.getTemplate().getPattern(),b);
+			 		 	}	
+			 		 	
+			 			break;
+			 		} else {
+			 			break;
+			 		}
+			 		
+			 		
+		 		}
+
+		 		return b.toString();
+
+		 	}
+	   
 }
