@@ -18,6 +18,9 @@ import net.idea.restnet.c.resource.TaskResource;
 import net.idea.restnet.c.routers.MyRouter;
 import net.idea.restnet.c.routers.TaskRouter;
 import net.idea.restnet.c.task.TaskStorage;
+import net.idea.restnet.db.aalocal.ChallengeAuthenticatorDBLocal;
+import net.idea.restnet.db.aalocal.DBRole;
+import net.idea.restnet.db.aalocal.UserRolesResource;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.TaskResult;
@@ -39,6 +42,7 @@ import org.restlet.routing.Router;
 import org.restlet.routing.Template;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.security.Enroler;
+import org.restlet.security.RoleAuthorizer;
 import org.restlet.security.Verifier;
 import org.restlet.service.TunnelService;
 import org.restlet.util.RouteList;
@@ -113,9 +117,7 @@ public class RESTNetApplication extends TaskApplication<String> {
 		
 		router.attach(String.format("/%s",AdminResource.resource),createProtectedResource(createAdminRouter(),"admin"));
 
-		/** /policy - used for testing only  */
-		router.attach(String.format("/%s",PolicyResource.resource),PolicyResource.class);		
-		
+
 		/**
 		 *  List of datasets 
 		 *  /dataset , /datasets
@@ -154,12 +156,29 @@ public class RESTNetApplication extends TaskApplication<String> {
 		 */
 		attachStaticResources(router);
 
+        
+        router.attach(String.format("/%s",PolicyResource.resource),PolicyResource.class);
 
 		 /**
-		  * login/logout for local users . TODO refactor to use cookies as in /opentoxuser
+		  * login/logout for local users. For demo purposes only.
+		  * Requires database as in net.idea.restnet.db.aalocal.sql.auth.sql
 		  */
+		 /** /policy - used for testing only  */
+			
+	     // Available only for publishers
+         Router protectedRouter = new Router(getContext());
+         protectedRouter.attach("/test",UserRolesResource.class);
+         RoleAuthorizer ra = new RoleAuthorizer();
+         ra.getAuthorizedRoles().add(new DBRole("qmrf_admin","qmrf_admin"));
+         ra.setNext(protectedRouter);
+ 		
+         ChallengeAuthenticator ca = new ChallengeAuthenticatorDBLocal(getContext(), false,
+        		 	"ambit2/rest/config/ambit2.pref","tomcat_users");
+         ca.setNext(ra);
+         router.attach("/protected", ca);
 	     //router.attach(SwitchUserResource.resource,createGuardGuest(SwitchUserResource.class));
 
+				
 	     router.setDefaultMatchingMode(Template.MODE_STARTS_WITH); 
 	     router.setRoutingMode(Router.MODE_BEST_MATCH); 
 	     

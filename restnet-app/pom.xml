@@ -24,6 +24,12 @@
   		<scope>compile</scope>
   	</dependency>
   	<dependency>
+  		<groupId>net.ideaconsult.restnet</groupId>
+  		<artifactId>restnet-db</artifactId>
+  		<version>${project.version}</version>
+  		<scope>compile</scope>
+  	</dependency>  	
+  	<dependency>
     	<groupId>org.restlet.jee</groupId>
     	<artifactId>org.restlet.ext.servlet</artifactId>
     	<version>${restlet.version}</version>
