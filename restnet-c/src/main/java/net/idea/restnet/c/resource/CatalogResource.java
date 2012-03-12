@@ -1,6 +1,5 @@
 package net.idea.restnet.c.resource;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
@@ -34,7 +33,7 @@ import org.restlet.resource.ResourceException;
  * @author nina
  *
  */
-public abstract class CatalogResource<T extends Serializable> extends AbstractResource<Iterator<T>,T,IProcessor<Iterator<T>, Representation>> {
+public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,IProcessor<Iterator<T>, Representation>> {
 	protected int page = 0;
 	public int getPage() {
 		return page;

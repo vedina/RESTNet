@@ -37,7 +37,7 @@ import org.restlet.resource.ServerResource;
  * @param <T>
  * @param <P>
  */
-public abstract class AbstractResource<Q,T extends Serializable,P extends IProcessor<Q, Representation>> 
+public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representation>> 
 																	extends ServerResource implements IAuthToken {
 	protected Q queryObject;
 	protected Exception error = null;	
