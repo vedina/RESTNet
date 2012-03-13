@@ -183,9 +183,6 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      */
     protected void attemptRedirect(Request request, Response response) {
         Form form = request.getResourceRef().getQueryAsForm();
-        System.out.println(form);
-        System.out.println(getRedirectQueryName());
-        System.out.println(form.getFirstValue(getRedirectQueryName()));
         String targetUri = form.getFirstValue(getRedirectQueryName());
 
         if (targetUri != null) {
@@ -460,9 +457,6 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
     protected boolean isLoggingIn(Request request, Response response) {
     	Reference ref = request.getResourceRef().clone();
     	ref.setQuery(null);
-    	System.out.println(ref.getRemainingPart());
-    	System.out.println(getLoginPath());
-    	System.out.println(request.getMethod());
         return isInterceptingLogin()
                 && getLoginPath().equals(ref.getRemainingPart())
                 && Method.POST.equals(request.getMethod());
@@ -482,7 +476,6 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
     protected boolean isLoggingOut(Request request, Response response) {
     	Reference ref = request.getResourceRef().clone();
     	ref.setQuery(null);
-    	System.out.println(ref.getRemainingPart());
         return isInterceptingLogout()
                 && getLogoutPath().equals(
                         ref.getRemainingPart())
