@@ -80,7 +80,7 @@ public class UserLoginHTMLReporter<U extends User> extends UserLoginURIReporter<
 				writer.write("</form>");
 				
 				writer.write("</tbody></table>");
-				writer.write(String.format("<hr><a href='%s/%s'>My workspace</a>",getRequest().getRootRef(),"myaccount"));
+				writer.write(myWorkspaceLinks());
 				
 		     }
 			writer.write("</tbody></table>");
@@ -90,6 +90,10 @@ public class UserLoginHTMLReporter<U extends User> extends UserLoginURIReporter<
 		}
 		
 	};
+	
+	protected String myWorkspaceLinks() {
+		return String.format("<a href='%s/%s'>My workspace</a>",getRequest().getRootRef(),"myaccount");
+	}
 	@Override
 	public void footer(Writer output, Iterator<U> query) {
 		try {
