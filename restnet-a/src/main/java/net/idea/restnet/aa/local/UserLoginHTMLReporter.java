@@ -1,5 +1,6 @@
 package net.idea.restnet.aa.local;
 
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Iterator;
 
@@ -8,6 +9,7 @@ import net.idea.restnet.c.html.HTMLBeauty;
 
 import org.restlet.Request;
 import org.restlet.data.Reference;
+import org.restlet.security.Role;
 import org.restlet.security.User;
 
 /**
@@ -48,31 +50,41 @@ public class UserLoginHTMLReporter<U extends User> extends UserLoginURIReporter<
 		
 		try {
 			String redirect = Reference.encode(String.format("%s/login",baseReference));
+			String header = "";
+			StringWriter writer = new StringWriter();
+			writer.write("<table width='80%' id='users' border='0' cellpadding='0' cellspacing='1'>");
+			writer.write("<tbody>");			
 			if (item.getIdentifier()==null) {
-				output.write("<table width='80%' id='users' border='0' cellpadding='0' cellspacing='1'>");
-				output.write("<tbody>");
+				header = "Sign In";
 	
-				output.write(String.format("<form method='post' action='%s/protected/signin?targetUri=%s'>",baseReference,redirect));
+				writer.write(String.format("<form method='post' action='%s/protected/signin?targetUri=%s'>",baseReference,redirect));
 					
-				output.write(String.format("<tr><th align='right'>%s</th><td><input type='text' size='40' name='%s' value=''></td></tr>",
+				writer.write(String.format("<tr><th align='right'>%s</th><td><input type='text' size='40' name='%s' value=''></td></tr>",
 							"User name:&nbsp;","login"));
-				output.write(String.format("<tr><th align='right'>%s</th><td><input type='password' size='40' name='%s' value=''></td></tr>",
+				writer.write(String.format("<tr><th align='right'>%s</th><td><input type='password' size='40' name='%s' value=''></td></tr>",
 						"Password:&nbsp;","password"));
-				output.write("<tr><td></td><td><input align='bottom' type=\"submit\" value=\"Log in\"></td></tr>");
-				//output.write(String.format("<tr><th align='right'></th><td><input type='hidden' size='40' name='targetURI' value='%s/login'></td></tr>",baseReference));
+				writer.write("<tr><td></td><td><input align='bottom' type=\"submit\" value=\"Log in\"></td></tr>");
+				//writer.write(String.format("<tr><th align='right'></th><td><input type='hidden' size='40' name='targetURI' value='%s/login'></td></tr>",baseReference));
 				
-				output.write("</form>");
-				output.write("</tbody></table>");
-			} else {
-				output.write(String.format("<form method='post' action='%s/protected/signout?targetUri=%s'>",baseReference,redirect));
-				output.write(String.format("<tr><th align='right'>%s</th><td>%s</td></tr>","User name:&nbsp;",item.getIdentifier()));
+				writer.write("</form>");
 
-				output.write("<tr><td></td><td><input align='bottom' type=\"submit\" value=\"Log out\"></td></tr>");
-				output.write("</form>");
+			} else {
+				header = String.format("Welcome, %s",item.getIdentifier());
+				writer.write(String.format("<form method='post' action='%s/protected/signout?targetUri=%s'>",baseReference,redirect));
+				writer.write(String.format("<tr><th align='right'>%s</th><td>%s</td></tr>","User name:&nbsp;",item.getIdentifier()));
 				
-				output.write("</tbody></table>");
-				output.write(String.format("<hr><a href='%s/bookmark/%s'>My workspace</a>",getRequest().getRootRef(),item.getIdentifier(),item.getIdentifier()));
+				for (Role role:getRequest().getClientInfo().getRoles()) {
+					writer.write(String.format("<tr><th align='right'>%s</th><td>%s</td></tr>","Role:&nbsp;",role.getDescription()));
+				}
+				writer.write("<tr><td></td><td><input align='bottom' type=\"submit\" value=\"Log out\"></td></tr>");
+				writer.write("</form>");
+				
+				writer.write("</tbody></table>");
+				writer.write(String.format("<hr><a href='%s/%s'>My workspace</a>",getRequest().getRootRef(),"myaccount"));
+				
 		     }
+			writer.write("</tbody></table>");
+			output.write(htmlBeauty.printWidget(header, writer.toString()));
 		} catch (Exception x) {
 			x.printStackTrace();
 		}

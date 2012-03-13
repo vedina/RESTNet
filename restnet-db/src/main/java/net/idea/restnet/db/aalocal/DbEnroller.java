@@ -10,6 +10,7 @@ import net.idea.restnet.db.aalocal.user.ReadUserRoles;
 import org.restlet.Context;
 import org.restlet.data.ClientInfo;
 import org.restlet.security.Enroler;
+import org.restlet.security.Role;
 
 public class DbEnroller implements Enroler {
 	protected Context context;
@@ -31,7 +32,10 @@ public class DbEnroller implements Enroler {
 
 	@Override
 	public void enrole(ClientInfo clientInfo) {
-
+		if ((clientInfo.getUser()==null) || 
+			(clientInfo.getUser().getIdentifier()==null) ||
+			("".equals(clientInfo.getUser().getIdentifier()))) return;
+				
 		Connection c = null;
 		ResultSet rs = null;
 		try {
@@ -42,7 +46,7 @@ public class DbEnroller implements Enroler {
 			rs = executor.process(query);
 			while (rs.next()) {
 				String role = query.getObject(rs);
-				if (role!=null) clientInfo.getRoles().add(new DBRole(role,role));
+				if (role!=null) clientInfo.getRoles().add(createRole(role));
 			}
 		} catch (Exception x) {
 			x.printStackTrace();
@@ -51,6 +55,10 @@ public class DbEnroller implements Enroler {
 			try {c.close();} catch (Exception x) {};
 		}
 
+	}
+	
+	protected Role createRole(String name) {
+		return new DBRole(name,String.format("%s%s", name.substring(0,1).toUpperCase(),name.substring(1).replace("_", " ")));	 
 	}
 	/**
 	 * Override to set  the proper config
