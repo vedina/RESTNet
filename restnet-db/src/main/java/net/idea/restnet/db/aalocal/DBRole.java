@@ -11,7 +11,7 @@ import org.restlet.security.Role;
  * @author nina
  *
  */
-public class DBRole<ALIAS> extends Role implements Serializable{
+public class DBRole extends Role implements Serializable{
 	
     /**
 	 * 
@@ -21,10 +21,7 @@ public class DBRole<ALIAS> extends Role implements Serializable{
 	public DBRole(String name, String description) {
     	super(name,description);
     }
-    
-	public ALIAS getAlias() {
-		return null;
-	}
+
     @Override
     public boolean equals(Object target) {
         boolean result = false;
@@ -64,5 +61,5 @@ public class DBRole<ALIAS> extends Role implements Serializable{
         }
         return result;
     }    
-	
+
 }
