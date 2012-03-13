@@ -167,7 +167,7 @@ Then, when the "get(Variant)" method calls you back,
 		        		if (convertor instanceof RepresentationConvertor)
 		        			((RepresentationConvertor)convertor).setLicenseURI(getLicenseURI());
 		        		
-		        		connection = dbc.getConnection(getRequest());
+		        		connection = dbc.getConnection();
 		        		Reporter reporter = ((RepresentationConvertor)convertor).getReporter();
 			        	if (reporter instanceof IDBProcessor)
 			        		((IDBProcessor)reporter).setConnection(connection);
@@ -445,7 +445,7 @@ Then, when the "get(Variant)" method calls you back,
 					r =  taskCreator.process(null);
 				} else {
 					DBConnection dbc = new DBConnection(getApplication().getContext(),getConfigFile());
-					conn = dbc.getConnection(getRequest());	
+					conn = dbc.getConnection();	
 					
 					
 					try {
