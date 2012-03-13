@@ -40,7 +40,7 @@ public class CatalogHTMLReporter<T> extends CatalogURIReporter<T> {
 		try {
 			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
 			
-			htmlBeauty.writeHTMLHeader(output, "AMBIT", getRequest(),
+			htmlBeauty.writeHTMLHeader(output, htmlBeauty.getTitle(), getRequest(),
 					getDocumentation());//,"<meta http-equiv=\"refresh\" content=\"10\">");
 		} catch (Exception x) {
 			
