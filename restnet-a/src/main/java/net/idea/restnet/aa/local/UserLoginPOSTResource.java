@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.processors.IProcessor;
+import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.aa.cookie.CookieAuthenticator;
 import net.idea.restnet.aa.opensso.users.SingleItemIterator;
 import net.idea.restnet.c.StringConvertor;
@@ -56,8 +57,7 @@ public class UserLoginPOSTResource<U extends User> extends CatalogResource<U> {
 			Variant variant) throws AmbitException, ResourceException {
 
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
-			return new StringConvertor(
-					new UserLoginHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty()),MediaType.TEXT_HTML);
+			return new StringConvertor(createHTMLReporter(),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor(	new UserLoginURIReporter(getRequest(),getDocumentation()) {
 				@Override
@@ -70,11 +70,14 @@ public class UserLoginPOSTResource<U extends User> extends CatalogResource<U> {
 			},MediaType.TEXT_URI_LIST);
 			
 		} else //html 	
-			return new StringConvertor(
-					new UserLoginHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty()),MediaType.TEXT_HTML);
+			return new StringConvertor(createHTMLReporter(),MediaType.TEXT_HTML);
 		
 	}
 
+	@Override
+	protected Reporter createHTMLReporter() {
+		return new UserLoginHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty());
+	}
 	@Override
 	protected Iterator<U> createQuery(Context context,
 			Request request, Response response) throws ResourceException {
