@@ -26,6 +26,7 @@ import org.restlet.routing.Filter;
 import org.restlet.routing.Route;
 import org.restlet.routing.Router;
 import org.restlet.util.RouteList;
+import org.xml.sax.EntityResolver;
 
 public class TaskApplication<USERID> extends Application {
 	/**
@@ -33,6 +34,7 @@ public class TaskApplication<USERID> extends Application {
 	 */
 	private Properties properties = null;
 	protected String configFile = "www.properties";
+	protected EntityResolver resolver;
 
 	protected ITaskStorage<USERID> taskStorage;
 	public TaskApplication() {
@@ -214,5 +216,14 @@ public class TaskApplication<USERID> extends Application {
 		 		return b.toString();
 
 		 	}
+	   
+	   /**
+	    * XML DTD schema 
+	    * @return
+	    */
+		public EntityResolver getResolver() {
+			return resolver;
+		}
+
 	   
 }
