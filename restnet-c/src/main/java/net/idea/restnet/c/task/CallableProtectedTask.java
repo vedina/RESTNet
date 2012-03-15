@@ -10,7 +10,16 @@ public abstract class CallableProtectedTask<USERID> implements ICallableTask, IA
 
 	protected UUID uuid;
 	private USERID token;
+	protected String title;
 	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public CallableProtectedTask(USERID token) {
 		this.token = token;
 	}
@@ -49,4 +58,9 @@ public abstract class CallableProtectedTask<USERID> implements ICallableTask, IA
 		return null;
 	}
 
+	
+	@Override
+	public String toString() {
+		return title==null?toString():title;
+	}
 }
