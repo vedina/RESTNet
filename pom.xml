@@ -140,6 +140,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
   	<module>restnet-a</module>
   	<module>restnet-app</module>
   	<module>restnet-db</module>
+  	<module>restnet-cli</module>
     </modules>
    <distributionManagement>
 
