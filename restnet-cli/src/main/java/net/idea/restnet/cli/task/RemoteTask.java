@@ -48,7 +48,7 @@ public class RemoteTask implements Serializable {
 		}
 		return httpclient;
 	}
-	protected void setError(Exception error) {
+	public void setError(Exception error) {
 		this.error = error;
 	}
 	public Exception getError() {
