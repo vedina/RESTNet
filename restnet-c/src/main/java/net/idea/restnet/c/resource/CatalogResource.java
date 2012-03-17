@@ -35,6 +35,8 @@ import org.restlet.resource.ResourceException;
  */
 public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,IProcessor<Iterator<T>, Representation>> {
 	protected int page = 0;
+	protected boolean headless = false;
+	
 	public int getPage() {
 		return page;
 	}
@@ -68,16 +70,26 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				MediaType.TEXT_HTML,
 				MediaType.APPLICATION_WADL
 				});
-		
+		headless = getHeadlessParam();
 	}
 
+
+
+	protected boolean getHeadlessParam() {
+		Form form = getRequest().getResourceRef().getQueryAsForm();
+		try {
+			return Boolean.parseBoolean(form.getFirstValue("headless").toString());
+		} catch (Exception x) {
+			return false;
+		}	
+	}
 
 	@Override
 	public IProcessor<Iterator<T>, Representation> createConvertor(
 			Variant variant) throws AmbitException, ResourceException {
 		String filenamePrefix = getRequest().getResourceRef().getPath();
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
-			return new StringConvertor(	createHTMLReporter(),MediaType.TEXT_HTML);
+			return new StringConvertor(	createHTMLReporter(headless),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST);
 		} else if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_XML) ||
@@ -99,8 +111,8 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 		new CatalogURIReporter<T>(getRequest(),getDocumentation());
 	}
 	
-	protected Reporter createHTMLReporter() {
-		return new CatalogHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty());
+	protected Reporter createHTMLReporter(boolean headles) {
+		return new CatalogHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty(),headless);
 	}
 	
 	

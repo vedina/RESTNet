@@ -57,7 +57,7 @@ public class UserLoginPOSTResource<U extends User> extends CatalogResource<U> {
 			Variant variant) throws AmbitException, ResourceException {
 
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
-			return new StringConvertor(createHTMLReporter(),MediaType.TEXT_HTML);
+			return new StringConvertor(createHTMLReporter(false),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor(	new UserLoginURIReporter(getRequest(),getDocumentation()) {
 				@Override
@@ -70,12 +70,12 @@ public class UserLoginPOSTResource<U extends User> extends CatalogResource<U> {
 			},MediaType.TEXT_URI_LIST);
 			
 		} else //html 	
-			return new StringConvertor(createHTMLReporter(),MediaType.TEXT_HTML);
+			return new StringConvertor(createHTMLReporter(false),MediaType.TEXT_HTML);
 		
 	}
 
 	@Override
-	protected Reporter createHTMLReporter() {
+	protected Reporter createHTMLReporter(boolean headles) {
 		return new UserLoginHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty());
 	}
 	@Override

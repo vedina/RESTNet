@@ -122,12 +122,12 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
 			return new StringConvertor(
-					createHTMLReporter(),MediaType.TEXT_HTML);
+					createHTMLReporter(false),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor(	new PolicyURIReporter(getRequest(),getDocumentation()),MediaType.TEXT_URI_LIST);
 			
 		} else //html 	
-			return new StringConvertor(createHTMLReporter(),MediaType.TEXT_HTML);
+			return new StringConvertor(createHTMLReporter(false),MediaType.TEXT_HTML);
 		
 	}
 	/**
@@ -141,7 +141,7 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 		return new CallablePolicyCreator<String>(form, getToken(),getRequest().getRootRef());
 	}
 	
-	protected Reporter createHTMLReporter() {
+	protected Reporter createHTMLReporter(boolean headles) {
 		return new PolicyHTMLReporter(getRequest(),true,getDocumentation(),getHTMLBeauty());
 	}
 	

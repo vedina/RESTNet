@@ -21,22 +21,31 @@ public class CatalogHTMLReporter<T> extends CatalogURIReporter<T> {
 	 */
 	private static final long serialVersionUID = 7644836050657868159L;
 	protected HTMLBeauty htmlBeauty;
+	protected boolean headless = false;
 	
+	public boolean isHeadless() {
+		return headless;
+	}
+	public void setHeadless(boolean headless) {
+		this.headless = headless;
+	}
 	public HTMLBeauty getHtmlBeauty() {
 		return htmlBeauty;
 	}
 	public void setHtmlBeauty(HTMLBeauty htmlBeauty) {
 		this.htmlBeauty = htmlBeauty;
 	}
-	public CatalogHTMLReporter(Request request,ResourceDoc doc) {
-		this(request,doc,null);
+	public CatalogHTMLReporter(Request request,ResourceDoc doc, boolean headless) {
+		this(request,doc,null, false);
 	}
-	public CatalogHTMLReporter(Request request,ResourceDoc doc,HTMLBeauty htmlbeauty) {
+	public CatalogHTMLReporter(Request request,ResourceDoc doc,HTMLBeauty htmlbeauty, boolean headless) {
 		super(request,doc);
 		this.htmlBeauty = htmlbeauty;
+		this.headless = headless;
 	}
 	@Override
 	public void header(Writer output, Iterator<T> query) {
+		if (headless) return;
 		try {
 			if (htmlBeauty==null) htmlBeauty = new HTMLBeauty();
 			
@@ -56,6 +65,7 @@ public class CatalogHTMLReporter<T> extends CatalogURIReporter<T> {
 	};
 	@Override
 	public void footer(Writer output, Iterator<T> query) {
+		if (headless) return;
 		try {
 			if (htmlBeauty == null) htmlBeauty = new HTMLBeauty();
 			htmlBeauty.writeHTMLFooter(output, "", getRequest());
