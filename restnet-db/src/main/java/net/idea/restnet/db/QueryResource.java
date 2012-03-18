@@ -451,11 +451,13 @@ Then, when the "get(Variant)" method calls you back,
 					try {
 						taskCreator.setConnection(conn);
 						r =  taskCreator.process(query);
+					} catch (ResourceException x) {
+						throw x;
+					} catch (Exception x) {
+						throw x;
 					} finally {
 						try {
 				    		taskCreator.setConnection(null);
-				    	
-				    		
 				    		taskCreator.close();
 						} catch (Exception x) {}
 			    		try { conn.close(); conn=null;} catch  (Exception x) {}
@@ -496,7 +498,15 @@ Then, when the "get(Variant)" method calls you back,
 		
 	}
 	
-	
+	/**
+	 * TODO allow to set taskCreator.getProcessors().setAbortOnError(true);
+	 * @param entity
+	 * @param variant
+	 * @param method
+	 * @param async
+	 * @return
+	 * @throws Exception
+	 */
 	protected TaskCreator getTaskCreator(Representation entity, Variant variant, Method method, boolean async) throws Exception {
 
 		if (entity==null) {

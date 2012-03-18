@@ -36,7 +36,7 @@ public abstract  class AbstractObjectConvertor<T,Q extends IQueryRetrieval<T>,Ou
 	protected abstract Output createOutput(Q query) throws AmbitException;
 	
 	@Override
-	public Representation process(Q query) throws AmbitException {
+	public Representation process(Q query) throws Exception {
 		reporter.setOutput(createOutput(query));
 		Representation r =  process(reporter.process(query));
 		try { reporter.close(); } catch (Exception x) {}

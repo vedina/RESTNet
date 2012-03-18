@@ -41,10 +41,10 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 	}
 	@Override
 	public void setOutput(List<UUID> output)
-			throws AmbitException {
+			throws Exception {
 	}
 	@Override
-	public List<UUID> getOutput() throws AmbitException {
+	public List<UUID> getOutput() throws Exception {
 		return tasks;
 	}
 	public boolean isAsync() {
@@ -62,7 +62,7 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 
 	
 	@Override
-	public Object processItem(T item) throws AmbitException {
+	public Object processItem(T item) throws Exception {
 		try {
 			ICallableTask callable = getCallable(input,item);
 			if (async)	{
@@ -72,10 +72,9 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 			else {
 				TaskResult ref = callable.call();
 			}
-		} catch (AmbitException x) {
-			throw x;
+
 		} catch (Exception x) {
-			throw new AmbitException(x);
+			throw x;
 
 		}
 		return item;
@@ -102,7 +101,7 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 	}
 	
 	@Override
-	public List<UUID> process(IQueryRetrieval<T> query) throws AmbitException {
+	public List<UUID> process(IQueryRetrieval<T> query) throws Exception {
 		if (query==null) {
 			processItem(null);
 			return tasks;

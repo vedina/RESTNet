@@ -1,7 +1,6 @@
 package net.idea.restnet.db.convertors;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.db.QueryURIReporter;
@@ -43,7 +42,7 @@ public abstract class QueryRDFReporter<T,Q extends IQueryRetrieval<T>> extends Q
 	}
 	
 	@Override
-	public void setOutput(Model output) throws AmbitException {
+	public void setOutput(Model output) throws Exception {
 		super.setOutput(output);
 		if (output!=null)
 		try {

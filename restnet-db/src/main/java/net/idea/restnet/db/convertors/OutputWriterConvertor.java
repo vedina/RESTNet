@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.r.QueryAbstractReporter;
 
@@ -29,7 +28,7 @@ public class OutputWriterConvertor<T,Q extends IQueryRetrieval<T>>  extends Quer
 		super(reporter,mediaType,fileNamePrefix);
 	}
 	
-	public Representation process(final Q query) throws AmbitException {
+	public Representation process(final Q query) throws Exception {
 		 OutputRepresentation rep = new OutputRepresentation(mediaType) {
 	            @Override
 	            public void write(OutputStream stream) throws IOException {

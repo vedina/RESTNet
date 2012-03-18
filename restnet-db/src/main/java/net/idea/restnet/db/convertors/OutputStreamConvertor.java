@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.r.QueryReporter;
 
 import org.restlet.Context;
@@ -29,7 +28,7 @@ public class OutputStreamConvertor <T,Q extends IQueryRetrieval<T>>  extends Que
 		super(reporter,mediaType,fileNamePrefix);
 	}	
 
-	public Representation process(final Q query) throws AmbitException {
+	public Representation process(final Q query) throws Exception {
 		OutputRepresentation rep = new OutputRepresentation(mediaType) {
 	            @Override
 	            public void write(OutputStream stream) throws IOException {

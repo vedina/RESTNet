@@ -3,7 +3,6 @@ package net.idea.restnet.db.facet;
 import java.io.Writer;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.i.facet.IFacet;
 import net.idea.modbcum.r.QueryReporter;
@@ -38,7 +37,7 @@ public class FacetCSVReporter<Q extends IQueryRetrieval<IFacet>> extends QueryRe
 	}
 
 	@Override
-	public Object processItem(IFacet item) throws AmbitException {
+	public Object processItem(IFacet item) throws Exception {
 		try {
 			String subcategory = null;
 			if ((uriReporter!=null) && (uriReporter.getBaseReference()!=null))

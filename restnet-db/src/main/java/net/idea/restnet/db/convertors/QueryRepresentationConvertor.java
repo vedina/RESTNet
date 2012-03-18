@@ -1,7 +1,6 @@
 package net.idea.restnet.db.convertors;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.r.QueryAbstractReporter;
 import net.idea.restnet.c.RepresentationConvertor;
@@ -39,7 +38,7 @@ public abstract class QueryRepresentationConvertor<T,Q extends IQueryRetrieval<T
 	
 
 	@Override
-	public abstract Representation process(Q query) throws AmbitException;
+	public abstract Representation process(Q query) throws Exception;
 	
 	
 	@Override

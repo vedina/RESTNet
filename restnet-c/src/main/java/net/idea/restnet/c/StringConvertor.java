@@ -36,7 +36,7 @@ public class StringConvertor<T,Q, R extends Reporter<Q,Writer> >  extends Repres
 		super(reporter,mediaType,fileNamePrefix);
 	}
 	@Override
-	public Representation process(Q query) throws AmbitException {
+	public Representation process(Q query) throws Exception {
 		try {
 			reporter.setOutput(new StringWriter());
 			Writer writer = reporter.process(query);

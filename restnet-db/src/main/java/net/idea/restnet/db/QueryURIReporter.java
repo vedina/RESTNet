@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.c.ResourceDoc;
@@ -61,7 +60,7 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 	protected QueryURIReporter() {
 	}	
 	@Override
-	public Object processItem(T item) throws AmbitException {
+	public Object processItem(T item) throws Exception {
 		try {
 			String o = getURI(item);
 			if (o != null) 	{
