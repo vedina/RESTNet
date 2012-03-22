@@ -14,6 +14,8 @@ import net.idea.restnet.aa.resource.AdminRouter;
 import net.idea.restnet.aa.resource.PolicyResource;
 import net.idea.restnet.c.ChemicalMediaType;
 import net.idea.restnet.c.TaskApplication;
+import net.idea.restnet.c.filter.RESTnetTunnelFilter;
+import net.idea.restnet.c.resource.RESTNetStatusService;
 import net.idea.restnet.c.resource.TaskResource;
 import net.idea.restnet.c.routers.MyRouter;
 import net.idea.restnet.c.routers.TaskRouter;
@@ -77,7 +79,7 @@ public class RESTNetApplication extends TaskApplication<String> {
 		setTunnelService(new TunnelService(true,true) {
 			@Override
 			public Filter createInboundFilter(Context context) {
-				return new RESTNetTunnelFilter(context);
+				return new RESTnetTunnelFilter(context);
 			}
 		});
 		getTunnelService().setUserAgentTunnel(true);
