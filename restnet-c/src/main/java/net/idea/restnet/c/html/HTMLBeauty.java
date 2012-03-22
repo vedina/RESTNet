@@ -16,7 +16,7 @@ import org.restlet.data.Reference;
 
 public class HTMLBeauty {
 	protected String searchURI = null;
-	protected String searchTitle = "QMRF documents search";
+	protected String searchTitle = "Search";
 	protected String supportEmail = "support@email.com";
 	protected String supportName = "Support";
 	protected String developedBy = "";
