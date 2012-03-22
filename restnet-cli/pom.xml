@@ -7,6 +7,7 @@
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-cli</artifactId>
+  <name>REST client</name>
   <version>0.0.6-SNAPSHOT</version>
   <dependencies>
   	<dependency>
