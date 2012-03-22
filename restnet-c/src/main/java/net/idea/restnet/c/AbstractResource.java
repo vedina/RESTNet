@@ -174,8 +174,14 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 		} catch (Exception x) {
 			getResponse().setStatus(Status.SERVER_ERROR_INTERNAL,x);
 			return null;
+		} finally {
+			close();
 		}
 	}		
+	
+	public void close() {
+		
+	}
 	
 	protected Representation processNotFound(NotFoundException x,Variant variant) throws Exception {
 
