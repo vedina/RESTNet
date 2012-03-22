@@ -30,7 +30,7 @@ public class HTMLBeauty {
 	public String jsGoogleAnalytics() {
 		if (jsGoogleAnalytics==null) try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					getClass().getClassLoader().getResourceAsStream("ambit2/rest/config/googleanalytics.js"))
+					getClass().getClassLoader().getResourceAsStream("net/idea/restnet/config/googleanalytics.js"))
 			);
 			StringBuilder b = new StringBuilder();
             String line;
