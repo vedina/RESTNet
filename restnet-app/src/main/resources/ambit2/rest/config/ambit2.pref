@@ -36,3 +36,7 @@ MAXRECORDS=0
 atomtypes.stop=false
 OBABEL_HOME=${OBABEL_HOME}
 DRAGON_HOME=${DRAGON_HOME}
+#tdb or sdb 
+persistence=${jena.persistence}
+#where to store TDB files. Default is temp directory
+tdb=${tdb.folder}

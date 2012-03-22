@@ -137,7 +137,8 @@ public class RESTNetApplication extends TaskApplication<String> {
 		 */
 		router.attach("/"+OpenSSOUserResource.resource,createOpenSSOLoginRouter() );
 		
-		router.attach(TDBEndpointRouter.resource,TDBEndpointRouter.class);
+		Router tdbRouter = new TDBEndpointRouter(getContext());
+		router.attach(TDBEndpointRouter.resource,tdbRouter);
 		/**  /bookmark  */
 		//router.attach(BookmarkResource.resource,createBookmarksRouter());				
 	

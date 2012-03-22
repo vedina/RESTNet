@@ -25,8 +25,8 @@ public class FavIconResource extends ServerResource {
 			public void write(OutputStream outputStream)
 					throws IOException {
 				try {
-					DownloadTool.download(getClass().getClassLoader().getResourceAsStream("/images/16x16.png"), outputStream);
-				outputStream.close();				
+					DownloadTool.download(getClass().getClassLoader().getResourceAsStream("16x16.png"), outputStream);
+					outputStream.close();				
 				} catch (Exception x) {
 					
 				}
