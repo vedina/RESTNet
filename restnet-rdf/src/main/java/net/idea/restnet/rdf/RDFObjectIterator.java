@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
-import org.opentox.rdf.OT;
+import net.idea.restnet.rdf.ns.OT;
+
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
@@ -23,6 +24,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
+
 
 /**
  * Iterates over objects of a specified OT.class

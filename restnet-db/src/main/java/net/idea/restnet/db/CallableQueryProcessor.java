@@ -9,12 +9,9 @@ import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.processors.ProcessorsChain;
 import net.idea.modbcum.p.batch.AbstractBatchProcessor;
 import net.idea.restnet.c.task.CallableProtectedTask;
+import net.idea.restnet.c.task.ClientResourceWrapper;
 import net.idea.restnet.i.task.TaskResult;
 
-import org.opentox.dsl.OTDataset;
-import org.opentox.dsl.OTFeature;
-import org.opentox.dsl.task.ClientResourceWrapper;
-import org.opentox.rdf.OpenTox;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -45,23 +42,23 @@ public abstract class CallableQueryProcessor<Target,Result,USERID> extends Calla
 		this.context = context;
 	}
 	protected void processForm(Reference applicationRootReference,Form form) {
-		Object dataset = OpenTox.params.dataset_uri.getFirstValue(form);
-		String[] xvars = OpenTox.params.feature_uris.getValuesArray(form);
-		if (xvars != null) try {
+		Object dataset = form.getFirstValue("dataset_uri");
+		String[] xvars = form.getValuesArray("feature_uris[]");
+		Reference datasetURI = dataset==null?null:new Reference(dataset.toString()); 
+		if ((dataset!=null) && (xvars != null)) try {
 			
-			OTDataset ds = OTDataset.dataset(dataset.toString());
+			
 			for (String xvar :xvars) {
 				String[] xx = xvar.split("\n");
 				for (String x : xx )
 					if (!x.trim().equals("")) 
-						ds = ds.addColumns(OTFeature.feature(x));
+						datasetURI.addQueryParameter("feature_uris[]", x);
 			}
-			dataset =  ds.getUri().toString();
 
 		} catch (Exception x) {
 			
 		}
-		this.sourceReference = dataset==null?null:new Reference(dataset.toString().trim());
+		this.sourceReference = dataset==null?null:datasetURI;
 	}
 	@Override
 	public TaskResult doCall() throws Exception {

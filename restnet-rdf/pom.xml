@@ -9,6 +9,17 @@
   <artifactId>restnet-rdf</artifactId>
   <version>0.0.6-SNAPSHOT</version>
   <name>RDF related classes</name>
+<!--
+  <repositories>
+	  <repository>
+	  <id>apache-repo-releases</id>
+	  <url>https://repository.apache.org/content/repositories/releases/</url>
+	  <releases>
+	   <enabled>true</enabled>
+	  </releases>
+	</repository>
+  </repositories>
+-->
   <dependencies>
       <dependency>
     	<groupId>com.hp.hpl.jena</groupId>
@@ -37,6 +48,7 @@
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
+    <!-- 
     <dependency>
     	<groupId>net.ideaconsult</groupId>
     	<artifactId>opentox-dsl</artifactId>
@@ -44,5 +56,6 @@
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
+     -->
   </dependencies>
 </project>
