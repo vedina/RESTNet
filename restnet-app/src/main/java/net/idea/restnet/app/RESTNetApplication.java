@@ -26,6 +26,7 @@ import net.idea.restnet.db.aalocal.UserRolesResource;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.TaskResult;
+import net.idea.restnet.sparql.TDBEndpointRouter;
 
 import org.restlet.Component;
 import org.restlet.Context;
@@ -50,14 +51,12 @@ import org.restlet.service.TunnelService;
 import org.restlet.util.RouteList;
 
 /**
- * AMBIT implementation of OpenTox REST services as described in http://opentox.org/development/wiki/
- * http://opentox.org/wiki/1/Dataset
+ * Demonstration of how to use RESTNet to create a web application & web services fusion. 
  * @author nina
  */
 
  /* 
- * http://www.slideshare.net/guest7d0e11/creating-a-web-of-data-with-restlet-presentation
- * http://stackoverflow.com/questions/810171/how-to-read-context-parameters-from-a-restlet
+
  *
  */
 public class RESTNetApplication extends TaskApplication<String> {
@@ -131,18 +130,6 @@ public class RESTNetApplication extends TaskApplication<String> {
  */
 		/**  /task  */
 		router.attach(TaskResource.resource, new TaskRouter(getContext()));
-		
-		/**
-		 * Queries
-		 *  /query
-		 *  
-		 */
-		//Router queryRouter = createQueryRouter();
-		//router.attach(QueryResource.query_resource,queryRouter);
-		
-		/**
-		 *  API extensions from this point on
-		 */
 
 		/**
 		 * OpenSSO login / logout
@@ -150,6 +137,7 @@ public class RESTNetApplication extends TaskApplication<String> {
 		 */
 		router.attach("/"+OpenSSOUserResource.resource,createOpenSSOLoginRouter() );
 		
+		router.attach(TDBEndpointRouter.resource,TDBEndpointRouter.class);
 		/**  /bookmark  */
 		//router.attach(BookmarkResource.resource,createBookmarksRouter());				
 	

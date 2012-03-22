@@ -102,7 +102,7 @@ a.email {
 	background-position: right;
 	background-repeat: no-repeat;
 	background-color: #ffffff;
-	color: #109DFF;
+	color: #ece8da;
 	margin: 0;
 	padding: 0px 0px 5px;
 	height: 60px;
@@ -151,27 +151,27 @@ ul#navmenu {
 }
 
 #navmenu li a:link, #navmenu li a:visited {
-	color: #107FEB;
+	color: #FFFFFF;
 	font-size: 0.9em;
 	font-weight: 500;
-	background-color: #d9ecf9;
+	background-color: #516473;
 }
 
 #navmenu li a:active {
 	color: white;
-	background-color: #109DFF;
+	background-color: #bcf903;
 }
 
 #navmenu li a.selected {
 	color: white;
-	background-color: #109DFF;
+	background-color: #bcf903;
 	display: block;
 	font-weight: 900;
 }
 
 #navmenu li a.hovered {
 	color: #107FEB;
-	background-color: #FFF47A;
+	background-color: #bcf903;
 	display: block;
 }
 
@@ -188,7 +188,7 @@ a.tbldivxpander {
 
 A:link {
 	FONT-SIZE: 10pt;
-	COLOR: #109DFF;
+	COLOR: #627a3f;
 	FONT-WEIGHT: bolder;
 	font-weight: bold;
 	font-family: Frutiger, "Frutiger Linotype", Univers, "Droid Sans", Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
@@ -197,7 +197,7 @@ A:link {
 
 A:visited {
 	FONT-SIZE: 10pt;
-	COLOR: #109DFF;
+	COLOR: #627a3f;
 	FONT-WEIGHT: bolder;
 	font-weight: bold;
 	font-family: Frutiger, "Frutiger Linotype", Univers, "Droid Sans", Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
@@ -206,7 +206,7 @@ A:visited {
 
 A:active {
 	FONT-SIZE: 10pt;
-	COLOR: #109DFF;
+	COLOR: #627a3f;
 	FONT-WEIGHT: bolder;
 	font-weight: bold;
 	font-family: Frutiger, "Frutiger Linotype", Univers, "Droid Sans", Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
@@ -260,7 +260,7 @@ ul#hnavlist li {
 ul#hnavlist li a {
 	float: left;
 	color: #107FEB;
-	background-color: #d9ecf9;
+	background-color: #bcf903;
 	padding: 0.4em 0.5em 0;
 	height: 19px;
 	width: 2.5em;
@@ -272,7 +272,7 @@ ul#hnavlist li a {
 ul#hnavlist li a.current {
 	float: left;
 	color: white;
-	background-color: #109DFF;
+	background-color: #516473;
 	padding: 0.4em 0.5em 0;
 	height: 19px;
 	width: 2.5em;
@@ -282,14 +282,15 @@ ul#hnavlist li a.current {
 }
 
 ul#hnavlist li a.phovered {
-	color: #107FEB;
-	background-color: #FFF47A;
+	color: #ffffff;
+	background-color: #86ad2d;
 	display: block;
 }
 
+
 ul#hnavlist li.inactive {
 	float: left;
-	background-color: #f0f0f0;
+	background-color: #fafaf4;
 	color: gray;
 	padding: 0.4em 0.5em 0;
 	height: 19px;

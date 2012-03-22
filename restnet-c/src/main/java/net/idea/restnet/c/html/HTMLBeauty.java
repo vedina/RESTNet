@@ -15,16 +15,114 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 
 public class HTMLBeauty {
+	protected String searchURI = null;
+	protected String searchTitle = "QMRF documents search";
+	protected String supportEmail = "support@email.com";
+	protected String supportName = "Support";
+	protected String developedBy = "";
+	protected String logoLeft = "logoLeft.png";
+	protected String logoHeader = null;
+	protected String logoRight =  "logoRight.png";
+
+	private boolean isMsie7;
+
+	//parameters - TODO - refactor as a separate class
+	protected String searchQuery;
+	protected int page;
+	public int getPage() {
+		return page;
+	}
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	protected long pageSize;
+	
+	public long getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(long pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	
+	public HTMLBeauty() {
+		this(null);
+
+	};
+	public HTMLBeauty(String searchURI) {
+		super();
+		setSearchURI(searchURI==null?"/":searchURI);
+	};
+	
+	public String getSearchURI() {
+		return searchURI;
+	}
+	public void setSearchURI(String searchURI) {
+		this.searchURI = searchURI;
+	}
+	public String getSearchTitle() {
+		return searchTitle;
+	}
+	public void setSearchTitle(String searchTitle) {
+		this.searchTitle = searchTitle;
+	}
+	public String getSupportEmail() {
+		return supportEmail;
+	}
+	public void setSupportEmail(String supportEmail) {
+		this.supportEmail = supportEmail;
+	}
+	public String getSupportName() {
+		return supportName;
+	}
+	public void setSupportName(String supportName) {
+		this.supportName = supportName;
+	}
+	public String getDevelopedBy() {
+		return developedBy;
+	}
+	public void setDevelopedBy(String developedBy) {
+		this.developedBy = developedBy;
+	}
+	public String getLogoLeft() {
+		return logoLeft;
+	}
+	public void setLogoLeft(String logoLeft) {
+		this.logoLeft = logoLeft;
+	}
+	public String getLogoHeader() {
+		return logoHeader;
+	}
+	public void setLogoHeader(String logoHeader) {
+		this.logoHeader = logoHeader;
+	}
+	public String getLogoRight() {
+		return logoRight;
+	}
+	public void setLogoRight(String logoRight) {
+		this.logoRight = logoRight;
+	}
+	
+	
+	public boolean isMsie7() {
+		return isMsie7;
+	}
+	protected void setMsie7(boolean isMsie7) {
+		this.isMsie7 = isMsie7;
+	}
+
 	protected static String jsGoogleAnalytics = null;
 	
 	public void writeHTMLHeader(Writer w,String title,Request request,ResourceDoc doc) throws IOException {
 		writeHTMLHeader(w, title, request,"",doc);
 	}
+
 	public void writeHTMLHeader(Writer w,String title,Request request,String meta,ResourceDoc doc) throws IOException {
 
 		writeTopHeader(w, title, request, meta,doc);
-		writeSearchForm(w, title, request, meta);
-		
+		writeSearchForm(w, title, request, meta,null);
+		w.write("<div id='content'>\n");
 	}
 
 	public String jsGoogleAnalytics() {
@@ -47,9 +145,17 @@ public class HTMLBeauty {
 	
 	public void writeTopHeader(Writer w,String title,Request request,String meta,ResourceDoc doc) throws IOException {
 		Reference baseReference = request==null?null:request.getRootRef();
+		
+		// Determine if the request is made by Microsoft Internet Explorer 7, as many elements on the page break on it.
+		if (request!=null) {
+			isMsie7 = request.getClientInfo().getAgent().toLowerCase().indexOf("msie 7.")>=0?true:false;
+		} else {
+			isMsie7 = false;
+		}
+		
 		w.write(
 				"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n"
-			);
+				);
 		
 		w.write(String.format("<html %s %s %s>",
 				"xmlns=\"http://www.w3.org/1999/xhtml\"",
@@ -60,12 +166,15 @@ public class HTMLBeauty {
 		w.write(String.format("<head> <meta property=\"dc:creator\" content=\"%s\"/> <meta property=\"dc:title\" content=\"%s\"/>",
 				request.getResourceRef(),
 				title
-				)
-				);
+				));
 		
 		Reference ref = request.getResourceRef().clone();
 		ref.addQueryParameter("media", Reference.encode("application/rdf+xml"));
-		w.write(String.format("<link rel=\"meta\" type=\"application/rdf+xml\" title=\"%s\" href=\"%s\"/>",
+		w.write(String.format("<link rel=\"meta\" type=\"application/rdf+xml\" title=\"%s\" href=\"%s\"/>\n",
+				title,
+				ref
+				)); 
+		w.write(String.format("<link rel=\"meta\" type=\"text/n3\" title=\"%s\" href=\"%s\"/>\n",
 				title,
 				ref
 				)); 
@@ -73,91 +182,154 @@ public class HTMLBeauty {
 		w.write(String.format("<link rel=\"primarytopic\" type=\"application/rdf+xml\" href=\"%s\"/>",
 				ref
 				)); 		
-		//<link rel="primarytopic" href="http://opentox.org/api/1_1/opentox.owl#Compound"/>
+		w.write(String.format("<link rel=\"primarytopic\" type=\"text/n3\" href=\"%s\"/>",
+				ref
+				)); 			
+		w.write(String.format("<title>%s</title>\n",title));
 		
-		w.write(String.format("<title>%s</title>",title));
+		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery-1.7.1.min.js\"></script>\n",baseReference));
+		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery-ui-1.8.18.custom.min.js\"></script>\n",baseReference));
+		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery.MultiFile.pack.js\"></script>\n",baseReference));
 		
-		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery-1.4.2.min.js\"></script>\n",baseReference));
-		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery.tablesorter.min.js\"></script>\n",baseReference));
+		// Google +1 button rendering code (the button is placed elsewhere)
+		w.write("<script type='text/javascript'>" +
+				"(function() {" +
+				"var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;" +
+				"po.src = 'https://apis.google.com/js/plusone.js';" +
+				"var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);" +
+				"})();" +
+				"</script>"
+		);
+
+		// Facebook JavaScript SDK
+		w.write("<div id=\"fb-root\"></div>\n" +
+				"<script>(function(d, s, id) {\n" +
+				"var js, fjs = d.getElementsByTagName(s)[0];\n" +
+				"if (d.getElementById(id)) return;\n" +
+				"js = d.createElement(s); js.id = id;\n" +
+				"js.src = \"//connect.facebook.net/en_GB/all.js#xfbml=1\";\n" +
+				"fjs.parentNode.insertBefore(js, fjs);\n" +
+				"}(document, 'script', 'facebook-jssdk'));</script>\n"
+		);
+		
+		// Twitter JS
+		w.write("<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id))" +
+				"{js=d.createElement(s);js.id=id;js.src=\"//platform.twitter.com/widgets.js\";" +
+				"fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>\n"
+		);
+
+		// LinkedIn
+		w.write("<script src='http://platform.linkedin.com/in.js' type='text/javascript'></script>\n");
+		
+		//w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery.tablesorter.min.js\"></script>\n",baseReference));
 		w.write(meta);
 				
-		w.write(String.format("<link href=\"%s/style/ambit.css\" rel=\"stylesheet\" type=\"text/css\">",baseReference));
-		w.write("<meta name=\"robots\" content=\"index,nofollow\"><META NAME=\"GOOGLEBOT\" CONTENT=\"index,noFOLLOW\">");
-		w.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-		//w.write(String.format("<script type=\"text/javascript\" src=\"%s/js/dojo.js.uncompressed\" djConfig=\"parseOnLoad:true, isDebug:true\"></script>\n",baseReference));
-
-		//w.write(String.format("<script type=\"text/javascript\" src=\"%s/jme/jme.js\"></script>\n",baseReference));
-
-		//w.write("<script>function changeImage(img,src)  {    document.getElementById(img).src=src;} </script>\n");
-
+		w.write(String.format("<link href=\"%s/style/ambit.css\" rel=\"stylesheet\" type=\"text/css\">\n",baseReference));
+		w.write(String.format("<link href=\"%s/style/jquery-ui-1.8.18.custom.css\" rel=\"stylesheet\" type=\"text/css\">\n",baseReference));
+		
+		w.write("<meta name=\"robots\" content=\"index,follow\"><META NAME=\"GOOGLEBOT\" CONTENT=\"index,FOLLOW\">\n");
+		w.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n");
+		w.write("<meta http-equiv='content-type' content='text/html; charset=iso-8859-1' />\n");
+		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jme/jme.js\"></script>\n",baseReference));
+		w.write("<script>$(function() {$( \".accordion\" ).accordion({autoHeight: false,navigation: true});});</script>");
+		// Don't style the submit button with jQ if the browser is MSIE 7.
+		if (!isMsie7) w.write("<script>$(function() {$(\"#submit\").button();});</script>");
+		//w.write("<script>$(function() {$( \".tabs\" ).tabs({event: \"mouseover\",cache: true, ajaxOptions: {error: function( xhr, status, index, anchor ) {$( anchor.hash ).html(status );}}});});</script>");
+		w.write("<script>$(function() {$( \".tabs\" ).tabs({cache: true});});</script>");
+		w.write("<script>$(function() {$( \"#selectable\" ).selectable();});</script>");
+		w.write("<script type='text/javascript'>function hideDiv(divId) {\n$('#'+divId).hide();}</script>\n");
+		w.write("<script type='text/javascript'>function toggleDiv(divId) {\n" +
+				"$('#'+divId).toggle();\n" +
+				"if ($('#'+divId+'_toggler').hasClass('togglerPlus')) {\n" +
+				"$('#'+divId+'_toggler').removeClass('togglerPlus');\n" +
+				"$('#'+divId+'_toggler').addClass('togglerMinus');\n" +
+				"} else if ($('#'+divId+'_toggler').hasClass('togglerMinus')) {\n" +
+				"$('#'+divId+'_toggler').removeClass('togglerMinus');\n" +
+				"$('#'+divId+'_toggler').addClass('togglerPlus');\n" +
+				"}\n" +
+				"}</script>\n"
+		);
 		w.write("</head>\n");
 		w.write("<body>");
-		w.write(String.format("<link rel=\"stylesheet\" href=\"%s/style/tablesorter.css\" type=\"text/css\" media=\"screen\" title=\"Flora (Default)\">",baseReference));
+		w.write(String.format("<link rel=\"stylesheet\" href=\"%s/style/tablesorter.css\" type=\"text/css\" media=\"screen\" title=\"Flora (Default)\">\n",baseReference));
 		w.write("\n");
-		w.write("<div style= \"width: 100%; background-color: #516373;");
-		w.write("border: 1px solid #333; padding: 0px; margin: 0px auto;\">");
-		w.write("<div class=\"spacer\"></div>");
 		
-		String top;
-		if (doc!= null) {
-			top = String.format("&nbsp;<a style=\"color:#99CC00\" href='%s' target='_Ontology' title='Opentox %s (%s), describes representation of OpenTox REST resources'>OpenTox %s</a>&nbsp;",
-					doc.getPrimaryTopic(),
-					doc.getResource(),doc.getPrimaryTopic(),doc.getResource());
-			top += String.format("<a style=\"color:#99CC00\" href='%s' target='_API' title='REST API documentation'>REST API</a>&nbsp;",doc.getPrimaryDoc());
-		} else top = "";
+		StringBuilder header = new StringBuilder();
+		header.append(String.format("<a href='#'><img class='logo_top-left' src='%s/images/%s' alt='%s'></a>\n",
+				baseReference,logoLeft,logoLeft));
+		if (logoHeader!=null)
+			header.append(String.format("<div class='logo_header'><img src='%s/images/%s' alt='%s' title='%s'></div>",
+					baseReference,getTitle(),getTitle()));
+		else
+			header.append(String.format("<div class='logo_header'>%s</div>",
+					baseReference,getTitle()));
+		header.append(String.format("<a href='#'><img class='logo_top-right' src='%s/images/%s' alt='%s'></a>\n",
+				baseReference,logoRight,logoRight));
+		
+		
+		w.write(String.format("<div id='wrap'><div id='header'>%s</div>\n",header));
+		w.write(
+				"<div id='inner-wrap'>\n" +
+				"\t<div id='left'>\n");
+		
 
-		w.write(String.format("<div class=\"row\"><span class=\"left\">&nbsp;%s",top));
-		w.write("</span>");
+		w.write(
+				"\t\t<div id='menu'>\n" +
+				"\t\t\t<ul id='navmenu'>\n");
+				
+		try{
+			w.write(menuItems(baseReference));
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
+		w.write(
+				"\t\t\t</ul>\n" +
+				"\t\t</div>\n"); // div id='menu'
 	
+		// Apply style for the hovered buttons sans (!) the currently selected one.
+		// There are better ways to do it, but this should be okay for now.
+		// However, this breaks MSIE 7. Moreover, this browser gets crazy even if
+		// the change is implemented purely with simple CSS a:hover, and for this
+		// reason, we simply disable the mousever effect for it.
+		if (!isMsie7) {
+			w.write(String.format(
+					"<script>\n" +
+
+					"$('a.selectable').mouseover(function () { $(this).addClass('hovered');    } );\n" +
+					"$('a.selectable').mouseout(function  () { $(this).removeClass('hovered'); } );\n" +
+
+					"</script>\n"
+			));
+		}
+			
+		//followed by the search form
 		
-		w.write(String.format("	<span class=\"right\">%s&nbsp;<a style=\"color:#99CC00\" href='%s/%s'>%s</a>",
-				top,
+		/*
+		left = "";
+		middle = "";
+		right = String.format("<a href='%s/%s'>%s</a>",
 				baseReference.toString(),
 				getLoginLink(),
-				request.getClientInfo().getUser()==null?"Login":"My account"));
-		
-		
-		//w.write(String.format("&nbsp;<a href=\"%s/help\">Help</a>",baseReference.toString()));
-		w.write("</span></div>");
-		w.write("	<div class=\"spacer\"></div>");
-		w.write("</div>");
-		w.write("<div>");		
-		
-		//w.write(String.format("<a href='%s/ttc?text=50-00-0&search=%s' title='Threshold of toxicological concern prediction'>TTC</a>&nbsp;",baseReference,Reference.encode("C=O")));
-		//w.write(String.format("<a href='%s/query/compound/search/all'>Query compounds</a>&nbsp;",baseReference));
-		//w.write(String.format("<a href='%s/compound'>Chemical&nbsp;compounds</a>&nbsp;",baseReference));
+				request.getClientInfo().getUser()==null?"Login":"My account");
+		writeDiv3(w, left, middle, right);
+		*/
 
-		//w.write(String.format("<a href='%s/dataset?max=25'>Datasets</a>&nbsp;",baseReference));
-		//w.write(String.format("<a href='%s/algorithm' title='Predictive algorithms'>Algorithms</a>&nbsp;",baseReference));
-		//w.write(String.format("<a href='%s/model' title='Models'>Models</a>&nbsp;",baseReference));
-		//w.write(String.format("<a href='%s%s'>References</a>&nbsp;",baseReference,ReferenceResource.reference));
-
-		//w.write(String.format("<a href='%s/query/similarity?search=c1ccccc1Oc2ccccc2&threshold=0.9' title='Search for similar structures'>Similarity</a>&nbsp;",baseReference));
-		//w.write(String.format("<a href='%s/query/smarts?text=\"\"' title='Substructure search by SMARTS patterns'>Substructure</a>&nbsp;",baseReference));
-
-		
-		//w.write(String.format("&nbsp;<a href='http://toxpredict.org' title='Predict'>ToxPredict</a>&nbsp;"));
-		//w.write(String.format("<a href='%s/depict?search=c1ccccc1' title='Structure diagram'>Depiction</a>&nbsp;",baseReference));
-		//w.write(String.format("<a href='%s/depict/reaction?search=c1ccccc1' title='SMIRKS test'>Reactions</a>&nbsp;",baseReference));
-
-	
-		writeTopLinks(w, title, request, meta, doc, baseReference);
-		//w.write(String.format("&nbsp;<a href='%s/help'>Help</a>&nbsp;",baseReference));
-
-		w.write("</div>");
-
-		w.write("\n<div id=\"targetDiv\"></div>\n");
-		w.write("\n<div id=\"statusDiv\"></div>\n");
-		//w.write("\n<textarea id=\"targetDiv\"></textarea>\n");
 	}
 	
+	public String menuItems(Reference baseReference) {
+		StringBuilder b = new StringBuilder();
+		b.append(printMenuItem("/openssouser","Login", baseReference.toString(),"10","Login"));
+		b.append(printMenuItem("/admin","Admin", baseReference.toString(),"10","Jobs list"));
+		b.append(printMenuItem("/sparql","SPARQL", baseReference.toString(),"10","SPARQL"));
+		
+		b.append(printMenuItem(TaskResource.resource,"Tasks", baseReference.toString(),"10","Jobs list"));
+		return b.toString();
+	}
 	public void writeTopLinks(Writer w,String title,Request request,String meta,ResourceDoc doc, Reference baseReference) throws IOException {
 		w.write(String.format("<a href='%s%s'>Tasks</a>&nbsp;",TaskResource.resource,baseReference));
 	}
-	public void writeSearchForm(Writer w,String title,Request request ,String meta) throws IOException {
-		writeSearchForm(w, title, request, meta,Method.GET);
-	}
 	
+
 	protected Form getParams(Form params,Request request) {
 		if (params == null) 
 			if (Method.GET.equals(request.getMethod()))
@@ -167,10 +339,21 @@ public class HTMLBeauty {
 				params = request.getEntityAsForm();
 		return params;
 	}
+
 	public void writeSearchForm(Writer w,String title,Request request ,String meta,Method method) throws IOException {
-		writeSearchForm(w, title, request, meta,method,null);
+		writeSearchForm(w, title, request, meta, method,null);
 	}
-	
+	public void writeSearchForm(Writer w,String title,Request request ,String meta,Method method,Form params) throws IOException {
+
+		Reference baseReference = request.getRootRef();
+		try {
+			w.write(searchMenu(baseReference,getParams(params,request)));
+		} catch (Exception x) {
+			x.printStackTrace();
+		} finally {
+			w.write("</div>\n");
+		}
+	}
 	protected String getLogoURI(String root) {
 		return String.format("%s/images/ambit-logo.png",root==null?"":root);
 	}
@@ -178,69 +361,74 @@ public class HTMLBeauty {
 	protected String getHomeURI() {
 		return "/";
 	}
-	
-	public void writeSearchForm(Writer w,String title,Request request ,String meta,Method method,Form params) throws IOException {
-		Reference baseReference = request==null?null:request.getRootRef();
-		w.write("<table width='100%' bgcolor='#ffffff'>");
-		w.write("<tr>");
-		w.write("<td align='left' width='256px'>");
-		w.write(String.format("<a href=\"%s\"><img src='%s' width='256px' alt='%s' title='%s' border='0'></a>\n",
-						getHomeURI(),getLogoURI(baseReference.toString()),getTitle(),baseReference));
-		w.write("</td>");
-		w.write("<td align='center'>");
-		String query_smiles = "";
+
+	protected String searchMenu(Reference baseReference,Form form)  {
+		String pageSize = "10";
+		String structure = null;
 		try {
-			Form form = getParams(params,request);
-			if ((form != null) && (form.size()>0))
-				query_smiles = form.getFirstValue(AbstractResource.search_param);
-			else query_smiles = null;
+			if ((form != null) && (form.size()>0)) {
+				searchQuery = form.getFirstValue(AbstractResource.search_param)==null?"":form.getFirstValue(AbstractResource.search_param);
+				pageSize = form.getFirstValue("pagesize")==null?"10":form.getFirstValue("pagesize");
+				structure = form.getFirstValue("structure");
+			}
 		} catch (Exception x) {
-			query_smiles = "";
+			searchQuery = "";
+			pageSize = "10";
 		}
-		w.write(String.format("<form action='' method='%s'>\n",method));
-		w.write(String.format("<input name='%s' size='80' value='%s'>\n",AbstractResource.search_param,query_smiles==null?"":query_smiles));
-		w.write("<input type='submit' value='Search'><br>");
-		//w.write(baseReference.toString());
+		String hint = "";
+		
+			return
+		   String.format(		
+		   "<div class='search ui-widget'>\n"+
+		   "<p title='%s'>%s</p>\n"+
+		   "<form method='GET' action='%s%s?pagesize=10'>\n"+
+		   "<table width='200px'>\n"+
+		   "<tr><td colspan='2'><input type='text' name='search' size='20' value='%s' tabindex='0' title='Enter search query'></td></tr>\n"+
+		   "<tr><td>Number of hits</td><td align='left'><input type='text' size='3' name='pagesize' value='%s'></td></tr>\n"+
+		   "<tr><td colspan='2' align='center'><input type='submit' id='submit' tabindex='4'  value='Search'/></td></tr>\n"+
+		   "</table>\n"+			   
+		   "</form> \n"+
+		   "</div>\n",
+		   hint,
+		   getSearchTitle(),
+		   baseReference,
+		   getSearchURI(),
+		   searchQuery==null?"":searchQuery,
+		   pageSize
+		   );
+	}
 
-		w.write("</form>\n");
-		w.write("<br><b title='RESTNet demo web services'</b>");		
-		w.write("</td>");
-		w.write("<td align='right' width='256px'>");
-//		w.write(String.format("<a href=\"http://opentox.org\"><img src=\"%s/images/logo.png\" width=\"256\" alt=\"%s\" title='%s' border='0'></a>\n",baseReference,"AMBIT",baseReference));
-
-		w.write("</td>");
-		w.write("</tr></table>");		
-		
-		
-		
-		w.write("<hr>");
-		
-	}	
 	public void writeHTMLFooter(Writer output,String title,Request request) throws IOException {
-		Reference baseReference = request==null?null:request.getRootRef();
+		//div ui-widget
+		output.write("\n</div>\n"); 
+		//div id=content
+		output.write("\n</div>\n"); 
+		//div inner-wrap
+		output.write("\n</div>\n");
+		// Push the footer downwards, so that we don't accidentally step on it.
+		output.write("\n<div class='pusher'></div>");
+		//div id=wrap
+		output.write("\n</div>\n"); 
+		//footer
 		
-		output.write("<div class=\"footer\">");
-
-		output.write("<span class=\"right\">");
-		//output.write(String.format("<a href='http://www.cefic.be'><img src=%s/images/logocefic.png border='0' width='115' height='60'></a>&nbsp;",baseReference));
-		//output.write(String.format("<a href='http://www.cefic-lri.org'><img src=%s/images/logolri.png border='0' width='115' height='60'></a>&nbsp;",baseReference));
-		//output.write(String.format("<a href='http://www.opentox.org'><img src=%s/images/logo.png border='0' width='115' height='60'></a>",baseReference));
-		output.write("<br>Developed by Ideaconsult Ltd. (2005-2012)"); 
-		output.write("  <A HREF=\"http://validator.w3.org/check?uri=referer\">");
-		output.write(String.format("    <IMG SRC=\"%s/images/valid-html401-blue-small.png\" ALT=\"Valid HTML 4.01 Transitional\" TITLE=\"Valid HTML 4.01 Transitional\" HEIGHT=\"16\" WIDTH=\"45\" border=\"0\">",baseReference));
-		output.write("  </A>&nbsp; ");
-		output.write("<A HREF=\"http://jigsaw.w3.org/css-validator/check/referer\">");
-		output.write(String.format("    <IMG SRC=\"%s/images/valid-css-blue-small.png\" TITLE=\"Valid CSS\" ALT=\"Valid CSS\" HEIGHT=\"16\" WIDTH=\"45\" border=\"0\">",baseReference));
-		output.write("  </A>");
-
-		output.write("</span>");		
-		output.write("</div>");
-		output.write("\n");
+		output.write(String.format(
+					"\n<div id='footer'>\n" +
+					"<table class='footerTable'>\n<tr>\n" +
+					"<td>\n" +
+					"<a class='email' href='mailto:%s'>%s</a>\n" +
+					"</td>\n" +
+					"<td style='text-align: right;'>\n" +
+					"Developed by %s\n" +
+					"</td>\n" +
+					"</tr>\n</table>\n" +
+					"</div>\n",
+					supportEmail,supportName,developedBy)
+		);
 		output.write(jsGoogleAnalytics()==null?"":jsGoogleAnalytics());
-		output.write("</body>");
+		output.write("\n</body>");
 		output.write("</html>");
 
-	}	
+	}
 	public String getLoginLink() {
 		return "opentoxuser";
 	}
@@ -290,4 +478,72 @@ public class HTMLBeauty {
 				printWidgetFooter());
 
 	}	
+	
+	protected String printMenuItem(String relativeURI,String title,String baseReference,String pagesize) {
+		return printMenuItem(relativeURI, title, baseReference, pagesize,"");
+	}
+	protected String printMenuItem(String relativeURI,String title,String baseReference,String pagesize,String hint) {
+		return String.format("\t\t\t\t<li><a class='%s' title='%s' href='%s%s%s%s'>%s</a></li>\n",
+				(getSearchURI()!=null) && getSearchURI().equals(relativeURI)?"selected":"selectable",
+				hint==null?title:hint,
+				baseReference,relativeURI,
+				pagesize==null?"":"?pagesize=",
+				pagesize==null?"":pagesize,
+				title);
+	}
+	
+	public String getPaging(int page, int start, int last, long pageSize) {
+
+		// Having a constant number of pages display on top is convenient for the users and provides more consistent
+		// overall look. But this would require the function to define different input parameters. In order to not
+		// break it, implement a workaround, by calculating how many pages the caller (likely) intended to be shown.
+		int total = last - start;
+
+		// Normalization
+		start = start<0?0:start; // don't go beyond first page
+		last = start + total;
+
+		String search = searchQuery==null?"":Reference.encode(searchQuery);
+
+		String url = "<li><a class='%s' href='?page=%d&pagesize=%d&search=%s'>%s</a></li>";
+
+		StringBuilder b = new StringBuilder(); 
+		b.append("<div><ul id='hnavlist'>");
+
+		// Disable this for the time being as it seems to not fit well into the overall look.
+		//b.append(String.format("<li id='pagerPages'>Pages</li>"));
+
+		// Display "first" and "previous" for the first page as inactive.
+		if (page > 0) {
+			b.append(String.format(url, "pselectable", 0, pageSize, search,  "&lt;&lt;"));
+			b.append(String.format(url, "pselectable", page-1, pageSize, search,  "&lt;"));
+		} else {
+			b.append(String.format("<li class='inactive'>&lt;&lt;</li>"));
+			b.append(String.format("<li class='inactive'>&lt;</li>"));
+		}
+
+		// Display links to pages. Pages are counted from zero! Hence why we display "i+1".
+		for (int i=start; i<= last; i++)
+			b.append(String.format(url, i==page?"current":"pselectable", i, pageSize, search,  i+1)); 
+		b.append(String.format(url, "pselectable", page+1, pageSize, search,  "&gt;"));
+		b.append("</ul></div><br>");
+
+		// Apply style for the hovered buttons sans (!) the currently selected one.
+		// There are better ways to do it, but this should be okay for now.
+		// However, this breaks MSIE 7. Moreover, this browser gets crazy even if
+		// the change is implemented purely with simple CSS a:hover, and for this
+		// reason, we simply disable the mousever effect for it.
+		if (!isMsie7()) {
+			b.append(String.format(
+					"<script>\n" +
+
+					"$('a.pselectable').mouseover(function () { $(this).addClass('phovered');    } );\n" +
+					"$('a.pselectable').mouseout(function  () { $(this).removeClass('phovered'); } );\n" +
+
+					"</script>\n"
+			));
+		}
+
+		return b.toString();
+	}
 }

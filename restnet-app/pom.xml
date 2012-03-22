@@ -29,11 +29,19 @@
   		<version>${project.version}</version>
   		<scope>compile</scope>
   	</dependency>  	
+  	<!--  Only if triple storage is necessary -->
+  	<dependency>
+  		<groupId>net.ideaconsult.restnet</groupId>
+  		<artifactId>restnet-sparql</artifactId>
+  		<version>${project.version}</version>
+  		<scope>compile</scope>
+  	</dependency>  	  	
   	<dependency>
     	<groupId>org.restlet.jee</groupId>
     	<artifactId>org.restlet.ext.servlet</artifactId>
     	<version>${restlet.version}</version>
     </dependency>
+    
   	 <dependency>
   		<groupId>javax.servlet</groupId>
   		<artifactId>servlet-api</artifactId>
