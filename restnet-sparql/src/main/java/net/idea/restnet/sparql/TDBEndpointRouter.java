@@ -14,8 +14,8 @@ public class TDBEndpointRouter extends MyRouter {
 	public static final String query = "/query";
 	public TDBEndpointRouter(Context context) {
 		super(context);
-		attachDefault(TDBOntologyResource.class);	
-		attach(String.format("%s/{%s}",query,TDBOntologyResource.resourceKey), TDBOntologyResource.class);	
+		attachDefault(TripleStoreResource.class);	
+		attach(String.format("%s/{%s}",query,TripleStoreResource.resourceKey), TripleStoreResource.class);	
 
 	}
 }

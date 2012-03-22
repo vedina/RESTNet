@@ -6,3 +6,9 @@ public enum SPARQLEndpointConfig {
 	//where to store TDB files. Default is temp directory
 	tdb
 }
+
+
+enum Persistence {
+	tdb,
+	sdb
+}
