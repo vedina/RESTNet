@@ -156,6 +156,7 @@ Then, when the "get(Variant)" method calls you back,
 	        if (queryObject != null) {
         	
 	        	IProcessor<Q, Representation>  convertor = null;
+	        	Reporter reporter = null;
 	        	Connection connection = null;
 	        	int retry=0;
 	        	while (retry <maxRetry) {
@@ -168,7 +169,7 @@ Then, when the "get(Variant)" method calls you back,
 		        			((RepresentationConvertor)convertor).setLicenseURI(getLicenseURI());
 		        		
 		        		connection = dbc.getConnection();
-		        		Reporter reporter = ((RepresentationConvertor)convertor).getReporter();
+		        		reporter = ((RepresentationConvertor)convertor).getReporter();
 			        	if (reporter instanceof IDBProcessor)
 			        		((IDBProcessor)reporter).setConnection(connection);
 			        	Representation r = convertor.process(queryObject);
@@ -176,22 +177,29 @@ Then, when the "get(Variant)" method calls you back,
 			        	return r;
 			        	
 		        	} catch (ResourceException x) {
+		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
+		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};
 		    			throw x;			        	
 		        	} catch (NotFoundException x) {
 		        		Representation r = processNotFound(x,retry);
+		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
+		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};
 		        		if (r!=null) return r;
 		    			
 		        	} catch (SQLException x) {
 		        		Representation r = processSQLError(x,retry,variant);
+		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
+		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};
 		        		if (r==null) continue; else return r;
 		        	} catch (Exception x) {
+		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
+		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};
 		        		Context.getCurrentLogger().severe(x.getMessage());
 		    			throw new RResourceException(Status.SERVER_ERROR_INTERNAL,x,variant);
 	
 		        	} finally {
 
-		        		//try { if (connection !=null) connection.close(); } catch (Exception x) {};
-		        		//try { if ((convertor !=null) && (convertor.getReporter() !=null)) convertor.getReporter().close(); } catch (Exception x) {}
+		        		//if no exceptions, will be closed by reporters	
 		        	}
 	        	}
     			return null;	        	

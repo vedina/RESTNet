@@ -87,4 +87,9 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void close() throws Exception {
+		setRequest(null);
+		super.close();
+	}
 }

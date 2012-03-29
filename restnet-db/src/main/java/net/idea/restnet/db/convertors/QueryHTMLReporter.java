@@ -107,4 +107,9 @@ public abstract class QueryHTMLReporter<T,Q extends IQueryRetrieval<T>>  extends
 	public void open() throws DbAmbitException {
 		
 	}	
+	@Override
+	public void close() throws Exception {
+		if (uriReporter!=null) try { uriReporter.close(); uriReporter = null; } catch (Exception x) {}
+		super.close();
+	}
 }

@@ -7,31 +7,30 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import net.idea.modbcum.c.DatasourceFactory;
 import net.idea.modbcum.i.LoginInfo;
 import net.idea.modbcum.i.config.Preferences;
 import net.idea.modbcum.i.exceptions.AmbitException;
 
 import org.restlet.Context;
-import org.restlet.Request;
+
+import com.mchange.v2.c3p0.PooledDataSource;
 
 public class DBConnection {
 	protected static Properties properties = null;
 	protected String configFile;
 	
-	protected Context context;
-	public Context getContext() {
-		return context;
-	}
-	public void setContext(Context context) {
-		this.context = context;
-	}
-	
+	protected LoginInfo loginInfo;
 
+	public LoginInfo getLoginInfo() {
+		return loginInfo;
+	}
 	public DBConnection(Context context,String configFile) {
 		super();
-		setContext(context);
 		this.configFile = configFile;
+		loginInfo = getLoginInfo(context);
 	}
 	protected synchronized void loadProperties()  {
 		try {
@@ -68,8 +67,8 @@ public class DBConnection {
 			return false;
 		}
 	}	
-	
-	public LoginInfo getLoginInfo() {
+
+	protected LoginInfo getLoginInfo(Context context) {
 		loadProperties();
 		LoginInfo li = new LoginInfo();
 		
@@ -84,16 +83,16 @@ public class DBConnection {
 		p = properties.getProperty(Preferences.HOST);
 		li.setHostname(p==null||("${ambit.db.host}".equals(p))?"localhost":p);			
 		
-		if (getContext().getParameters().getFirstValue(Preferences.DATABASE)!=null)
-			li.setDatabase(getContext().getParameters().getFirstValue(Preferences.DATABASE));
-		if (getContext().getParameters().getFirstValue(Preferences.USER)!=null)
-			li.setUser(getContext().getParameters().getFirstValue(Preferences.USER));
-		if (getContext().getParameters().getFirstValue(Preferences.PASSWORD)!=null)
-			li.setPassword(getContext().getParameters().getFirstValue(Preferences.PASSWORD));
-		if (getContext().getParameters().getFirstValue(Preferences.HOST)!=null)
-			li.setHostname(getContext().getParameters().getFirstValue(Preferences.HOST));
-		if (getContext().getParameters().getFirstValue(Preferences.PORT)!=null)
-			li.setPort(getContext().getParameters().getFirstValue(Preferences.PORT));
+		if (context.getParameters().getFirstValue(Preferences.DATABASE)!=null)
+			li.setDatabase(context.getParameters().getFirstValue(Preferences.DATABASE));
+		if (context.getParameters().getFirstValue(Preferences.USER)!=null)
+			li.setUser(context.getParameters().getFirstValue(Preferences.USER));
+		if (context.getParameters().getFirstValue(Preferences.PASSWORD)!=null)
+			li.setPassword(context.getParameters().getFirstValue(Preferences.PASSWORD));
+		if (context.getParameters().getFirstValue(Preferences.HOST)!=null)
+			li.setHostname(context.getParameters().getFirstValue(Preferences.HOST));
+		if (context.getParameters().getFirstValue(Preferences.PORT)!=null)
+			li.setPort(context.getParameters().getFirstValue(Preferences.PORT));
 		
 
 		
@@ -119,7 +118,7 @@ public class DBConnection {
 	protected String getConnectionURI(String user,String password) throws AmbitException {
 	
 		try {
-			LoginInfo li = getLoginInfo();
+			LoginInfo li = loginInfo;
 			return DatasourceFactory.getConnectionURI(
 	                li.getScheme(), li.getHostname(), li.getPort(), 
 	                li.getDatabase(), user==null?li.getUser():user, password==null?li.getPassword():password); 
@@ -152,7 +151,22 @@ public class DBConnection {
 		for (int retry=0; retry< 3; retry++)
 		try {
 			//System.out.println("trying to getConnection "+Thread.currentThread().getName());
-			c = DatasourceFactory.getDataSource(connectionURI).getConnection();
+			DataSource ds = DatasourceFactory.getDataSource(connectionURI);
+			if ( ds instanceof PooledDataSource)
+			{
+			  PooledDataSource pds = (PooledDataSource) ds;
+			  System.err.println("num_connections: "      + pds.getNumConnectionsDefaultUser());
+			  System.err.println("num_busy_connections: " + pds.getNumBusyConnectionsDefaultUser());
+			  System.err.println("num_idle_connections: " + pds.getNumIdleConnectionsDefaultUser());
+			  System.err.println("num_thread_awaiting: " +pds.getNumThreadsAwaitingCheckoutDefaultUser());
+			  System.err.println("num_unclosed_orphaned_connections: " +pds.getNumUnclosedOrphanedConnectionsAllUsers());
+			  
+			  System.err.println();
+			}
+			else
+			  System.err.println("Not a c3p0 PooledDataSource!");
+			      
+			c = ds.getConnection();
 			//System.out.println("got the Connection! "+Thread.currentThread().getName());
 			t = c.createStatement();
 			rs = t.executeQuery("SELECT 1");
