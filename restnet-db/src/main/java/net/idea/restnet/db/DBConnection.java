@@ -150,8 +150,8 @@ public class DBConnection {
 		Statement t = null;
 		for (int retry=0; retry< 3; retry++)
 		try {
-			//System.out.println("trying to getConnection "+Thread.currentThread().getName());
 			DataSource ds = DatasourceFactory.getDataSource(connectionURI);
+			/*
 			if ( ds instanceof PooledDataSource)
 			{
 			  PooledDataSource pds = (PooledDataSource) ds;
@@ -159,15 +159,15 @@ public class DBConnection {
 			  System.err.println("num_busy_connections: " + pds.getNumBusyConnectionsDefaultUser());
 			  System.err.println("num_idle_connections: " + pds.getNumIdleConnectionsDefaultUser());
 			  System.err.println("num_thread_awaiting: " +pds.getNumThreadsAwaitingCheckoutDefaultUser());
+			  System.err.println("StatementCacheNumCheckedOutStatementsAllUsers: " +pds.getStatementCacheNumCheckedOutStatementsAllUsers());
 			  System.err.println("num_unclosed_orphaned_connections: " +pds.getNumUnclosedOrphanedConnectionsAllUsers());
 			  
 			  System.err.println();
 			}
 			else
 			  System.err.println("Not a c3p0 PooledDataSource!");
-			      
+	   		*/
 			c = ds.getConnection();
-			//System.out.println("got the Connection! "+Thread.currentThread().getName());
 			t = c.createStatement();
 			rs = t.executeQuery("SELECT 1");
 			while (rs.next()) {rs.getInt(1);}
@@ -176,7 +176,6 @@ public class DBConnection {
 			error= null;
 			return c;
 		} catch (SQLException x) {
-			//TODO reinitialize the connection pool
 			error = x;
 			Context.getCurrentLogger().severe(x.getMessage());
 			//remove the connection from the pool
