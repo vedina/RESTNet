@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -238,7 +239,9 @@ public class RemoteTask implements Serializable {
 			return ref;
 						
 		} else { //everything else considered an error
-			throw new RestException(status,statusLine);
+			String errorMsg = String.format("Error when accessing %s [%d] %s",url,status,statusLine);
+			Logger.getLogger(getClass().getName()).warning(errorMsg);
+			throw new RestException(status,errorMsg);
 		}
 	}
 
