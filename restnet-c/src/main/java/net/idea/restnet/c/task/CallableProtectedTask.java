@@ -61,6 +61,6 @@ public abstract class CallableProtectedTask<USERID> implements ICallableTask, IA
 	
 	@Override
 	public String toString() {
-		return title==null?toString():title;
+		return title;
 	}
 }
