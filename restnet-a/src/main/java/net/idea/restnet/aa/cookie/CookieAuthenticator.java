@@ -85,8 +85,16 @@ import org.restlet.security.ChallengeAuthenticator;
  * @author Jerome Louvel
  */
 public class CookieAuthenticator extends ChallengeAuthenticator {
+	private long sessionLength = 1000*60*45; //45 min
+    public long getSessionLength() {
+		return sessionLength;
+	}
 
-    /** The name of the cookie that stores log info. */
+	public void setSessionLength(long sessionLength) {
+		this.sessionLength = sessionLength;
+	}
+
+	/** The name of the cookie that stores log info. */
     private volatile String cookieName;
 
     /** The name of the algorithm used to encrypt the log info cookie value. */
@@ -220,6 +228,10 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
             credentialsCookie.setValue(formatCredentials(request
                     .getChallengeResponse()));
             credentialsCookie.setMaxAge(getMaxCookieAge());
+            /**
+             * Sets HttpOnly flag
+             */
+            credentialsCookie.setAccessRestricted(true);
         } catch (GeneralSecurityException e) {
             getLogger().log(Level.SEVERE,
                     "Could not format credentials cookie", e);
@@ -576,10 +588,12 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
             // 4) Create the challenge response
             ChallengeResponse cr = new ChallengeResponse(getScheme());
             cr.setRawValue(cookieValue);
-            /*
-            cr.setTimeIssued(Long.parseLong(decrypted.substring(0,
-                    identifierIndex)));
-                    */
+            
+            long timeIssued = Long.parseLong(decrypted.substring(0,identifierIndex));
+            if ((System.currentTimeMillis()- timeIssued)>sessionLength) {
+            	//timeout
+            	return null;
+            }
             cr.setIdentifier(decrypted.substring(identifierIndex + 1,
                     secretIndex));
             cr.setSecret(decrypted.substring(secretIndex + 1, lastSlash));
