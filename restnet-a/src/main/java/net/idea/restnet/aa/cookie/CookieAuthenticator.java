@@ -44,6 +44,7 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.ChallengeResponse;
 import org.restlet.data.ChallengeScheme;
+import org.restlet.data.ClientInfo;
 import org.restlet.data.Cookie;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
@@ -209,8 +210,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
                 getCookieName());
 
         if ((credentialsCookie != null) && (!"".equals(credentialsCookie))) {
-            request.setChallengeResponse(parseCredentials(credentialsCookie
-                    .getValue()));
+            request.setChallengeResponse(parseCredentials(credentialsCookie.getValue(),request.getClientInfo()));
         }
 
         return super.authenticate(request, response);
@@ -226,7 +226,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
             CookieSetting credentialsCookie = getCredentialsCookie(request,
                     response);
             credentialsCookie.setValue(formatCredentials(request
-                    .getChallengeResponse()));
+                    .getChallengeResponse(),request.getClientInfo()));
             credentialsCookie.setMaxAge(getMaxCookieAge());
             /**
              * Sets HttpOnly flag
@@ -271,7 +271,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The raw credentials.
      * @throws GeneralSecurityException
      */
-    protected String formatCredentials(ChallengeResponse challenge)
+    protected String formatCredentials(ChallengeResponse challenge, ClientInfo clientInfo)
             throws GeneralSecurityException {
     	if (challenge ==null) return null;
         // Data buffer
@@ -282,9 +282,23 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
         String timeIssued = Long.toString(System.currentTimeMillis());
         int i = timeIssued.length();
         sb.append(timeIssued);
-
         isb.append(i);
-
+        
+        //IP
+        String ip = clientInfo.getAddress()==null?" ":clientInfo.getAddress();
+        i += ip.length() + 1;
+        sb.append('/');
+        sb.append(ip);
+        isb.append(',').append(i);
+        
+        //agent
+        String agent = clientInfo.getAgent()==null?" ":clientInfo.getAgent();
+        i += agent.length() + 1;
+        sb.append('/');
+        sb.append(agent);
+        isb.append(',').append(i);        
+        
+        //identifier
         String identifier = challenge.getIdentifier();
         sb.append('/');
         sb.append(identifier);
@@ -519,7 +533,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
         if (super.authenticate(request, response)) {
         	try {
         		 request.getCookies().removeAll(getCookieName());
-	    		 request.getCookies().add(getCookieName(), formatCredentials(cr));
+	    		 request.getCookies().add(getCookieName(), formatCredentials(cr,request.getClientInfo()));
 	        } catch (GeneralSecurityException e) {
 	            getLogger().log(Level.SEVERE,
 	                    "Could not format credentials cookie", e);
@@ -564,7 +578,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The credentials to decode from cookie value.
      * @return The credentials as a proper challenge response.
      */
-    protected ChallengeResponse parseCredentials(String cookieValue) {
+    protected ChallengeResponse parseCredentials(String cookieValue,ClientInfo clientInfo) {
     	if ((cookieValue==null) || ("".equals(cookieValue))) return null;
         // 1) Decode Base64 string
         byte[] encrypted = Base64.decode(cookieValue);
@@ -582,20 +596,33 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
             // 3) Parse the decrypted cookie value
             int lastSlash = decrypted.lastIndexOf('/');
             String[] indexes = decrypted.substring(lastSlash + 1).split(",");
-            int identifierIndex = Integer.parseInt(indexes[0]);
-            int secretIndex = Integer.parseInt(indexes[1]);
+            int ipIndex = Integer.parseInt(indexes[0]);
+            int agentIndex = Integer.parseInt(indexes[1]);
+            int identifierIndex = Integer.parseInt(indexes[2]);
+            int secretIndex = Integer.parseInt(indexes[3]);
 
             // 4) Create the challenge response
             ChallengeResponse cr = new ChallengeResponse(getScheme());
             cr.setRawValue(cookieValue);
             
-            long timeIssued = Long.parseLong(decrypted.substring(0,identifierIndex));
+            long timeIssued = Long.parseLong(decrypted.substring(0,ipIndex));
             if ((System.currentTimeMillis()- timeIssued)>sessionLength) {
             	//timeout
             	return null;
             }
-            cr.setIdentifier(decrypted.substring(identifierIndex + 1,
-                    secretIndex));
+            
+            String ip = decrypted.substring(ipIndex+1,agentIndex);
+            if (!ip.equals(clientInfo.getAddress())) {
+            	return null;
+            }
+            
+            String agent = decrypted.substring(agentIndex+1,identifierIndex);
+            
+            if (!agent.equals(clientInfo.getAgent())) {
+            	return null;
+            }            
+            
+            cr.setIdentifier(decrypted.substring(identifierIndex + 1, secretIndex));
             cr.setSecret(decrypted.substring(secretIndex + 1, lastSlash));
             return cr;
         } catch (Exception e) {
