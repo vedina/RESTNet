@@ -40,7 +40,11 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 
 	protected abstract Target getTarget(INPUT input) throws Exception ;
 	protected abstract IQueryUpdate<Object,Target> createUpdate(Target target) throws Exception ;
-	protected abstract String getURI(Target target) throws Exception ;
+	protected String getURI(Target target, Method method) throws Exception {
+		return getURI(target);
+	}
+	protected abstract String getURI(Target target) throws Exception;
+
 	
 	protected boolean isNewResource() {
 		return Method.POST.equals(method);
@@ -60,11 +64,11 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 					connection.commit();
 				
 				if (Method.DELETE.equals(method)) 
-					return new TaskResult(null,false);
+					return new TaskResult(getURI(target,Method.DELETE),false);
 				else
-					return new TaskResult(getURI(target),isNewResource());
+					return new TaskResult(getURI(target,method),isNewResource());
 			} else
-				return new TaskResult(getURI(target),false);
+				return new TaskResult(getURI(target,method),false);
 
 		} catch (ProcessorException x) {
 			if (!isAutoCommit())
@@ -81,6 +85,7 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 		}
 	}
 	
+
 	protected Object executeQuery(IQueryUpdate<Object,Target> q) throws Exception {
 		exec = new UpdateExecutor<IQueryUpdate>();
 		exec.setConnection(connection);
