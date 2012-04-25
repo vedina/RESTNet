@@ -47,7 +47,11 @@ public class UserAuth extends AbstractQuery<String, String, EQCondition, Boolean
 	 * If found, will return true always. 
 	 */
 	public Boolean getObject(ResultSet rs) throws AmbitException {
-		return rs!=null;
+		if (rs!=null) try {
+			while (rs.next()) rs.getString(1) ;
+		} catch (Exception x) {
+		}
+		return rs!=null;			
 	}
 
 	protected String databaseName = null;
