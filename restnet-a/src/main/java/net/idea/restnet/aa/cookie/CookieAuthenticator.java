@@ -613,7 +613,9 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
             
             String ip = decrypted.substring(ipIndex+1,agentIndex);
             if (!ip.equals(clientInfo.getAddress())) {
-            	return null;
+            	if (isIPv4(ip)&&isIPv4(clientInfo.getAddress())) return null;
+            	if (isIPv6(ip)&&isIPv6(clientInfo.getAddress())) return null;
+            	//else go on, stupid browsers
             }
             
             String agent = decrypted.substring(agentIndex+1,identifierIndex);
@@ -759,5 +761,11 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
     public void setSecretFormName(String passwordInputName) {
         this.secretFormName = passwordInputName;
     }
-
+    
+    private boolean isIPv6(String ip) {
+    	return ip.indexOf(":")>0;
+    }
+    private boolean isIPv4(String ip) {
+    	return ip.indexOf(".")>0;
+    }
 }
