@@ -12,6 +12,7 @@ import net.idea.modbcum.i.IDBProcessor;
 import net.idea.modbcum.i.IQueryObject;
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.exceptions.AmbitException;
+import net.idea.modbcum.i.exceptions.BatchProcessingException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
@@ -191,6 +192,19 @@ Then, when the "get(Variant)" method calls you back,
 		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
 		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};
 		        		if (r==null) continue; else return r;
+		        	} catch (BatchProcessingException x) {
+		        		Representation r = null;
+		        		Exception batchException = null;
+		        		if (x.getCause() instanceof NotFoundException) {
+		        			r = processNotFound((NotFoundException)x.getCause(),retry);
+		        			if (r==null) batchException = new ResourceException(Status.CLIENT_ERROR_NOT_FOUND,x.getCause().getMessage(),x.getCause());
+		        		}
+		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
+		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};	
+		        		if (r!=null) return r;
+		        		batchException = batchException==null?new RResourceException(Status.SERVER_ERROR_INTERNAL,x,variant):batchException;
+		        		Context.getCurrentLogger().severe(x.getMessage());
+		    			throw batchException;
 		        	} catch (Exception x) {
 		        		try { if ((reporter !=null) && (reporter !=null)) reporter.close(); } catch (Exception ignored) {}
 		        		try { if (connection !=null) connection.close(); } catch (Exception ignored) {};
