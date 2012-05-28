@@ -263,6 +263,7 @@ public class HTMLBeauty {
 		else
 			header.append(String.format("<div class='logo_header'>%s</div>",
 					baseReference,getTitle()));
+		if (logoRight!=null)
 		header.append(String.format("<a href='#'><img class='logo_top-right' src='%s/images/%s' alt='%s'></a>\n",
 				baseReference,logoRight,logoRight));
 		
