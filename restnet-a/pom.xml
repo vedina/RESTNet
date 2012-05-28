@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -10,21 +11,20 @@
   <version>0.0.6-SNAPSHOT</version>
   <name>AAA</name>
   <dependencies>
-  	<dependency>
-  		<groupId>net.ideaconsult.restnet</groupId>
-  		<artifactId>restnet-c</artifactId>
-  		<version>${project.version}</version>
-  		<type>jar</type>
-  		<scope>compile</scope>
-  	</dependency>
-  	   
+    <dependency>
+      <groupId>net.ideaconsult.restnet</groupId>
+      <artifactId>restnet-c</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
-<build>
-	<resources>
-		<resource>
-			<directory>src/main/resources</directory>
-			<filtering>true</filtering>
-		</resource>
-	</resources>
-</build>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
 </project>
