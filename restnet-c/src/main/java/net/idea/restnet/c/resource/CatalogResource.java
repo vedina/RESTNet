@@ -62,6 +62,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 		super.doInit();
 		customizeVariants(new MediaType[] {
 				MediaType.TEXT_URI_LIST,
+				MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_RDF_XML,
 				MediaType.APPLICATION_RDF_TURTLE,
 				MediaType.TEXT_RDF_N3,
