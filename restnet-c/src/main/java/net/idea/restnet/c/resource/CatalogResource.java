@@ -89,10 +89,13 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 	public IProcessor<Iterator<T>, Representation> createConvertor(
 			Variant variant) throws AmbitException, ResourceException {
 		String filenamePrefix = getRequest().getResourceRef().getPath();
+		
 		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
 			return new StringConvertor(	createHTMLReporter(headless),MediaType.TEXT_HTML);
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST);
+		} else if (variant.getMediaType().equals(MediaType.APPLICATION_JSON)){
+			return createJSONConvertor(variant,filenamePrefix);			
 		} else if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_XML) ||
 				variant.getMediaType().equals(MediaType.APPLICATION_RDF_TURTLE) ||
 				variant.getMediaType().equals(MediaType.TEXT_RDF_N3) ||
@@ -104,6 +107,10 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 		
 	}
 	public IProcessor<Iterator<T>, Representation> createRDFConvertor(
+			Variant variant,String filenamePrefix) throws AmbitException, ResourceException {
+		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
+	}	
+	public IProcessor<Iterator<T>, Representation> createJSONConvertor(
 			Variant variant,String filenamePrefix) throws AmbitException, ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}	
