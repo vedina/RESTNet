@@ -1,7 +1,9 @@
 package net.idea.restnet.c.resource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
@@ -11,6 +13,7 @@ import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.StringConvertor;
 import net.idea.restnet.c.TaskApplication;
+import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.reporters.CatalogHTMLReporter;
 import net.idea.restnet.c.reporters.CatalogURIReporter;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
@@ -19,11 +22,13 @@ import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.TaskResult;
 
+import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
+import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
@@ -36,6 +41,22 @@ import org.restlet.resource.ResourceException;
 public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,IProcessor<Iterator<T>, Representation>> {
 	protected int page = 0;
 	protected boolean headless = false;
+	protected boolean htmlbyTemplate = false;
+	public boolean isHtmlbyTemplate() {
+		return htmlbyTemplate;
+	}
+
+	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
+		this.htmlbyTemplate = htmlbyTemplate;
+	}
+	
+	public String getTemplateName() {
+		return null;
+	}
+	
+	protected void configureTemplateMap(Map<String, Object> map) {
+		
+	}
 	
 	public int getPage() {
 		return page;
@@ -232,42 +253,41 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 	}
 	
 
-	/*
-	@Override
-	public void describe(String arg0, ResourceInfo info) {
-		// TODO Auto-generated method stub
-		super.describe(arg0, info);
-	}
+	protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
+		//	if (getRequest().getResourceRef().toString().equals(String.format("%s/",getRequest().getRootRef()))) {
 
+		        Map<String, Object> map = new HashMap<String, Object>();
+		        if (getClientInfo().getUser()!=null) 
+		        	map.put("username", getClientInfo().getUser().getIdentifier());
+		        configureTemplateMap(map);
+		        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
+		//	} else {
+				//if no slash, all the styles etc. paths are broken...
+			//	redirectSeeOther(String.format("%s/",getRequest().getRootRef()));
+				//return null;
+		//	}
+		}
+		
+
+	protected Representation toRepresentation(Map<String, Object> map,
+	            String templateName, MediaType mediaType) {
+	        
+	        return new TemplateRepresentation(
+	        		templateName,
+	        		((FreeMarkerApplicaton)getApplication()).getConfiguration(),
+	        		map,
+	        		MediaType.TEXT_HTML);
+	}
+	    
 
 	@Override
-	protected void describePost(MethodInfo info) {
-		// TODO Auto-generated method stub
-		super.describePost(info);
+	protected Representation get(Variant variant) throws ResourceException {
+		if (htmlbyTemplate && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
+			cS.setPath("/");
+	        this.getResponse().getCookieSettings().add(cS);
+	        return getHTMLByTemplate(variant);
+    	} else				
+    		return super.get(variant);
 	}
-	@Override
-	protected void describePut(MethodInfo info) {
-		// TODO Auto-generated method stub
-		super.describePut(info);
-	}
-	@Override
-	protected void describeOptions(MethodInfo info) {
-		info.setDocumentation("Not implemented");
-		super.describeOptions(info);
-	}
-	@Override
-	protected Representation describeVariants() {
-		//TODO 
-		return super.describeVariants();
-	}
-	@Override
-	protected void describeDelete(MethodInfo info) {
-        info.setDocumentation("Delete the current item.");
-
-        RepresentationInfo repInfo = new RepresentationInfo();
-        repInfo.setDocumentation("No representation is returned.");
-        repInfo.getStatuses().add(Status.SUCCESS_NO_CONTENT);
-        info.getResponse().getRepresentations().add(repInfo);
-	}
-	*/
 }

@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import net.idea.modbcum.i.IDBProcessor;
@@ -21,6 +23,7 @@ import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.exception.RResourceException;
+import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.TaskCreator;
@@ -44,6 +47,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
+import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -67,6 +71,20 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>,T extends Seria
 	protected boolean dataset_prefixed_compound_uri = false;
 	public final static String query_resource = "/query";
 	protected String configFile= "conf/restnet-db.pref";
+	
+	protected boolean htmlbyTemplate = false;
+
+	public String getTemplateName() {
+		return null;
+	}
+
+	public boolean isHtmlbyTemplate() {
+		return htmlbyTemplate;
+	}
+
+	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
+		this.htmlbyTemplate = htmlbyTemplate;
+	}
 	
 	public String getConfigFile() {
 		return configFile;
@@ -137,8 +155,19 @@ Then, when the "get(Variant)" method calls you back,
 			rdfwriter = RDF_WRITER.jena;
 		}
 	}
+	
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
+		if (htmlbyTemplate && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
+			cS.setPath("/");
+	        this.getResponse().getCookieSettings().add(cS);
+	        return getHTMLByTemplate(variant);
+    	} else				
+    		return getRepresentation(variant);
+	}
+	
+	protected Representation getRepresentation(Variant variant) throws ResourceException {
 		try {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
 			cS.setPath("/");
@@ -770,4 +799,34 @@ Then, when the "get(Variant)" method calls you back,
 	protected boolean isAllowedMediaType(MediaType mediaType) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
+
+	protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
+		//	if (getRequest().getResourceRef().toString().equals(String.format("%s/",getRequest().getRootRef()))) {
+
+		        Map<String, Object> map = new HashMap<String, Object>();
+		        if (getClientInfo().getUser()!=null) 
+		        	map.put("username", getClientInfo().getUser().getIdentifier());
+		        configureTemplateMap(map);
+		        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
+		//	} else {
+				//if no slash, all the styles etc. paths are broken...
+			//	redirectSeeOther(String.format("%s/",getRequest().getRootRef()));
+				//return null;
+		//	}
+		}
+		
+	
+	protected void configureTemplateMap(Map<String, Object> map) {
+		
+	}
+	protected Representation toRepresentation(Map<String, Object> map,
+	            String templateName, MediaType mediaType) {
+	        
+	        return new TemplateRepresentation(
+	        		templateName,
+	        		((FreeMarkerApplicaton)getApplication()).getConfiguration(),
+	        		map,
+	        		MediaType.TEXT_HTML);
+	}
+	    
 }
