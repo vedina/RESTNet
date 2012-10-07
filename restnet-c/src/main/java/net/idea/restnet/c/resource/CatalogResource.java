@@ -282,7 +282,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
-		if (htmlbyTemplate && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
 			cS.setPath("/");
 	        this.getResponse().getCookieSettings().add(cS);
