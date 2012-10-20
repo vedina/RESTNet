@@ -90,6 +90,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				MediaType.TEXT_RDF_NTRIPLES,
 				MediaType.APPLICATION_JAVA_OBJECT,
 				MediaType.TEXT_HTML,
+				MediaType.TEXT_CSV,
 				MediaType.APPLICATION_WADL
 				});
 		headless = getHeadlessParam();
@@ -116,7 +117,9 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
 			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST);
 		} else if (variant.getMediaType().equals(MediaType.APPLICATION_JSON)){
-			return createJSONConvertor(variant,filenamePrefix);			
+			return createJSONConvertor(variant,filenamePrefix);
+		} else if (variant.getMediaType().equals(MediaType.TEXT_CSV)){
+			return createCSVConvertor(variant,filenamePrefix);						
 		} else if (variant.getMediaType().equals(MediaType.APPLICATION_RDF_XML) ||
 				variant.getMediaType().equals(MediaType.APPLICATION_RDF_TURTLE) ||
 				variant.getMediaType().equals(MediaType.TEXT_RDF_N3) ||
@@ -124,7 +127,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				) {
 			return createRDFConvertor(variant,filenamePrefix);
 		} else //uri 	
-			return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST,filenamePrefix);
+			return createDefaultConvertor(variant, filenamePrefix);
 		
 	}
 	public IProcessor<Iterator<T>, Representation> createRDFConvertor(
@@ -134,6 +137,14 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 	public IProcessor<Iterator<T>, Representation> createJSONConvertor(
 			Variant variant,String filenamePrefix) throws AmbitException, ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
+	}	
+	public IProcessor<Iterator<T>, Representation> createCSVConvertor(
+			Variant variant,String filenamePrefix) throws AmbitException, ResourceException {
+		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
+	}
+	public IProcessor<Iterator<T>, Representation> createDefaultConvertor(
+			Variant variant,String filenamePrefix) throws AmbitException, ResourceException {
+		return new StringConvertor( createURIReporter()	,MediaType.TEXT_URI_LIST,filenamePrefix);
 	}	
 	protected Reporter createURIReporter() {
 		return
