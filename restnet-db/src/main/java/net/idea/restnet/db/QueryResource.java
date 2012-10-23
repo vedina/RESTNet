@@ -118,6 +118,7 @@ Then, when the "get(Variant)" method calls you back,
 				MediaType.TEXT_RDF_N3,
 				MediaType.TEXT_RDF_NTRIPLES,
 				MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JAVASCRIPT,
 				MediaType.APPLICATION_JAVA_OBJECT,
 				MediaType.APPLICATION_WADL
 				
