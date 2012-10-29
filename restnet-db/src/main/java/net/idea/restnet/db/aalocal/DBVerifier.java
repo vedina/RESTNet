@@ -30,26 +30,38 @@ public class DBVerifier extends SecretVerifier {
 
 	@Override
 	public boolean verify(String identifier, char[] inputSecret) {
+		int maxRetry = 3;
 		Connection c = null;
 		ResultSet rs = null;
 		try {
 			query.setFieldname(identifier);
 			query.setValue(new String(inputSecret));
-			DBConnection dbc = new DBConnection(context,getConfigFile());
-			c = dbc.getConnection();
-			executor.setConnection(c);
-			rs = executor.process(query);
-			boolean ok = false;
-			while (rs.next()) {
-				ok = query.getObject(rs);
-				break;
+			DBConnection dbc;
+			for (int i=0; i < maxRetry; i++) {
+				dbc = new DBConnection(context,getConfigFile());
+				try {
+					c = dbc.getConnection();
+					executor.setConnection(c);
+					rs = executor.process(query);
+					boolean ok = false;
+					while (rs.next()) {
+						ok = query.getObject(rs);
+						break;
+					}
+					return ok;
+				} catch (Exception x) {
+					x.printStackTrace();
+				} finally {
+					try {rs.close(); rs = null;} catch (Exception x) {};
+					try {c.close(); c = null;} catch (Exception x) {};
+				}
 			}
-			return ok;
+			return false;
 		} catch (Exception x) {
 			x.printStackTrace();
 		} finally {
-			try {rs.close();} catch (Exception x) {};
-			try {c.close();} catch (Exception x) {};
+			try {if (rs!=null) rs.close();} catch (Exception x) {};
+			try {if (c!=null) c.close();} catch (Exception x) {};
 		}
 		return false;
 	}
