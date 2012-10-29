@@ -39,7 +39,7 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 	}
 
 	protected abstract Target getTarget(INPUT input) throws Exception ;
-	protected abstract IQueryUpdate<Object,Target> createUpdate(Target target) throws Exception ;
+	protected abstract IQueryUpdate<? extends Object,Target> createUpdate(Target target) throws Exception ;
 	protected String getURI(Target target, Method method) throws Exception {
 		return getURI(target);
 	}
@@ -56,7 +56,7 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 		try {
 			connection.setAutoCommit(isAutoCommit());
 			Target target = getTarget(input);
-			IQueryUpdate<Object,Target> q = createUpdate(target);
+			IQueryUpdate<? extends Object,Target> q = createUpdate(target);
 			if (q!= null) {
 				executeQuery(q);
 				
@@ -86,7 +86,7 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 	}
 	
 
-	protected Object executeQuery(IQueryUpdate<Object,Target> q) throws Exception {
+	protected Object executeQuery(IQueryUpdate<? extends Object,Target> q) throws Exception {
 		exec = new UpdateExecutor<IQueryUpdate>();
 		exec.setConnection(connection);
 		return exec.process(q);
