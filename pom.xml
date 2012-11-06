@@ -139,6 +139,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
     <module>restnet-app</module>
     <module>restnet-db</module>
     <module>restnet-sparql</module>
+    <module>restnet-u</module>
   </modules>
   <distributionManagement>
     <snapshotRepository>

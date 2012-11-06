@@ -39,8 +39,16 @@ import net.idea.modbcum.q.update.AbstractObjectUpdate;
 public class CreateUser extends AbstractObjectUpdate<IUser> implements IDBConfig{
 
 	public static String sql =
-			"insert into %s%susers (user_name,user_pass) values (?,MD5(?)) ON DUPLICATE KEY UPDATE password=values(MD5(user_pass))"
+			"insert into %s%susers (user_name,user_pass) values (?,MD5(?))"
 	;
+	
+	public CreateUser() {
+		this(null);
+	}
+	public CreateUser(IUser user) {
+		setObject(user);
+	}
+	
 	public String[] getSQL() throws AmbitException {
 		return new String[] { String.format(sql,databaseName==null?"":databaseName,databaseName==null?"":".")};
 	}
