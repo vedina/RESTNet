@@ -9,18 +9,21 @@ import net.idea.restnet.db.test.CRUDTest;
 import net.idea.restnet.db.test.user.TestUser;
 import net.idea.restnet.u.db.ConfirmRegistration;
 import net.idea.restnet.u.db.CreateRegistration;
+import net.idea.restnet.u.db.DeleteUser;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.ITable;
 
 public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
-
+	protected String randomcode = RandomStringUtils.randomAlphanumeric(45);
 	@Override
 	protected IQueryUpdate<IUser, UserRegistration> createQuery()
 			throws Exception {
 		IUser user = new TestUser();
-		user.setUserName("test");
-		UserRegistration reg = new UserRegistration("XYZ");
+		user.setUserName("mynewuser");
+		user.setPassword("password");
+		UserRegistration reg = new UserRegistration(randomcode);
 		CreateRegistration q =  new CreateRegistration(user, reg);
 		q.setDatabaseName(getDatabase());
 		return q;
@@ -31,8 +34,11 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 			throws Exception {
         IDatabaseConnection c = getConnection();	
 		ITable table = 	c.createQueryTable("EXPECTED",
-				String.format("SELECT code from user_registration where user_name='test' and code='XYZ'"));
+				String.format("SELECT user_name from users where user_name='mynewuser'"));      
+		Assert.assertEquals(1,table.getRowCount());
 		
+		table = 	c.createQueryTable("EXPECTED",
+				String.format("SELECT code from user_registration where user_name='mynewuser' and code='"+randomcode+"'"));
 		Assert.assertEquals(1,table.getRowCount());
 		c.close();
 		
@@ -45,10 +51,9 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 				String.format("SELECT code from user_registration where user_name='admin' and code='ABCDEF' and status='confirmed'"));
 		Assert.assertEquals(0,table.getRowCount());
 		c.close();		
-		IUser user = new TestUser();
-		user.setUserName("admin");
+
 		UserRegistration reg = new UserRegistration("ABCDEF");
-		ConfirmRegistration q =  new ConfirmRegistration(user, reg);
+		ConfirmRegistration q =  new ConfirmRegistration(12, reg);
 		q.setDatabaseName(getDatabase());
 		return q;
 	}
@@ -64,11 +69,6 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 		c.close();
 		
 	}
-	
-	@Override
-	public void testDelete() throws Exception {
-	
-	}
 
 	@Override
 	public void testUpdate() throws Exception {
@@ -83,8 +83,11 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 	@Override
 	protected IQueryUpdate<IUser, UserRegistration> deleteQuery()
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		IUser user = new TestUser();
+		user.setUserName("newuser");
+		DeleteUser q =  new DeleteUser(user);
+		q.setDatabaseName(getDatabase());
+		return q;
 	}
 
 
@@ -92,6 +95,11 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 	@Override
 	protected void updateVerify(IQueryUpdate<IUser, UserRegistration> query)
 			throws Exception {
+        IDatabaseConnection c = getConnection();	
+		ITable table = 	c.createQueryTable("EXPECTED",
+				String.format("SELECT status from user_registration where user_name='newuser' and status='disabled'"));
+		Assert.assertEquals(1,table.getRowCount());
+		c.close();		
 	}
 
 	@Override
