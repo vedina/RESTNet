@@ -14,13 +14,14 @@ import net.idea.restnet.u.RegistrationStatus;
 import net.idea.restnet.u.UserRegistration;
 
 
-public class ReadRegistration  extends AbstractQuery<String, UserRegistration, EQCondition, UserRegistration>  implements IQueryRetrieval<UserRegistration>, IDBConfig {
+public class ReadRegistration  extends AbstractQuery<String, UserRegistration, EQCondition, UserRegistration>  implements 
+IQueryRetrieval<UserRegistration>, IDBConfig {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6228939989116141217L;
 
-	protected String databaseName = "tomcat_users";
+	protected String databaseName = null;
 	@Override
 	public void setDatabaseName(String name) {
 		databaseName = name;
@@ -29,7 +30,8 @@ public class ReadRegistration  extends AbstractQuery<String, UserRegistration, E
 	public String getDatabaseName() {
 		return databaseName;
 	}
-	protected static String sql = "SELECT user_name,created,confirmed,code,status from %s.user_registration where code=? and status='confirmed' and date_add(created,interval 2 day)>=now()";
+	protected static String sql = "SELECT user_name,created,confirmed,code,status from %s.user_registration where code=? and 
+status='confirmed' and date_add(created,interval 2 day)>=now()";
 	
 	public ReadRegistration(String code) {
 		super();
@@ -60,6 +62,7 @@ public class ReadRegistration  extends AbstractQuery<String, UserRegistration, E
 
 	public String getSQL() throws AmbitException {
 		if (getValue()==null) throw new AmbitException("Empty argument!");
+		if (getDatabaseName()==null) throw new AmbitException("Database not specified!");
 		return String.format(sql,getDatabaseName());
 	}
 
@@ -82,4 +85,5 @@ public class ReadRegistration  extends AbstractQuery<String, UserRegistration, E
 	}
 
 }
+
 
