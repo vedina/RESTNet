@@ -34,14 +34,14 @@ import java.util.List;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
-import net.idea.modbcum.q.update.AbstractObjectUpdate;
+import net.idea.modbcum.q.update.AbstractUpdate;
 
 /**
  * 
  * @author nina
  *
  */
-public class UpdateUser extends AbstractObjectUpdate<IUser> implements IDBConfig {
+public class UpdateUser<T> extends AbstractUpdate<T,IUser> implements IDBConfig {
 
 	public static final String sql = "update %s%susers set user_pass=MD5(?) where user_name=?";
 

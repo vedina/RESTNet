@@ -33,7 +33,9 @@ import junit.framework.Assert;
 import net.idea.modbcum.i.query.IQueryUpdate;
 import net.idea.restnet.db.CreateDatabaseProcessor;
 import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
+import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.user.CreateUser;
+import net.idea.restnet.db.aalocal.user.CreateUserRole;
 import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.db.aalocal.user.UpdateUser;
 import net.idea.restnet.db.test.CRUDTest;
@@ -41,7 +43,7 @@ import net.idea.restnet.db.test.CRUDTest;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.ITable;
 
-public class User_crud_test  extends CRUDTest<Object,IUser>  {
+public class User_crud_test<T extends Object>  extends CRUDTest<T,IUser>  {
 	
 
 	@Override
@@ -56,7 +58,7 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 	
 	
 	@Override
-	protected IQueryUpdate<Object,IUser> createQuery() throws Exception {
+	protected IQueryUpdate<T,IUser> createQuery() throws Exception {
 		IUser ref = new TestUser();
 		ref.setUserName("QWERTY");
 		ref.setPassword("ASDFG");
@@ -66,7 +68,7 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 	}
 
 	@Override
-	protected void createVerify(IQueryUpdate<Object,IUser> query)
+	protected void createVerify(IQueryUpdate<T,IUser> query)
 			throws Exception {
         IDatabaseConnection c = getConnection();	
 		ITable table = 	c.createQueryTable("EXPECTED",
@@ -82,17 +84,17 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 	}
 
 	@Override
-	protected IQueryUpdate<Object, IUser> deleteQuery() throws Exception {
+	protected IQueryUpdate<T, IUser> deleteQuery() throws Exception {
 		return null;
 	}
 
 	@Override
-	protected void deleteVerify(IQueryUpdate<Object, IUser> query)
+	protected void deleteVerify(IQueryUpdate<T, IUser> query)
 			throws Exception {
 		
 	}
 	@Override
-	protected IQueryUpdate<Object,IUser> updateQuery() throws Exception {
+	protected IQueryUpdate<T,IUser> updateQuery() throws Exception {
 		IUser ref = new TestUser();
 		ref.setUserName("test");
 		ref.setPassword("NEW");
@@ -102,7 +104,7 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 	}
 
 	@Override
-	protected void updateVerify(IQueryUpdate<Object,IUser> query)
+	protected void updateVerify(IQueryUpdate<T,IUser> query)
 			throws Exception {
         IDatabaseConnection c = getConnection();	
 		ITable table = 	c.createQueryTable("EXPECTED","SELECT user_name FROM users where user_pass=md5('NEW')");
@@ -113,19 +115,29 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 	}
 
 	@Override
-	protected IQueryUpdate<Object, IUser> createQueryNew()
+	protected IQueryUpdate<T, IUser> createQueryNew()
 			throws Exception {
-		return null;
+		IUser user = new TestUser();
+		user.setUserName("test");
+		DBRole role = new DBRole("newrole","newrole");
+		CreateUserRole q =  new CreateUserRole();
+		q.setGroup(role);
+		q.setObject(user);
+		q.setDatabaseName(getDatabase());
+		return (IQueryUpdate<T, IUser>)q;
 	}
 
 	@Override
-	protected void createVerifyNew(IQueryUpdate<Object, IUser> query)
+	protected void createVerifyNew(IQueryUpdate<T, IUser> query)
 			throws Exception {
-		
+        IDatabaseConnection c = getConnection();	
+		ITable table = 	c.createQueryTable("EXPECTED","SELECT user_name,role_name FROM user_roles where user_name='test' and role_name='newrole'");
+		Assert.assertEquals(1,table.getRowCount());
+		table = 	c.createQueryTable("EXPECTED","SELECT role_name FROM roles where role_name='newrole'");
+		Assert.assertEquals(1,table.getRowCount());
+		c.close();		
 		
 	}
-	@Override
-	public void testCreateNew() throws Exception {
-	}
+
 
 }

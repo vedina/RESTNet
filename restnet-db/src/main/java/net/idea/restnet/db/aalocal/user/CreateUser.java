@@ -34,9 +34,9 @@ import java.util.List;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
-import net.idea.modbcum.q.update.AbstractObjectUpdate;
+import net.idea.modbcum.q.update.AbstractUpdate;
 
-public class CreateUser extends AbstractObjectUpdate<IUser> implements IDBConfig{
+public class CreateUser<T> extends AbstractUpdate<T,IUser> implements IDBConfig{
 
 	public static String sql =
 			"insert into %s%susers (user_name,user_pass) values (?,MD5(?))"
