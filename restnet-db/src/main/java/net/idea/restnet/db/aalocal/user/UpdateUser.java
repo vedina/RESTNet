@@ -43,7 +43,7 @@ import net.idea.modbcum.q.update.AbstractObjectUpdate;
  */
 public class UpdateUser extends AbstractObjectUpdate<IUser> implements IDBConfig {
 
-	public static final String sql = "update %%ssusers set user_pass=MD5(?) where user_name=?";
+	public static final String sql = "update %s%susers set user_pass=MD5(?) where user_name=?";
 
 	public UpdateUser(IUser user) {
 		super(user);

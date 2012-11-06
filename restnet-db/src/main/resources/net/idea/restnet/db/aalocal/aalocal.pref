@@ -1,0 +1,12 @@
+#MySQL Database config
+Host=${aalocal.db.host}
+Scheme=jdbc\:mysql
+Port=3306
+Database=${aalocal.db}
+User=${aalocal.db.user}
+Password=${aalocal.db.user.password}
+#MySQL test db, user and pass
+database.test=${aalocal.db.test}
+database.test.port=3306
+database.user.test=${aalocal.db.user.test}
+database.user.test.password=${aalocal.db.user.password.test}

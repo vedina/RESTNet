@@ -69,6 +69,10 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </resource>      
     </resources>
     <plugins>
       <!--
@@ -347,6 +351,29 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
         <aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
         <aa.user>guest</aa.user>
         <aa.pass>guest</aa.pass>
+      </properties>
+    </profile>
+     <!--  Test local AA -->
+   <profile>
+      <id>aalocal-test</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <!-- After deployment, these settings could be found (and modified) in {servlet-container}/webapps/{this-app}/WEB-INF/conf/qmrf-db.pref -->
+        <!-- The host where MySQL is running -->
+        <aalocal.db.host>localhost</aalocal.db.host>
+        <!-- The database name -->
+        <aalocal.db>tomcat_users</aalocal.db>
+        <!-- The user name -->
+        <aalocal.db.user>guest</aalocal.db.user>
+        <aalocal.db.user.password>guest</aalocal.db.user.password>
+      
+        <aalocal.db.test>aalocal_test</aalocal.db.test>
+        <!-- DB user for tests -->
+        <aalocal.db.user.test>guest</aalocal.db.user.test>
+        <!-- DB password for tests -->
+        <aalocal.db.user.password.test>guest</aalocal.db.user.password.test>
       </properties>
     </profile>
   </profiles>
