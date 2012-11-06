@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <users user_name="test" user_pass="098f6bcd4621d373cade4e832627b4f6"/>
+  <users user_name="admin" user_pass="098f6bcd4621d373cade4e832627b4f6"/>
+  <users user_name="olduser" user_pass="098f6bcd4621d373cade4e832627b4f6"/>
+  <roles role_name="user"/>
+  <roles role_name="admin"/>
+  <user_roles user_name="test" role_name="user"/>
+   <user_roles user_name="olduser" role_name="user"/>
+  <user_roles user_name="admin" role_name="user"/>
+  <user_roles user_name="admin" role_name="admin"/>
+  <user_registration user_name="olduser" created="2009-10-05 00:00:00.0" code="XYZ1234" status="commenced"/>
+  <user_registration user_name="admin" code="ABCDEF" status="commenced"/>
+</dataset>
