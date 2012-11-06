@@ -21,7 +21,7 @@ public class UserAuth extends AbstractQuery<String, String, EQCondition, Boolean
 	 * 
 	 */
 	private static final long serialVersionUID = 6017803463536586392L;
-	protected final String sql = "select user_name from %s%susers where user_name = ? and user_pass = md5(?)";
+	protected final String sql = "select user_name from %s%susers join user_registration using(user_name) where status='confirmed' and user_name = ? and user_pass = md5(?)";
 	
 	public double calculateMetric(Boolean object) {
 		return 1;
