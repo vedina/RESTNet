@@ -8,30 +8,21 @@ import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.db.aalocal.DBRole;
 
-public class CreateUserRole extends AbstractUpdate<DBRole,IUser> implements IDBConfig{
+public class DeleteUserRole extends AbstractUpdate<DBRole,IUser> implements IDBConfig{
 
 	@Override
 	public String[] getSQL() throws AmbitException {
 		return new String[] {
-			String.format("insert ignore into %s%sroles values (?)",databaseName==null?"":databaseName,databaseName==null?"":"."),
-			String.format("insert ignore into %s%suser_roles values (?,?)",databaseName==null?"":databaseName,databaseName==null?"":".")
+			String.format("delete from %s%suser_roles where user_name=? and role_name=?",
+					databaseName==null?"":databaseName,databaseName==null?"":".")
 		};
 	}
 
 	@Override
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		List<QueryParam> params = new ArrayList<QueryParam>();
-		switch (index) {
-		case 0: {
-			params.add(new QueryParam<String>(String.class, getGroup().getName()));
-			break;
-		}
-		case 1: {
-			params.add(new QueryParam<String>(String.class, getObject().getUsername()));
-			params.add(new QueryParam<String>(String.class, getGroup().getName()));
-			break;
-		}
-		}
+		params.add(new QueryParam<String>(String.class, getObject().getUsername()));
+		params.add(new QueryParam<String>(String.class, getGroup().getName()));
 		return params;
 	}
 

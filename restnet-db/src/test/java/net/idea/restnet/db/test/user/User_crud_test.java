@@ -36,6 +36,7 @@ import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
 import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.user.CreateUser;
 import net.idea.restnet.db.aalocal.user.CreateUserRole;
+import net.idea.restnet.db.aalocal.user.DeleteUserRole;
 import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.db.aalocal.user.UpdateUser;
 import net.idea.restnet.db.test.CRUDTest;
@@ -78,19 +79,28 @@ public class User_crud_test<T extends Object>  extends CRUDTest<T,IUser>  {
 		c.close();
 	}
 
-	@Override
-	public void testDelete() throws Exception {
-
-	}
 
 	@Override
 	protected IQueryUpdate<T, IUser> deleteQuery() throws Exception {
-		return null;
+		IUser ref = new TestUser();
+		ref.setUserName("test");
+		DBRole role = new DBRole("user", "");
+		DeleteUserRole q =  new DeleteUserRole();
+		q.setGroup(role);
+		q.setObject(ref);
+		q.setDatabaseName(getDatabase());
+		return (IQueryUpdate<T, IUser>)q;
 	}
 
 	@Override
 	protected void deleteVerify(IQueryUpdate<T, IUser> query)
 			throws Exception {
+        IDatabaseConnection c = getConnection();	
+		ITable table = 	c.createQueryTable("EXPECTED",
+				String.format("SELECT user_name from user_roles where user_name='test' and role_name='user'"));
+		
+		Assert.assertEquals(0,table.getRowCount());
+		c.close();		
 		
 	}
 	@Override
