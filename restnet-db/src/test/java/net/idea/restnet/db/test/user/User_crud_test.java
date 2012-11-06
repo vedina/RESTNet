@@ -61,7 +61,9 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 		IUser ref = new TestUser();
 		ref.setUserName("QWERTY");
 		ref.setPassword("ASDFG");
-		return new CreateUser(ref);
+		CreateUser q =  new CreateUser(ref);
+		q.setDatabaseName(getDatabase());
+		return q;
 	}
 
 	@Override
@@ -79,7 +81,9 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 	protected IQueryUpdate<Object,IUser> deleteQuery() throws Exception {
 		IUser ref = new TestUser();
 		ref.setUserName("test");
-		return new DeleteUser(ref);
+		DeleteUser q =  new DeleteUser(ref);
+		q.setDatabaseName(getDatabase());
+		return q;
 	}
 
 	@Override
@@ -97,8 +101,9 @@ public class User_crud_test  extends CRUDTest<Object,IUser>  {
 		IUser ref = new TestUser();
 		ref.setUserName("test");
 		ref.setPassword("NEW");
-
-		return new UpdateUser(ref);
+		UpdateUser q =  new UpdateUser(ref);
+		q.setDatabaseName(getDatabase());
+		return q;
 	}
 
 	@Override
