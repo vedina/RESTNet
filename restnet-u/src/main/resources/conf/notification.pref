@@ -1,0 +1,9 @@
+mail.smtp.starttls.enable=${notification.mail.smtp.starttls.enable}
+mail.smtp.auth=${notification.mail.smtp.auth}
+mail.transport.protocol=${notification.mail.transport.protocol}
+mail.smtp.port=${notification.mail.smtp.port}
+mail.smtp.socketFactory.fallback=${notification.mail.smtp.socketFactory.fallback}
+mail.host=${notification.mail.host}
+mail.user=${notification.mail.user}
+mail.password=${notification.mail.password}
+notification.admin.email=${notification.admin.email}
