@@ -17,6 +17,11 @@ import javax.mail.internet.MimeMessage;
 
 import com.sun.mail.util.MailSSLSocketFactory;
 
+/**
+ * Sends email notifications
+ * @author nina
+ *
+ */
 public class Notification implements INotificationUtility {
 	private Session mailSession;  
 	private String adminEmail;
@@ -30,28 +35,6 @@ public class Notification implements INotificationUtility {
 		this("conf/notification.pref");
 	}
 	/**
-	<!-- mail notification -->
-	    <notification.mail.smtp.starttls.enable>true</notification.mail.smtp.starttls.enable>
-	    <notification.mail.smtp.auth>true</notification.mail.smtp.auth>
-	    <notification.mail.host>mx.ideaconsult.net</notification.mail.host>
-	    <notification.mail.user>nina</notification.mail.user>
-	    <notification.mail.password>sinanica2516</notification.mail.password>
-	    <notification.mail.transport.protocol>smtp</notification.mail.transport.protocol>
-	    <notification.mail.smtp.port>587</notification.mail.smtp.port>
-        <notification.mail.smtp.auth>true</notification.mail.smtp.auth>
-	     
-    	<notification.admin.email>nina@ideaconsult.net</notification.admin.email>
-        
-        <!-- SMTP Auth -->
-        
-        
-        <!-- SMTP -->
-       
-       
-        
-        <notification.mail.debug>nina@ideaconsult.net</notification.mail.debug>
-      
-        
 	 * @param configFile
 	 * @throws IOException
 	 */
