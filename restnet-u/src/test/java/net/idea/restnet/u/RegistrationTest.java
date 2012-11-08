@@ -24,7 +24,7 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 		user.setUserName("mynewuser");
 		user.setPassword("password");
 		UserRegistration reg = new UserRegistration(randomcode);
-		CreateRegistration q =  new CreateRegistration(user, reg);
+		CreateRegistration q =  new CreateRegistration(user, reg,getDatabase());
 		q.setDatabaseName(getDatabase());
 		return q;
 	}

@@ -13,12 +13,12 @@ import net.idea.restnet.u.UserRegistration;
 
 public class CreateRegistration extends AbstractUpdate<IUser,UserRegistration>  implements IDBConfig {
 	protected CreateUser createUser;
-	public CreateRegistration(IUser user,UserRegistration reg) {
+	public CreateRegistration(IUser user,UserRegistration reg, String dbname) {
 		super();
 		setObject(reg);
 		setGroup(user);
 		createUser = new CreateUser(user);
-		createUser.setDatabaseName(getDatabaseName());
+		setDatabaseName(dbname);
 	}
 	@Override
 	public String[] getSQL() throws AmbitException {
@@ -52,13 +52,12 @@ public class CreateRegistration extends AbstractUpdate<IUser,UserRegistration>  
 		return false;
 	}
 	
-	protected String databaseName = null;
 	@Override
 	public void setDatabaseName(String name) {
-		databaseName = name;
+		createUser.setDatabaseName(name);
 	}
 	@Override
 	public String getDatabaseName() {
-		return databaseName;
+		return createUser.getDatabaseName();
 	}
 }
