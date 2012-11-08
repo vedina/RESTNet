@@ -130,9 +130,7 @@ public class User_crud_test<T extends Object>  extends CRUDTest<T,IUser>  {
 		IUser user = new TestUser();
 		user.setUserName("test");
 		DBRole role = new DBRole("newrole","newrole");
-		CreateUserRole q =  new CreateUserRole();
-		q.setGroup(role);
-		q.setObject(user);
+		CreateUserRole q =  new CreateUserRole(role,user);
 		q.setDatabaseName(getDatabase());
 		return (IQueryUpdate<T, IUser>)q;
 	}

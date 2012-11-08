@@ -10,6 +10,12 @@ import net.idea.restnet.db.aalocal.DBRole;
 
 public class CreateUserRole extends AbstractUpdate<DBRole,IUser> implements IDBConfig{
 
+	public CreateUserRole(DBRole role,IUser user) {
+		super();
+		setGroup(role);
+		setObject(user);
+	}
+	
 	@Override
 	public String[] getSQL() throws AmbitException {
 		return new String[] {
