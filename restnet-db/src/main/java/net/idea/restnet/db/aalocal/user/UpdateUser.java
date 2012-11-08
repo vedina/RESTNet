@@ -54,7 +54,7 @@ public class UpdateUser<T> extends AbstractUpdate<T,IUser> implements IDBConfig 
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		List<QueryParam> params = new ArrayList<QueryParam>();
 		params.add(new QueryParam<String>(String.class, getObject().getPassword()));
-		params.add(new QueryParam<String>(String.class, getObject().getUsername()));
+		params.add(new QueryParam<String>(String.class, getObject().getUserName()));
 		return params;
 		
 	}

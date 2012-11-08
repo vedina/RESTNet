@@ -34,7 +34,7 @@ public class CreateRegistration extends AbstractUpdate<IUser,UserRegistration>  
 		case 0: return createUser.getParameters(0);
 		default: {
 			List<QueryParam> params1 = new ArrayList<QueryParam>();
-			params1.add(new QueryParam<String>(String.class,  getGroup().getUsername()));
+			params1.add(new QueryParam<String>(String.class,  getGroup().getUserName()));
 			params1.add(new QueryParam<String>(String.class,  getObject().getConfirmationCode()));
 			return params1;
 		}

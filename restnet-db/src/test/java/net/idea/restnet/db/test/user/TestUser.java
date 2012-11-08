@@ -8,10 +8,9 @@ public class TestUser implements IUser {
 	String username;
 	String pass;
 	@Override
-	public String getUsername() {
+	public String getUserName() {
 		return username;
 	}
-
 	@Override
 	public void setUserName(String userName) {
 		this.username = userName;

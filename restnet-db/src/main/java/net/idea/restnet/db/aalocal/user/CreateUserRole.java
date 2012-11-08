@@ -27,7 +27,7 @@ public class CreateUserRole extends AbstractUpdate<DBRole,IUser> implements IDBC
 			break;
 		}
 		case 1: {
-			params.add(new QueryParam<String>(String.class, getObject().getUsername()));
+			params.add(new QueryParam<String>(String.class, getObject().getUserName()));
 			params.add(new QueryParam<String>(String.class, getGroup().getName()));
 			break;
 		}

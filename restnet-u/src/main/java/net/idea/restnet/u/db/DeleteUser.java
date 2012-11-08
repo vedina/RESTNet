@@ -53,7 +53,7 @@ public class DeleteUser extends AbstractUpdate<IUser,UserRegistration> implement
 	}		
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		List<QueryParam> params = new ArrayList<QueryParam>();
-		params.add(new QueryParam<String>(String.class, getGroup().getUsername()));
+		params.add(new QueryParam<String>(String.class, getGroup().getUserName()));
 		return params;
 		
 	}
