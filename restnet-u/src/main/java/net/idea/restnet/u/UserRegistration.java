@@ -2,6 +2,8 @@ package net.idea.restnet.u;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 public class UserRegistration implements Serializable {
 	/**
 	 * 
@@ -18,7 +20,7 @@ public class UserRegistration implements Serializable {
 	}
 	
 	public UserRegistration() {
-		this(null);
+		this(RandomStringUtils.randomAlphanumeric(45));
 	}
 	public long getTimestamp_created() {
 		return timestamp_created;
