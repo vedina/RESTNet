@@ -9,7 +9,7 @@ import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
 
 public abstract class AbstractUpdateCredentials<U> extends AbstractUpdate<UserCredentials,U> implements IDBConfig {
-	protected String databaseName = "tomcat_users";
+	protected String databaseName = null;
 	@Override
 	public void setDatabaseName(String name) {
 		databaseName = name;
