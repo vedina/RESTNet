@@ -193,6 +193,11 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 			return processAndGenerateTask(Method.DELETE, null, variant,true);
 		}
 	}
+	
+	protected String getTaskTitle(T item,Reference source) {
+		return String.format("Apply %s %s %s",
+				item==null?"":item.toString(),source==null?"":"to",source==null?"":source);
+	}
 	@Override
 	protected Representation processAndGenerateTask(Method method,Representation entity, final Variant variant, final boolean async) throws ResourceException {
 			
@@ -209,8 +214,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				Reference reference = getSourceReference(form,model);
 				ICallableTask callable= createCallable(method,form,model);
 				Task<TaskResult,String> task =  ((TaskApplication)getApplication()).addTask(
-						String.format("Apply %s %s %s",
-						model==null?"":model.toString(),reference==null?"":"to",reference==null?"":reference),
+						getTaskTitle(model,reference),
 						callable,
 						getRequest().getRootRef(),
 						getToken()
