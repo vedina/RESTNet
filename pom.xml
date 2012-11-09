@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.8</version>
   <packaging>pom</packaging>
   <name>RESTNet</name>
   <description>Skeleton REST application
@@ -72,7 +72,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
       <resource>
         <directory>src/test/resources</directory>
         <filtering>true</filtering>
-      </resource>      
+      </resource>
     </resources>
     <plugins>
       <!--
@@ -353,8 +353,8 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
         <aa.pass>guest</aa.pass>
       </properties>
     </profile>
-     <!--  Test local AA -->
-   <profile>
+    <!--  Test local AA -->
+    <profile>
       <id>aalocal-test</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -368,7 +368,6 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
         <!-- The user name -->
         <aalocal.db.user>guest</aalocal.db.user>
         <aalocal.db.user.password>guest</aalocal.db.user.password>
-      
         <aalocal.db.test>aalocal_test</aalocal.db.test>
         <!-- DB user for tests -->
         <aalocal.db.user.test>guest</aalocal.db.user.test>
