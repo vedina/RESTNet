@@ -209,7 +209,8 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				Reference reference = getSourceReference(form,model);
 				ICallableTask callable= createCallable(method,form,model);
 				Task<TaskResult,String> task =  ((TaskApplication)getApplication()).addTask(
-						String.format("Apply %s %s %s",model.toString(),reference==null?"":"to",reference==null?"":reference),
+						String.format("Apply %s %s %s",
+						model==null?"":model.toString(),reference==null?"":"to",reference==null?"":reference),
 						callable,
 						getRequest().getRootRef(),
 						getToken()
