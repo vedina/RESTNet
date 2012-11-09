@@ -222,7 +222,6 @@ public class HTMLBeauty {
 		w.write("<script src='http://platform.linkedin.com/in.js' type='text/javascript'></script>\n");
 		
 		//w.write(String.format("<script type=\"text/javascript\" src=\"%s/jquery/jquery.tablesorter.min.js\"></script>\n",baseReference));
-		w.write(meta);
 				
 		w.write(String.format("<link href=\"%s/style/ambit.css\" rel=\"stylesheet\" type=\"text/css\">\n",baseReference));
 		w.write(String.format("<link href=\"%s/style/jquery-ui-1.8.18.custom.css\" rel=\"stylesheet\" type=\"text/css\">\n",baseReference));
@@ -249,6 +248,7 @@ public class HTMLBeauty {
 				"}\n" +
 				"}</script>\n"
 		);
+		w.write(meta);
 		w.write("</head>\n");
 		w.write("<body>");
 		w.write(String.format("<link rel=\"stylesheet\" href=\"%s/style/tablesorter.css\" type=\"text/css\" media=\"screen\" title=\"Flora (Default)\">\n",baseReference));
