@@ -28,10 +28,11 @@ public class DbEnroller implements Enroler {
 		this.context = context;
 		this.config = configfile;
 		query.setDatabaseName(dbName);
+		executor.setCloseConnection(false);
 	}	
 
 	@Override
-	public void enrole(ClientInfo clientInfo) {
+	public synchronized void  enrole(ClientInfo clientInfo) {
 		if ((clientInfo.getUser()==null) || 
 			(clientInfo.getUser().getIdentifier()==null) ||
 			("".equals(clientInfo.getUser().getIdentifier()))) return;
@@ -51,6 +52,7 @@ public class DbEnroller implements Enroler {
 		} catch (Exception x) {
 			x.printStackTrace();
 		} finally {
+			try {executor.setConnection(null);} catch (Exception x) {};
 			try {rs.close();} catch (Exception x) {};
 			try {c.close();} catch (Exception x) {};
 		}
