@@ -1,6 +1,7 @@
 package net.idea.restnet.c.task;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import net.idea.restnet.i.aa.IAuthToken;
 import net.idea.restnet.i.task.ICallableTask;
@@ -11,6 +12,7 @@ public abstract class CallableProtectedTask<USERID> implements ICallableTask, IA
 	protected UUID uuid;
 	private USERID token;
 	protected String title;
+	private final Logger logger ;
 	
 	public String getTitle() {
 		return title;
@@ -22,6 +24,7 @@ public abstract class CallableProtectedTask<USERID> implements ICallableTask, IA
 
 	public CallableProtectedTask(USERID token) {
 		this.token = token;
+		logger = Logger.getLogger(getClass().getName());
 	}
 	
 	@Override
