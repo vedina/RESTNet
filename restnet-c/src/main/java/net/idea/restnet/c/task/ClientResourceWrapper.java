@@ -65,6 +65,7 @@ public class ClientResourceWrapper extends ClientResource {
     	}		
     	HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 		uc.addRequestProperty("Accept",mediaType);
+		uc.addRequestProperty("Referer", "http://localhost");
 		uc.setDoOutput(true);
 		uc.setRequestMethod(method);    	
 		IAuthToken tokenFactory = ClientResourceWrapper.getTokenFactory();
