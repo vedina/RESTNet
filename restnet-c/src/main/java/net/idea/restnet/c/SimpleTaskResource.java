@@ -17,6 +17,7 @@ import net.idea.restnet.i.task.TaskResult;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -253,6 +254,18 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 
 		return null;
 	}
+	
+	@Override
+	protected Representation get(Variant variant) throws ResourceException {
+		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
+			cS.setPath("/");
+	        this.getResponse().getCookieSettings().add(cS);
+	        return getHTMLByTemplate(variant);
+    	} else				
+    		return super.get(variant);
+	}
+
 }
 
 

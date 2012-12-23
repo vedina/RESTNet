@@ -71,20 +71,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>,T extends Seria
 	protected boolean dataset_prefixed_compound_uri = false;
 	public final static String query_resource = "/query";
 	protected String configFile= "conf/restnet-db.pref";
-	
-	protected boolean htmlbyTemplate = false;
 
-	public String getTemplateName() {
-		return null;
-	}
-
-	public boolean isHtmlbyTemplate() {
-		return htmlbyTemplate;
-	}
-
-	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
-		this.htmlbyTemplate = htmlbyTemplate;
-	}
 	
 	public String getConfigFile() {
 		return configFile;
@@ -802,32 +789,12 @@ Then, when the "get(Variant)" method calls you back,
 	}
 
 	protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
-		//	if (getRequest().getResourceRef().toString().equals(String.format("%s/",getRequest().getRootRef()))) {
-
 		        Map<String, Object> map = new HashMap<String, Object>();
 		        if (getClientInfo().getUser()!=null) 
 		        	map.put("username", getClientInfo().getUser().getIdentifier());
 		        configureTemplateMap(map);
 		        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
-		//	} else {
-				//if no slash, all the styles etc. paths are broken...
-			//	redirectSeeOther(String.format("%s/",getRequest().getRootRef()));
-				//return null;
-		//	}
-		}
-		
-	
-	protected void configureTemplateMap(Map<String, Object> map) {
-		
 	}
-	protected Representation toRepresentation(Map<String, Object> map,
-	            String templateName, MediaType mediaType) {
-	        
-	        return new TemplateRepresentation(
-	        		templateName,
-	        		((FreeMarkerApplicaton)getApplication()).getConfiguration(),
-	        		map,
-	        		MediaType.TEXT_HTML);
-	}
+		
 	    
 }

@@ -41,22 +41,7 @@ import org.restlet.resource.ResourceException;
 public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,IProcessor<Iterator<T>, Representation>> {
 	protected int page = 0;
 	protected boolean headless = false;
-	protected boolean htmlbyTemplate = false;
-	public boolean isHtmlbyTemplate() {
-		return htmlbyTemplate;
-	}
-
-	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
-		this.htmlbyTemplate = htmlbyTemplate;
-	}
 	
-	public String getTemplateName() {
-		return null;
-	}
-	
-	protected void configureTemplateMap(Map<String, Object> map) {
-		
-	}
 	
 	public int getPage() {
 		return page;
@@ -268,33 +253,6 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 		}			
 	}
 	
-
-	protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
-		//	if (getRequest().getResourceRef().toString().equals(String.format("%s/",getRequest().getRootRef()))) {
-
-		        Map<String, Object> map = new HashMap<String, Object>();
-		        if (getClientInfo().getUser()!=null) 
-		        	map.put("username", getClientInfo().getUser().getIdentifier());
-		        configureTemplateMap(map);
-		        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
-		//	} else {
-				//if no slash, all the styles etc. paths are broken...
-			//	redirectSeeOther(String.format("%s/",getRequest().getRootRef()));
-				//return null;
-		//	}
-		}
-		
-
-	protected Representation toRepresentation(Map<String, Object> map,
-	            String templateName, MediaType mediaType) {
-	        
-	        return new TemplateRepresentation(
-	        		templateName,
-	        		((FreeMarkerApplicaton)getApplication()).getConfiguration(),
-	        		map,
-	        		MediaType.TEXT_HTML);
-	}
-	    
 
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {

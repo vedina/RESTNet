@@ -1,12 +1,15 @@
 package net.idea.restnet.c;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.exception.RResourceException;
+import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.ClientResourceWrapper;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
@@ -23,6 +26,7 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
+import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -51,6 +55,23 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	public final static String max_hits = "max";
 
 	
+	protected boolean htmlbyTemplate = false;
+
+	public String getTemplateName() {
+		return null;
+	}
+
+	public boolean isHtmlbyTemplate() {
+		return htmlbyTemplate;
+	}
+
+	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
+		this.htmlbyTemplate = htmlbyTemplate;
+	}
+	
+	protected void configureTemplateMap(Map<String, Object> map) {
+		
+	}
 	protected ResourceDoc documentation = new ResourceDoc();
 
 
@@ -119,6 +140,25 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
         this.getResponse().getCookieSettings().add(cS);
        
 	}
+	
+	protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (getClientInfo().getUser()!=null) 
+        	map.put("username", getClientInfo().getUser().getIdentifier());
+        configureTemplateMap(map);
+        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
+	}
+	
+	protected Representation toRepresentation(Map<String, Object> map,
+            String templateName, MediaType mediaType) {
+        
+        return new TemplateRepresentation(
+        		templateName,
+        		((FreeMarkerApplicaton)getApplication()).getConfiguration(),
+        		map,
+        		MediaType.TEXT_HTML);
+}	  
+	
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
 	try {
