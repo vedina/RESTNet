@@ -93,6 +93,7 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 				MediaType.APPLICATION_RDF_TURTLE,
 				MediaType.TEXT_RDF_N3,
 				MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JAVASCRIPT,
 				MediaType.TEXT_RDF_NTRIPLES,
 				MediaType.APPLICATION_JAVA_OBJECT});
 		Form form = getRequest().getResourceRef().getQueryAsForm();
