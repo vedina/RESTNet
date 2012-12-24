@@ -70,6 +70,9 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	}
 	
 	protected void configureTemplateMap(Map<String, Object> map) {
+        if (getClientInfo().getUser()!=null) 
+        	map.put("username", getClientInfo().getUser().getIdentifier());
+        map.put("creator",getClass().getName());
 		
 	}
 	protected ResourceDoc documentation = new ResourceDoc();
