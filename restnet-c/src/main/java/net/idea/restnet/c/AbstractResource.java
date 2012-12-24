@@ -10,6 +10,8 @@ import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.exception.RResourceException;
 import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
+import net.idea.restnet.c.freemarker.FreeMarkerSupport;
+import net.idea.restnet.c.freemarker.IFreeMarkerSupport;
 import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.ClientResourceWrapper;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
@@ -42,7 +44,7 @@ import org.restlet.resource.ServerResource;
  * @param <P>
  */
 public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representation>> 
-																	extends ServerResource implements IAuthToken {
+													extends ServerResource implements IAuthToken, IFreeMarkerSupport {
 	protected Q queryObject;
 	protected Exception error = null;	
 	protected Status response_status = Status.SUCCESS_OK;
@@ -51,25 +53,22 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	public final static String condition = "condition";
 	public final static String caseSensitive = "casesens";
 	public final static String returnProperties = "returnProperties";
-	
+	protected IFreeMarkerSupport freeMarkerSupport = new FreeMarkerSupport();
 	public final static String max_hits = "max";
-
-	
-	protected boolean htmlbyTemplate = false;
 
 	public String getTemplateName() {
 		return null;
 	}
 
 	public boolean isHtmlbyTemplate() {
-		return htmlbyTemplate;
+		return freeMarkerSupport.isHtmlbyTemplate();
 	}
 
 	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
-		this.htmlbyTemplate = htmlbyTemplate;
+		freeMarkerSupport.setHtmlbyTemplate(htmlbyTemplate);
 	}
 	
-	protected void configureTemplateMap(Map<String, Object> map) {
+	public void configureTemplateMap(Map<String, Object> map) {
         if (getClientInfo().getUser()!=null) 
         	map.put("username", getClientInfo().getUser().getIdentifier());
         map.put("creator",getClass().getName());
