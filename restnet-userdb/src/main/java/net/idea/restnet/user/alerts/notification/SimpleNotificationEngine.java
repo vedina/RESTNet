@@ -1,333 +1,161 @@
 package net.idea.restnet.user.alerts.notification;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.MessagingException;
-
-import net.toxbank.client.resource.AbstractToxBankResource;
-import net.toxbank.client.resource.Account;
+import net.idea.restnet.u.mail.INotificationUtility;
+import net.idea.restnet.u.mail.Notification;
 import net.toxbank.client.resource.Alert;
-import net.toxbank.client.resource.Investigation;
-import net.toxbank.client.resource.Protocol;
+import net.toxbank.client.resource.Protocol.STATUS;
 import net.toxbank.client.resource.User;
 
-import org.opentox.rest.RestException;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.restlet.data.MediaType;
+import org.restlet.data.Reference;
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
+import org.restlet.resource.ResourceException;
+
+import com.sun.mail.imap.protocol.Status;
 
 /**
- * Handles the querying of alerts and notification of users via email when an
- * alert has been activated.
+ * Simple alert notification. The message formatting is minimal, just URIs.
  */
-@SuppressWarnings("rawtypes")
-public class SimpleNotificationEngine implements INotificationEngine {
-  public static final String notificationSubject = "ToxBank Alert Updates";
-  private static final String EMAIL_SERVICE_NAME = "mailto";
-  private static final String configFile = "conf/tbalert.pref";
-  private static Logger log  = Logger.getLogger("org.toxbank.rest.user.alerts.notification"); 
-  private AlertNotificationUtility utility;
-  
+public class SimpleNotificationEngine<ITEM> implements INotificationEngine {
+  public static final String notificationSubject = "Alert Updates";
+  private static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.getName()); 
+  private INotificationUtility utility;
+  protected Reference root = null;
   /**
-   * Uses the default configuration from the config file tbalert.pref
+   * Uses the default configuration from the config file 
    */
-  public SimpleNotificationEngine() {
-    this(new DefaultAlertNotificationUtility(configFile));
+  public SimpleNotificationEngine(Reference root,String configFile) throws IOException {
+    this(new Notification(configFile));
+    this.root = root;
   }
   
   /**
    * @param utility implements the dependencies needed by the engine
    */
-  public SimpleNotificationEngine(AlertNotificationUtility utility) {
+  public SimpleNotificationEngine(INotificationUtility utility) {
     this.utility = utility;
   }
     
-  /**
-   * @return the resource path to the configuration file
-   */
-  public String getConfigFile() {
-    return configFile;
-  }
-  
-	/**
-	 * @param user the user potentially being alerted
-	 * @param alerts the list of relevant alerts
-	 * @param token a opensso security token that allows access to various services
-	 * @return ? 
-	 */
-  @Override
+  @Override	
   public boolean sendAlerts(User user, List<? extends Alert> alerts, String token) throws Exception {
-    String email = getEmail(user);
-    if (email != null) {
-      List<AlertResult> results = new ArrayList<AlertResult>();
-      for (Alert alert : alerts) {
-        AlertResult result = queryAlert(user, alert, token);
-        if (result != null) {
-          results.add(result);
-        }
-      }
-      
-      if (results.size() > 0) {
-        sendNotification(email, results, token);		  
-      }
-    }
+    String email = user.getEmail();
+    if (email == null) return false;
     
-    return true;
-  }
-  
-  private static class AlertResult {
-    public final Alert alert;
-    public final List<URL> matchingUrls;
-    public AlertResult(Alert alert, List<URL> matchingUrls) {
-      this.alert = alert;
-      this.matchingUrls = matchingUrls;
+    StringBuilder content = new StringBuilder();
+    for (Alert alert : alerts) {
+    	System.out.println(user.getEmail());
+        List<String> results = queryAlert(user, alert, token);
+        if ((results==null)||(results.size()==0)) continue;
+    	content.append(alert.getTitle());
+    	content.append("\r\n");
+        for (String result:results) {
+        	content.append(result);
+        	content.append("\r\n");
+        }
+        content.append("\r\n");
     }
+    if (content.length()>0) {
+    	content.append("You have been sent this email because you have signed up to receive "+notificationSubject + "\r\n");
+    	System.out.println(email + content);
+    	utility.sendNotification(email, notificationSubject, content.toString(), MediaType.TEXT_PLAIN.toString());
+    	return true;
+    }
+    return false;
+
   }
 
-  private AlertResult queryAlert(User user, Alert alert, String token) throws Exception {
-    List<URL> urls = new ArrayList<URL>();
+
+  protected String formatURL(String url) {
+	  return url;
+  }
+  protected List<String> retrieve(Reference ref) throws Exception {
+	  HttpClient cli = new DefaultHttpClient();
+ 	  HttpGet httpGet = new HttpGet(ref.toString());
+	  httpGet.addHeader("Accept","application/uri-list");
+	  httpGet.addHeader("Accept-Charset", "utf-8");
+	  InputStream in = null;
+	  try {
+		HttpResponse response = cli.execute(httpGet);
+		HttpEntity entity  = response.getEntity();
+		in = entity.getContent();
+		if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+			List<String> urls = new ArrayList<String>();
+			BufferedReader r = new BufferedReader(new InputStreamReader(in));
+			String line = null;
+			while ((line = r.readLine()) != null) {
+				urls.add(formatURL(line.trim()));
+			}
+			return urls;
+		} else 	
+			 throw new IOException(String.format("Error reading URL %s\n%s",ref.toString(),response.getStatusLine()));
+		} catch (Exception x) {	
+			throw x;
+		} finally {
+			try {if (in != null) in.close();} catch (Exception x) {}
+			try {cli.getConnectionManager().shutdown();} catch (Exception x) {}
+		}     
+  }
+  
+  protected List<String> retrieveByRIAP(Reference ref) throws Exception {
+	  ClientResource cr = null;
+	  Representation repr = null;
+	  try {
+		  System.out.println(ref);
+		cr = new ClientResource(ref);
+		repr = cr.get(MediaType.TEXT_URI_LIST);
+		if (org.restlet.data.Status.SUCCESS_OK.equals(cr.getStatus())) {
+			List<String> urls = new ArrayList<String>();
+			BufferedReader r = new BufferedReader(new InputStreamReader(repr.getStream()));
+			String line = null;
+			while ((line = r.readLine()) != null) {
+				urls.add(formatURL(line.trim()));
+			}
+			return urls;
+		}
+		} catch (ResourceException x) {
+			if (x.getStatus().equals(org.restlet.data.Status.CLIENT_ERROR_NOT_FOUND)) {
+				//skip, this is ok
+			} else 
+				log.log(Level.WARNING,String.format("Error reading URL %s\n%s",ref.toString(),cr.getStatus()),x);
+			x.printStackTrace();
+		} catch (Exception x) {	
+			throw x;
+		} finally {
+			try {repr.release();} catch (Exception x) {}
+			try {cr.release();} catch (Exception x) {}
+		}     
+		return null;
+  }
+  protected List<String> queryAlert(User user, Alert alert, String token) throws Exception {
+      System.out.println(alert);
     switch (alert.getQuery().getType()) {
     case FREETEXT:
-      String paramString = createParamString(alert);
-      urls = utility.querySearchService(paramString, token);
-      break;
-    case SPARQL:
-      // not supported yet
-      break;
+      Reference ref = new Reference(String.format("%s%s?%s",root,alert.getTitle(),alert.getQuery().getContent()));
+      ref.addQueryParameter("modifiedSince", Long.toString(alert.getSentAt()/1000));
+
+      if ("riap".equals(ref.getScheme()))
+    	  return retrieveByRIAP(ref);
+      else 
+    	  return retrieve(ref);
     default:
       throw new IllegalArgumentException("Unsupported alert type: " + alert.getQuery().getType());
     }
-    
-    if (urls.size() > 0) {
-      return new AlertResult(alert, urls);
-    }
-    else {
-      return null;
-    }
   }
 
-  private String createParamString(Alert alert) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(alert.getQueryString());
-    if (alert.getSentAt() > 0) {
-      if (alert.getQueryString().indexOf('?') >= 0) {
-        sb.append("&");
-      }
-      else {
-        sb.append("?");
-      }
-      sb.append("timeModified=");
-      sb.append(alert.getSentAt());
-    }
-    return sb.toString();
-  }
-  
-  private String getEmail(User user) {
-    for (Account account : user.getAccounts()) {
-      if (EMAIL_SERVICE_NAME.equals(account.getService())) {
-        return account.getAccountName();
-      }
-    }
-    return null;
-  }
-      
-  private void sendNotification(String userEmail, List<AlertResult> results, String token) throws IOException, RestException, RuntimeException,MessagingException {
-    StringBuilder sb = new StringBuilder();
-    sb.append("<html>\n");
-    appendStyle(sb);
-    sb.append("<body>\n");
-    appendIntro(sb);
-    for (AlertResult result : results) {
-      sb.append("<div class='alert_result'>\n");
-      appendSummary(sb, result.alert);
-      List<AbstractToxBankResource> resources = utility.getResources(result.matchingUrls, token);
-      for (AbstractToxBankResource resource : resources) {
-        if (resource instanceof Protocol) 
-          appendSummary(sb, (Protocol)resource);          
-        else 
-          if (resource instanceof Investigation) {
-        	  appendSummary(sb, (Investigation)resource);
-          } else { 
-				log.log(Level.WARNING,  String.format("Unsupported resource type: ", resource.getClass()));
-          //throw new RuntimeException("Unsupported resource type: " + resource.getClass());
-          }	 
-      }
-      
-      sb.append("</div>\n");
-    }
-    sb.append("</body>\n");
-    sb.append("</html>\n");
-
-    utility.sendNotification(userEmail, notificationSubject, sb.toString(), "text/html");
-  }
-
-  private void appendStyle(StringBuilder sb) {
-    sb.append("<style>\n");
-    
-    sb.append("html {\n");
-    sb.append("  font-family: arial;\n");
-    sb.append("  font-size: 14px;\n");
-    sb.append("}\n");
-    
-    sb.append("a:visited, a:link, a:hover {\n");
-    sb.append("  color: #333399;\n");
-    sb.append("  text-decoration: none;\n");
-    sb.append("  font-weight: bold;\n");
-    sb.append("}\n");
-
-    sb.append("a:hover {\n");
-    sb.append("  color: #8d8dc1;\n");
-    sb.append("}\n");
-    
-    sb.append(".alert_result {\n");
-    sb.append("  width: 550px;\n");
-    sb.append("  margin: 5px;\n");
-    sb.append("  padding: 10px;\n");
-    sb.append("  border: 1px solid #eaeaea;\n");
-    sb.append("}\n");
-    
-    sb.append(".summary {\n");
-    sb.append("  margin: 5px;\n");
-    sb.append("  padding: 10px;\n");
-    sb.append("  border: 1px solid #eaeaea;\n");
-    sb.append("  font-size: 13px;\n");
-    sb.append("  width: 540px;\n");
-    sb.append("}\n");
-    
-    sb.append(".alert_summary {\n");
-    sb.append("  background-color: #ebebff;\n");
-    sb.append("}\n");
-
-    sb.append(".protocol_summary {\n");
-    sb.append("  background-color: #e6f3f4;\n");
-    sb.append("}\n");
-
-    sb.append(".investigation_summary {\n");
-    sb.append("  background-color: #f8f8f8\n");
-    sb.append("}\n");
-
-    sb.append(".label {\n");
-    sb.append("  font-weight: bold;\n");
-    sb.append("  padding-right: 8px;\n");
-    sb.append("  width: 80px;\n");
-    sb.append("}\n");
-    
-    sb.append(".summary td {\n");
-    sb.append("  padding-bottom: 6px;\n");
-    sb.append("  font-size: 13px;\n");
-    sb.append("}\n");
-    
-    sb.append("</style>\n");
-  }
-  
-  private void appendIntro(StringBuilder sb) {
-    sb.append("<div class='intro'>");
-    sb.append("Some updates have been made to the ToxBank data warehouse which match your email alert criteria.");
-    sb.append("</div>\n");
-  }
-  
-  private void appendTableValue(StringBuilder sb, String value) {
-    sb.append("    <tr>\n");
-    sb.append("      <td colspan='2' class='value'>");
-    sb.append(value);
-    sb.append("</div>\n");
-  }
-  
-  private void appendTableValue(StringBuilder sb, String label, String value) {
-    sb.append("    <tr>\n");
-    sb.append("      <td class='label'>");
-    sb.append(label);
-    sb.append("</td>\n");
-    sb.append("      <td class='value'>");
-    sb.append(value);
-    sb.append("</td>\n");
-    sb.append("    </tr>\n");
-  }
-
-  private void appendTableValue(StringBuilder sb, String label, String link, String text) {
-    sb.append("    <tr>\n");
-    sb.append("      <td class='label'>");
-    sb.append(label);
-    sb.append("</td>\n");
-    sb.append("      <td class='value'>\n");
-    sb.append("        <a href='");
-    sb.append(link);
-    sb.append("'>");
-    sb.append(text);
-    sb.append("</a>");
-    sb.append("      </td>\n");
-    sb.append("    </tr>\n");
-  }
-
-  private void appendSummary(StringBuilder sb, Alert alert) {
-    sb.append("<div class='summary alert_summary'>\n");
-    sb.append("  <table class='summary_table'>\n");
-    appendTableValue(sb, "Alert Title:", alert.getTitle());
-    appendTableValue(sb, "Alert Query:", alert.getQueryString());
-    sb.append("  </table>\n");
-    sb.append("</div>\n");
-  }
-
-  private void appendSummary(StringBuilder sb, Protocol protocol) {
-    sb.append("<div class='summary protocol_summary'>\n");
-    sb.append("  <table class='summary_table'>\n");
-    appendTableValue(sb, "Protocol:", utility.getUIUrl(protocol).toString(), protocol.getTitle());
-    appendTableValue(sb, "Protocol ID:", 
-        String.format("%s (version %d)", protocol.getIdentifier(), protocol.getVersion()));
-    
-    if (protocol.getAuthors().size() > 0) {
-      String authorsString = shortName(protocol.getAuthors().get(0));
-      if (protocol.getAuthors().size() > 1)  {
-        authorsString += " et al";
-      }
-      appendTableValue(sb, "Authors:", authorsString);
-    }
-    
-    appendTableValue(sb, protocol.getAbstract());
-    
-    sb.append("  </table>\n");
-    sb.append("</div>\n");
-  }
-
-  private void appendSummary(StringBuilder sb, Investigation investigation) {
-    sb.append("<div class='summary investigation_summary'>\n");
-    sb.append("  <table class='summary_table'>\n");
-    appendTableValue(sb, "Investigation:", utility.getUIUrl(investigation).toString(), investigation.getTitle());
-    appendTableValue(sb, "Protocol ID:", investigation.getSeuratId());
-    
-    if (investigation.getAuthors().size() > 0) {
-      String authorsString = shortName(investigation.getAuthors().get(0));
-      if (investigation.getAuthors().size() > 1)  {
-        authorsString += " et al";
-      }
-      appendTableValue(sb, "Authors:", authorsString);
-    }
-    
-    appendTableValue(sb, investigation.getAbstract());
-    
-    sb.append("  </table>\n");
-    sb.append("</div>\n");
-  }
-
-  private static String shortName(User user) {
-    StringBuilder sb = new StringBuilder();
-    if (user.getFirstname() != null && user.getLastname() != null) {
-      sb.append(user.getFirstname().charAt(0));
-      sb.append(".");
-      sb.append(user.getLastname());
-    }
-    else if (user.getUserName() != null) {
-      sb.append(user.getUserName());
-    }
-    else if (user.getLastname() != null) {
-      sb.append(user.getLastname());
-    }
-    else {
-      sb.append("Unknown");
-    }
-    
-    return sb.toString();
-  }
 }

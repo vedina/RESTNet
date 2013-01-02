@@ -71,7 +71,7 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 		});			
 	}	
 
-	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"username\": \"%s\",\n\t\"title\": \"%s\",\n\t\"firstname\": \"%s\",\n\t\"lastname\": \"%s\",\n\t\"email\": \"%s\",\n\t\"homepage\": \"%s\",\n\t\"keywords\": \"%s\",\n\t\"reviewer\": %s,\n\t\t\"organisation\": [%s]\n\t}";
+	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"username\": \"%s\",\n\t\"title\": \"%s\",\n\t\"firstname\": \"%s\",\n\t\"lastname\": \"%s\",\n\t\"email\": \"%s\",\n\t\"homepage\": \"%s\",\n\t\"keywords\": \"%s\",\n\t\"reviewer\": %s,\n\t\t\"organisation\": [%s]\n}";
 	private static String formatGroup = "{\n\t\t\"uri\":\"%s\",\n\t\t\"title\": \"%s\"\n\t\t}";
 	//output.write("Title,First name,Last name,user name,email,Keywords,Reviewer\n");
 
@@ -106,6 +106,7 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 					user.isReviewer(),
 					group==null?"":group.toString()
 					));
+			comma = ",";
 		} catch (IOException x) {
 			Context.getCurrentLogger().severe(x.getMessage());
 		}

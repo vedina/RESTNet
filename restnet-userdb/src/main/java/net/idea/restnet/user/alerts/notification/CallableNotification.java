@@ -20,7 +20,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
-public class CallableNotification extends CallableDBUpdateTask<DBUser,Form,String> {
+public abstract class CallableNotification extends CallableDBUpdateTask<DBUser,Form,String> {
 	protected UserURIReporter<IQueryRetrieval<DBUser>> reporter;
 	protected DBUser user;
 	protected INotificationEngine notification;
@@ -49,9 +49,14 @@ public class CallableNotification extends CallableDBUpdateTask<DBUser,Form,Strin
 	protected DBUser getTarget(Form input) throws Exception {
 		return user;
 	}
-	protected String retrieveEmail(DBUser user,String token) throws Exception {
-		throw new Exception("Retrieve email by token "+ token + " not implemented!");
-	}
+	/**
+	 * Retrieve email by user or token
+	 * @param user
+	 * @param token
+	 * @return
+	 * @throws Exception
+	 */
+	protected abstract String retrieveEmail(DBUser user,String token) throws Exception;
 	@Override
 	protected IQueryUpdate<Object, DBUser> createUpdate(DBUser user)
 			throws Exception {

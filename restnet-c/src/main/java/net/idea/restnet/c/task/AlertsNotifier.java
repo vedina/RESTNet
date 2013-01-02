@@ -76,7 +76,7 @@ public abstract class AlertsNotifier implements Callable<String> {
 			}
 			setLoginCredentials(headers);
 			repr = cr.post(form.getWebRepresentation(),MediaType.TEXT_URI_LIST);
-			return repr.getText();
+			return (repr!=null)?repr.getText():cr.getStatus().toString();
 		} catch (ResourceException x) {
 			if (Status.CLIENT_ERROR_NOT_FOUND.equals(x.getStatus())) {
 				logger.log(Level.INFO, "No active alerts found");
@@ -84,6 +84,7 @@ public abstract class AlertsNotifier implements Callable<String> {
 			}
 			else throw x;
 		} catch (Exception x) {
+			x.printStackTrace();
 			throw x;
 		} finally {
 			try { repr.release(); } catch (Exception x) {}
