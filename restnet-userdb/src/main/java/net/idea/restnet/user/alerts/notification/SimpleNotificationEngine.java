@@ -33,8 +33,15 @@ import com.sun.mail.imap.protocol.Status;
  * Simple alert notification. The message formatting is minimal, just URIs.
  */
 public class SimpleNotificationEngine<ITEM> implements INotificationEngine {
-  public static final String notificationSubject = "Alert Updates";
-  private static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.getName()); 
+  public String notificationSubject = "Alert Updates";
+  public String getNotificationSubject() {
+	return notificationSubject;
+}
+
+public void setNotificationSubject(String notificationSubject) {
+	this.notificationSubject = notificationSubject;
+}
+protected static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.getName()); 
   private INotificationUtility utility;
   protected Reference root = null;
   /**
@@ -62,7 +69,7 @@ public class SimpleNotificationEngine<ITEM> implements INotificationEngine {
     	System.out.println(user.getEmail());
         List<String> results = queryAlert(user, alert, token);
         if ((results==null)||(results.size()==0)) continue;
-    	content.append(alert.getTitle());
+    	//content.append(alert.getQuery());
     	content.append("\r\n");
         for (String result:results) {
         	content.append(result);
