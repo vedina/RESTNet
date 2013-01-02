@@ -106,4 +106,21 @@ public class CallableGroupCreator extends CallableDBUpdateTask<IDBGroup,Form,Str
 		return reporter.getURI(user);
 	}
 
+	@Override
+	protected Object executeQuery(IQueryUpdate<? extends Object, IDBGroup> q)
+			throws Exception {
+		return super.executeQuery(q);
+	}
+
+	@Override
+	public String toString() {
+		if (Method.POST.equals(method)) {
+			return String.format("Create %s",item==null?"":item.getGroupType().name());
+		} else if (Method.PUT.equals(method)) {
+			return String.format("Update %s",item==null?"":item.getGroupType().name());
+		} else if (Method.DELETE.equals(method)) {
+			return String.format("Delete %s",item==null?"":item.getGroupType().name());
+		}
+		return item==null?"Read":item.getGroupType().name();
+	}
 }

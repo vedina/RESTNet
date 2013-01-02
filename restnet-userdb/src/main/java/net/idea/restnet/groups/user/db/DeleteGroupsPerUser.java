@@ -10,6 +10,7 @@ import net.idea.restnet.groups.GroupType;
 import net.idea.restnet.groups.IDBGroup;
 import net.idea.restnet.user.DBUser;
 
+
 /**
  * Remove a group (project or organisation) from the user profile
  * @author nina

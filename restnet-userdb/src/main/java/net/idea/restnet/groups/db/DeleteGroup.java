@@ -8,6 +8,7 @@ import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractObjectUpdate;
 import net.idea.restnet.groups.IDBGroup;
 
+
 /**
  * Delete a group (project or organisation)
  * @author nina

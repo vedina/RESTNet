@@ -5,6 +5,7 @@ import java.sql.Connection;
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.query.IQueryUpdate;
 import net.idea.restnet.db.update.CallableDBUpdateTask;
+import net.idea.restnet.resources.Resources;
 import net.idea.restnet.user.DBUser;
 import net.idea.restnet.user.alerts.db.AbstractAlertUpdate;
 import net.idea.restnet.user.alerts.db.AddAlert;
@@ -34,6 +35,7 @@ public class CallableAlertCreator extends CallableDBUpdateTask<DBAlert,Form,Stri
 		this.item = item;
 		this.reporter = reporter;
 		this.user = user;
+		setTitle(String.format("%s%s",Method.DELETE.equals(method)?"Delete saved search":"Save search",item==null?"":item.getVisibleQuery()));
 	}
 
 	@Override
@@ -88,6 +90,17 @@ public class CallableAlertCreator extends CallableDBUpdateTask<DBAlert,Form,Stri
 	protected String getURI(DBAlert alert) throws Exception {
 		return reporter.getURI(alert);
 	}
+	@Override
+	protected String getURI(DBAlert target, Method method) throws Exception {
+		if (Method.DELETE.equals(method)) {
+			return String.format("%s%s", reporter.getBaseReference(), Resources.myaccount);
+		} else return getURI(target);
+	}
 
+	@Override
+	protected Object executeQuery(IQueryUpdate<? extends Object, DBAlert> q)
+			throws Exception {
+		return super.executeQuery(q);
+	}
 
 }

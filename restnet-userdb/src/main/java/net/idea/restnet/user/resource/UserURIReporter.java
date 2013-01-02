@@ -2,8 +2,8 @@ package net.idea.restnet.user.resource;
 
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.restnet.db.QueryURIReporter;
+import net.idea.restnet.resources.Resources;
 import net.idea.restnet.user.DBUser;
-import net.toxbank.client.Resources;
 
 import org.restlet.Request;
 

@@ -10,6 +10,7 @@ import net.idea.restnet.groups.GroupType;
 import net.idea.restnet.groups.IDBGroup;
 import net.idea.restnet.user.DBUser;
 
+
 public class AddGroupsPerUser<P extends IDBGroup> extends AbstractUpdate<DBUser,List<P>> {
 	public static final String sql_addGroup = "insert ignore into user_%s (iduser,%s,priority) values ";
 	

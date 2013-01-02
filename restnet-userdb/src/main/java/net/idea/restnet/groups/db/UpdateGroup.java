@@ -10,6 +10,7 @@ import net.idea.restnet.groups.IDBGroup;
 
 
 
+
 public class UpdateGroup extends AbstractObjectUpdate<IDBGroup>{
 
 	public UpdateGroup(IDBGroup ref) {

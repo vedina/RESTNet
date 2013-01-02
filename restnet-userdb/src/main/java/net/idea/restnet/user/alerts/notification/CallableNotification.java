@@ -3,7 +3,6 @@ package net.idea.restnet.user.alerts.notification;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Connection;
-import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +15,6 @@ import net.idea.restnet.user.alerts.db.UpdateAlertsSentTimeStamp;
 import net.idea.restnet.user.resource.UserURIReporter;
 import net.toxbank.client.resource.Account;
 
-import org.opentox.aa.opensso.OpenSSOToken;
 import org.restlet.data.Form;
 import org.restlet.data.Method;
 import org.restlet.data.Status;
@@ -51,19 +49,16 @@ public class CallableNotification extends CallableDBUpdateTask<DBUser,Form,Strin
 	protected DBUser getTarget(Form input) throws Exception {
 		return user;
 	}
-
+	protected String retrieveEmail(DBUser user,String token) throws Exception {
+		throw new Exception("Retrieve email by token "+ token + " not implemented!");
+	}
 	@Override
 	protected IQueryUpdate<Object, DBUser> createUpdate(DBUser user)
 			throws Exception {
 		if (Method.POST.equals(method)) try {
 			//user email should be already read from the protocol service
 			if (user.getEmail()==null) {
-				OpenSSOServicesConfig config = OpenSSOServicesConfig.getInstance();
-				OpenSSOToken ssoToken = new OpenSSOToken(config.getOpenSSOService());
-				ssoToken.setToken(getToken());
-				Hashtable<String,String> results = new Hashtable<String, String>();
-				ssoToken.getAttributes(new String[] {"mail"}, results);
-				String email = results.get("mail");
+				String email = retrieveEmail(user,getToken());
 				if ((email==null) || "".equals(email)) 
 							throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,String.format("Invalid email address for [%s]",user.getUserName()));
 				Account account = new Account();

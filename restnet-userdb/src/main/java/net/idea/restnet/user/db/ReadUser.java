@@ -8,6 +8,7 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.restnet.user.DBUser;
 
+
 /**
  * Retrieve references (by id or all)
  * @author nina
@@ -90,7 +91,7 @@ public class ReadUser<T>  extends ReadUserID<T> {
 				try {
 					String n = rs.getString(name());
 					user.setWeblog(n==null?null:new URL(n));}
-				catch (Exception x) {throw new SQLException(x);}
+				catch (Exception x) {user.setWeblog(null);}
 			}		
 			@Override
 			public Object getValue(DBUser protocol) {
@@ -103,27 +104,51 @@ public class ReadUser<T>  extends ReadUserID<T> {
 				try {
 					String n = rs.getString(name());
 					user.setHomepage(n==null?null:new URL(n));
-				} catch (Exception x) {throw new SQLException(x);}
+				} catch (Exception x) {user.setHomepage(null);}
+			}		
+			@Override
+			public Object getValue(DBUser protocol) {
+				return protocol==null?null:protocol.getHomepage();
+			}				
+		},
+		keywords {
+			@Override
+			public void setParam(DBUser user, ResultSet rs) throws SQLException {
+				try {
+					String n = rs.getString(name());
+					user.setKeywords(n);
+				} catch (Exception x) {user.setKeywords(null);}
+			}		
+			@Override
+			public Object getValue(DBUser reviewer) {
+				return reviewer==null?null:reviewer.getKeywords();
+			}				
+		},		
+		reviewer {
+			@Override
+			public void setParam(DBUser user, ResultSet rs) throws SQLException {
+				try {
+					user.setReviewer(rs.getBoolean(name()));
+				} catch (Exception x) {user.setReviewer(false);}
 			}		
 			@Override
 			public Object getValue(DBUser user) {
-				return user==null?null:user.getHomepage();
+				return user==null?null:user.isReviewer();
 			}				
-		},
+		},		
 		email {
 			@Override
 			public void setParam(DBUser user, ResultSet rs) throws SQLException {
 				try {
-					user.setEmail(rs.getString(name()));
-				} catch (Exception x) {throw new SQLException(x);}
+					String n = rs.getString(name());
+					if ((n!=null) && !"".equals(n)) user.setEmail(n);
+				} catch (Exception x) {user.setEmail(null);}
 			}		
 			@Override
 			public Object getValue(DBUser user) {
 				return user==null?null:user.getEmail();
 			}				
 		}
-			
-	
 		;
 		public String getCondition() {
 			return String.format(" %s = ? ",name());
@@ -134,11 +159,11 @@ public class ReadUser<T>  extends ReadUserID<T> {
 		public Class getClassType(DBUser user) {
 			return String.class;
 		}
-		public void setParam(DBUser user, ResultSet rs) throws SQLException {
-			user.setLastname(rs.getString(name()));
+		public void setParam(DBUser protocol, ResultSet rs) throws SQLException {
+			protocol.setLastname(rs.getString(name()));
 		}		
-		public Object getValue(DBUser user) {
-			return user==null?null:user.getLastname();
+		public Object getValue(DBUser protocol) {
+			return protocol==null?null:protocol.getLastname();
 		}
 		
 		public String getHTMLField(DBUser user) {
@@ -158,7 +183,7 @@ public class ReadUser<T>  extends ReadUserID<T> {
 	}
 	
 	protected static String sql = 
-		"SELECT iduser,username,title,firstname,lastname,institute,weblog,homepage,email from user %s %s";
+		"SELECT user.iduser,username,user.title,firstname,lastname,institute,weblog,homepage,email,keywords,reviewer from user %s %s";
 
 	
 	public ReadUser(DBUser user) {

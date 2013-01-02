@@ -9,6 +9,7 @@ import net.idea.modbcum.q.update.AbstractObjectUpdate;
 import net.idea.restnet.c.exception.InvalidUserException;
 import net.idea.restnet.user.DBUser;
 
+
 /**
  * Delete an user
  * @author nina

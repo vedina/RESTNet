@@ -8,6 +8,7 @@ import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.groups.IDBGroup;
 import net.idea.restnet.user.DBUser;
 
+
 public class DeleteGroupPerUser<P extends IDBGroup> extends AbstractUpdate<DBUser,P> {
 	protected DeleteGroupsPerUser<P> wrapped;
 	

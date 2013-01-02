@@ -8,6 +8,7 @@ import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractObjectUpdate;
 import net.idea.restnet.groups.IDBGroup;
 
+
 public class CreateGroup extends AbstractObjectUpdate<IDBGroup>{
 
 	public CreateGroup(IDBGroup group) {

@@ -8,6 +8,7 @@ import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.groups.IDBGroup;
 import net.idea.restnet.user.DBUser;
 
+
 public class AddGroupPerUser<P extends IDBGroup> extends AbstractUpdate<DBUser,P> {
 	protected AddGroupsPerUser<P> wrapped;
 	

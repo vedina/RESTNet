@@ -5,8 +5,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import net.idea.restnet.user.DBUser;
+import net.toxbank.client.Resources;
 import net.toxbank.client.resource.Alert;
 import net.toxbank.client.resource.Query.QueryType;
+
+import org.restlet.data.Form;
+import org.restlet.data.Reference;
 
 public class DBAlert extends Alert<DBUser> {
 	/**
@@ -189,5 +193,24 @@ public class DBAlert extends Alert<DBUser> {
 	public void setID(int iD) {
 		ID = iD;
 	}
+	
+	public void setQueryString(Reference queryURI) {
+		Form form = queryURI.getQueryAsForm();
+		form.removeAll("page");
+		form.removeAll("pagesize");
+		super.setQueryString(form.getQueryString());
+	}
 
+	public String getVisibleQuery() {
+		Form form = new Form(getQueryString());
+		String option = form.getFirstValue("option");
+		String search = form.getFirstValue("search");
+		return String.format("%s %s",option==null?"Free text":option,search==null?"All":search);
+	}
+	
+	public String getRunnableQuery() {
+		Form form = new Form(getQueryString());
+		return String.format("%s?%s",Resources.protocol,form.getQueryString());
+	}
+	
 }

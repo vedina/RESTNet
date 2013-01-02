@@ -1,6 +1,5 @@
 package net.idea.restnet.groups;
 
-
 public enum GroupType {
 	PROJECT, ORGANISATION;
 	public String getID() {
@@ -55,5 +54,4 @@ public enum GroupType {
 			return String.format("SELECT %s,name,ldapgroup,cluster FROM %s join user_%s using(%s) where iduser=? and %s=?",
 					getID(), getDBname(),getDBname(),getID(), getID());
 	}	
-
 }

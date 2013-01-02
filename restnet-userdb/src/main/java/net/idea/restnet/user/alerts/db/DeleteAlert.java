@@ -13,7 +13,8 @@ import net.idea.restnet.user.DBUser;
  *
  */
 public class DeleteAlert  extends  AbstractAlertUpdate<DBUser>  {
-	protected static final String sql = "DELETE from alert where %s %s %s";
+	protected static final String sql_iduser = "DELETE from alert where %s %s %s";
+	protected static final String sql_username = "DELETE alert from alert,user where %s %s %s and alert.iduser=user.iduser";
 	
 	public DeleteAlert(DBAlert alert,DBUser user) {
 		super(alert);
@@ -27,8 +28,12 @@ public class DeleteAlert  extends  AbstractAlertUpdate<DBUser>  {
 		
 		if (getObject()!=null)
 			params.add(new QueryParam<Integer>(Integer.class, getObject().getID()));	
-		if ((getGroup()!=null) && (getGroup().getID()>0))
-			params.add(new QueryParam<Integer>(Integer.class, getGroup().getID()));
+		
+		if (getGroup()!=null)
+			if (getGroup().getID()>0)
+				params.add(new QueryParam<Integer>(Integer.class, getGroup().getID()));
+			else if (getGroup().getUserName()!=null)
+				params.add(new QueryParam<String>(String.class, getGroup().getUserName()));
 			
 		if (params.size()==0) throw new AmbitException("Both alert and user are missing!");
 		return params;
@@ -38,9 +43,13 @@ public class DeleteAlert  extends  AbstractAlertUpdate<DBUser>  {
 	public String[] getSQL() throws AmbitException {
 		String alert = null;
 		String user = null;
-
+		String sql = sql_iduser;
 		if (getObject()!=null && getObject().getID()>0 ) alert = DBAlert._fields.idquery.getCondition();
-		if (getGroup()!=null && getGroup().getID()>0 ) user = DBAlert._fields.iduser.getCondition();
+		
+		if (getGroup()!=null)
+			if (getGroup().getID()>0 ) user = DBAlert._fields.iduser.getCondition();
+			else if (getGroup().getUserName()!=null) { user = " username=? "; sql = sql_username;}
+		
 		return new String[] {String.format(sql, 
 				alert==null?"":alert,
 				alert!=null && user!=null?" and ":"",

@@ -45,9 +45,12 @@ public class ReadAlert extends AbstractQuery<DBUser, DBAlert, EQCondition, DBAle
 		b.append(sql);
 		
 		if (getFieldname()!=null) {
-			if (getFieldname().getID()<=0) throw new InvalidUserException();
-			b.append(" and ");
-			b.append(DBAlert._fields.iduser.getCondition());
+			if (getFieldname().getID()>0) {
+				b.append(" and ");
+				b.append(DBAlert._fields.iduser.getCondition());
+			} else if (getFieldname().getUserName()!=null) {
+				b.append(" and username=? ");
+			} else throw new InvalidUserException();
 		} 
 		if (getValue()!=null) {
 			if (getValue().getID()<=0) throw new InvalidAlertException();
@@ -80,8 +83,11 @@ public class ReadAlert extends AbstractQuery<DBUser, DBAlert, EQCondition, DBAle
 		List<QueryParam> params =  new ArrayList<QueryParam>();
 		
 		if (getFieldname()!=null) {
-			if (getFieldname().getID()<=0) throw new InvalidUserException();
-			params.add(new QueryParam<Integer>(Integer.class,getFieldname().getID()));
+			if (getFieldname().getID()>0)
+				params.add(new QueryParam<Integer>(Integer.class,getFieldname().getID()));
+			else if (getFieldname().getUserName()!=null)
+				params.add(new QueryParam<String>(String.class,getFieldname().getUserName()));
+			else  throw new InvalidUserException();
 		} 
 		if (getValue()!=null) {
 			if (getValue().getID()<=0) throw new InvalidAlertException();

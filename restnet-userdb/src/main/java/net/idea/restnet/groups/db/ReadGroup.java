@@ -13,6 +13,7 @@ import net.idea.modbcum.q.query.AbstractQuery;
 import net.idea.restnet.groups.IDBGroup;
 import net.idea.restnet.user.DBUser;
 
+
 public abstract class ReadGroup<G extends IDBGroup> extends AbstractQuery<DBUser, G, EQCondition, G>  implements IQueryRetrieval<G> {
 	
 

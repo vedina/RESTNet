@@ -9,7 +9,7 @@ import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.db.QueryURIReporter;
 import net.idea.restnet.db.convertors.QueryRDFReporter;
 import net.idea.restnet.groups.IDBGroup;
-import net.toxbank.client.Resources;
+import net.idea.restnet.resources.Resources;
 import net.toxbank.client.io.rdf.OrganisationIO;
 import net.toxbank.client.io.rdf.ProjectIO;
 import net.toxbank.client.io.rdf.TOXBANK;
