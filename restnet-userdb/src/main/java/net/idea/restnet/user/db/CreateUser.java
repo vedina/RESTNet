@@ -40,7 +40,12 @@ public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implement
 		if (registerUser!=null) registerUser.setGroup(object);
 
 		if (orgs!=null) { 
-			if (object.getOrganisations()==null) orgs.setObject(null);
+			if (object.getOrganisations()==null || object.getOrganisations().size()==0) {
+				DBOrganisation empty = new DBOrganisation();
+				empty.setTitle("Not specified");
+				orgs.setObject(empty);
+				createOrg.setObject(empty);
+			}
 			else {
 				for (Organisation o : object.getOrganisations()) {
 					orgs.setObject((DBOrganisation)o);
