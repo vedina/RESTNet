@@ -21,7 +21,6 @@ public class AddGroupByName<P extends IDBGroup> extends AbstractUpdate<DBUser,P>
 
 	@Override
 	public String[] getSQL() throws AmbitException {
-		StringBuilder b = new StringBuilder();
 		GroupType gt = getObject().getGroupType();
 		return new String[] {String.format(sql_addGroupSelect, gt.getDBname(),gt.getDBname(),gt.getDBname(),getObject().getTitle())};
 	}
