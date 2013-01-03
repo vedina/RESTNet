@@ -35,7 +35,7 @@ public enum GroupType {
 	
 	public String getCreateSQL() {
 		return String.format(
-				"INSERT into %s (%s,name,ldapgroup) values (?,?,?)",
+				"INSERT ignore into %s (%s,name,ldapgroup) values (?,?,?)",
 				getDBname(), getID());
 	}
 	

@@ -99,6 +99,13 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 		try {user.setHomepage(new URL(input.getFirstValue(ReadUser.fields.homepage.name()))); } catch (Exception x) {}
 		try {user.setWeblog(new URL(input.getFirstValue(ReadUser.fields.weblog.name())));} catch (Exception x) {}
 		
+		//
+		String organisation = input.getFirstValue("affiliation");
+		if ((organisation != null) && !"".equals(organisation.trim())) {
+			DBOrganisation org = new DBOrganisation();
+			org.setTitle(organisation);
+			user.addOrganisation(org);
+		}
 		
 		String[] values = input.getValuesArray("organisation_uri");
 		if (values != null)

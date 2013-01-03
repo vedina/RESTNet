@@ -7,17 +7,29 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
+import net.idea.restnet.groups.DBOrganisation;
+import net.idea.restnet.groups.db.CreateGroup;
+import net.idea.restnet.groups.user.db.AddGroupByName;
+import net.idea.restnet.groups.user.db.AddGroupsPerUser;
 import net.idea.restnet.u.UserCredentials;
 import net.idea.restnet.u.UserRegistration;
 import net.idea.restnet.u.db.CreateRegistration;
 import net.idea.restnet.user.DBUser;
+import net.toxbank.client.resource.Organisation;
 
 
 public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implements IDBConfig {
+	private static String user_sql = "insert into user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer,institute) values (?,?,?,?,?,?,?,?,?,?,?)";
+	
 	protected CreateRegistration registerUser;
+	protected CreateGroup createOrg;
+	protected AddGroupByName<DBOrganisation> orgs;
+
 	
 	public CreateUser(DBUser user, UserRegistration reg, String dbname) {
 		super(user);
+		createOrg = new CreateGroup(null);
+		orgs = new AddGroupByName<DBOrganisation>(user, null );
 		registerUser = new CreateRegistration(user, reg,dbname);
 		setObject(user);
 		setGroup(user.getCredentials());
@@ -26,20 +38,37 @@ public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implement
 	public void setObject(DBUser object) {
 		super.setObject(object);
 		if (registerUser!=null) registerUser.setGroup(object);
+
+		if (orgs!=null) { 
+			if (object.getOrganisations()==null) orgs.setObject(null);
+			else {
+				for (Organisation o : object.getOrganisations()) {
+					orgs.setObject((DBOrganisation)o);
+					if (createOrg!=null) createOrg.setObject((DBOrganisation)o);
+					break; 
+				}
+			}
+			orgs.setGroup(object);
+		}
 	}
 
 	@Override
 	public String[] getSQL() throws AmbitException {
-		String[] sql = registerUser.getSQL();
-		String[] newsql = new String[sql.length+1];
-		newsql[0] = "insert into user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer) values (?,?,?,?,?,?,?,?,?,?)"; 
-		for (int i = 0; i < sql.length; i++)
-			newsql[i+1] = sql[i];
+		String[] sql1 = createOrg.getSQL();
+		String[] sql2 = orgs.getSQL();
+		String[] sql3 = registerUser.getSQL();
+		String[] newsql = new String[sql1.length+sql2.length+sql3.length+1];
+		newsql[0] = user_sql;
+		for (int i = 0; i < sql1.length; i++) newsql[i+1] = sql1[i];
+		for (int i = 0; i < sql2.length; i++) newsql[i+sql1.length+1] = sql2[i];
+		for (int i = 0; i < sql3.length; i++) newsql[i+sql1.length+sql2.length+1] = sql3[i];
+		
 		return newsql;
 	}
 
 	@Override
 	public List<QueryParam> getParameters(int index) throws AmbitException {
+
 		List<QueryParam> params1 = new ArrayList<QueryParam>();
 		switch (index) {
 		case 0: {
@@ -53,22 +82,42 @@ public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implement
 			params1.add(new QueryParam<String>(String.class,  getObject().getHomepage()==null?null:getObject().getHomepage().toString()));
 			params1.add(new QueryParam<String>(String.class,  getObject().getKeywords()==null?"":getObject().getKeywords()));
 			params1.add(new QueryParam<Boolean>(Boolean.class,  getObject().isReviewer()));
+			params1.add(new QueryParam<String>(String.class,  getObject().getOrganisations()==null?"":
+					getObject().getOrganisations().size()==0?"":getObject().getOrganisations().get(0).getTitle()));
 			return params1;
 		}
-		default: 
-			return registerUser.getParameters(index-1);
+		case 1:
+			return createOrg.getParameters(0);
+		case 2: 
+			return orgs.getParameters(0);
+		default:
+			return registerUser.getParameters(index-3);			
 		}
 	}
 
 	@Override
 	public void setID(int index, int id) {
-		if (index==0)
+		switch (index) {
+		case 0: { 
 			getObject().setID(id);
+			break;
+		}
+		case 1: {
+			createOrg.setID(0, id);
+			break;
+		}
+		case 2: {
+			break;
+		}
+		default: {
+			registerUser.setID(index-3, id);
+		}
+		}
 	}
 
 	@Override
 	public boolean returnKeys(int index) {
-		return index==0;
+		return true;
 	}
 	
 	@Override
