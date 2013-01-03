@@ -28,7 +28,7 @@ public abstract class TaskStorageWithNotifier extends TaskStorage<String> {
 				}
 			};
 			notificationTimer = new ScheduledThreadPoolExecutor(1);
-			notificationTimer.scheduleWithFixedDelay(notificationTasks, 0, 12,TimeUnit.HOURS);
+			notificationTimer.scheduleWithFixedDelay(notificationTasks, 5, 60*12,TimeUnit.MINUTES);
 		}
 	}
 	protected abstract AlertsNotifier createAlertsNotifier();
