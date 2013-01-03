@@ -66,7 +66,7 @@ protected static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.g
     
     StringBuilder content = new StringBuilder();
     for (Alert alert : alerts) {
-    	System.out.println(user.getEmail());
+    	//System.out.println(user.getEmail());
         List<String> results = queryAlert(user, alert, token);
         if ((results==null)||(results.size()==0)) continue;
     	//content.append(alert.getQuery());
@@ -79,7 +79,7 @@ protected static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.g
     }
     if (content.length()>0) {
     	content.append("You have been sent this email because you have signed up to receive "+notificationSubject + "\r\n");
-    	System.out.println(email + content);
+    	//System.out.println(email + content);
     	utility.sendNotification(email, notificationSubject, content.toString(), MediaType.TEXT_PLAIN.toString());
     	return true;
     }
