@@ -25,7 +25,7 @@ public class UpdateUser extends AbstractObjectUpdate<DBUser>{
 	};
 	
 	private String sql = "update user set %s where iduser = ?";
-
+	private String sql_deleteorgs = "delete from user_organisation where iduser = ?";
 	
 	public UpdateUser(DBUser user) {
 		super(null);
@@ -64,6 +64,10 @@ public class UpdateUser extends AbstractObjectUpdate<DBUser>{
 		case 1: {
 			return createOrg.getParameters(0);
 		}
+		case 2: {
+			params.add(new QueryParam<Integer>(Integer.class, getObject().getID()));
+			return params;
+		}		
 		default: {
 			return addOrg.getParameters(0);
 		}
@@ -83,7 +87,7 @@ public class UpdateUser extends AbstractObjectUpdate<DBUser>{
 		}
 		return (createOrg==null) || (addOrg==null)?
 			   new String[] {String.format(sql, b)}:
-			   new String[] {String.format(sql, b),createOrg.getSQL()[0],addOrg.getSQL()[0]};
+			   new String[] {String.format(sql, b),createOrg.getSQL()[0],sql_deleteorgs,addOrg.getSQL()[0]};
 	}
 	public void setID(int index, int id) {
 		if (index==1) createOrg.setID(0, id);
