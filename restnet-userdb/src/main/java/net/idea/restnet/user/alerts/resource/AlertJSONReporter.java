@@ -40,7 +40,7 @@ public class AlertJSONReporter <Q extends IQueryRetrieval<DBAlert>>  extends Que
 	
 	}	
 
-	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"title\": \"%s\",\n\t\"title\": \"%s\",\n\t\"type\": \"%s\",\n\t\"content\": \"%s\",\n\t\"frequency\": \"%s\",\n\t\"interval\": %d,\n\t\"created\": %d,\n\t\"sent\": %d\n}";
+	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"title\": \"%s\",\n\t\"type\": \"%s\",\n\t\"content\": \"%s\",\n\t\"frequency\": \"%s\",\n\t\"interval\": %d,\n\t\"created\": %s,\n\t\"sent\": %s\n}";
 
 	@Override
 	public Object processItem(DBAlert alert) throws Exception {
