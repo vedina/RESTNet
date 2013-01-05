@@ -151,16 +151,28 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 	protected Object executeQuery(IQueryUpdate<? extends Object, DBUser> query)
 			throws Exception {
 		Object result = super.executeQuery(query);
-		if (Method.POST.equals(method)) {
+		if (Method.POST.equals(method)) try {
 			DBUser user = query.getObject();
 			if ((user.getOrganisations()!=null) && (user.getOrganisations().size()>0)) {
-				AddGroupsPerUser q = new AddGroupsPerUser(user,user.getOrganisations());
-				exec.process(q);
+				for (int i=user.getOrganisations().size()-1; i>=0; i--)
+					if (((DBOrganisation)user.getOrganisations().get(i)).getID()<=0)
+						user.getOrganisations().remove(i);
+				if (user.getOrganisations().size()>0) {
+					AddGroupsPerUser q = new AddGroupsPerUser(user,user.getOrganisations());
+					exec.process(q);
+				}
 			}
 			if ((user.getProjects()!=null) && (user.getProjects().size()>0)) {
-				AddGroupsPerUser q = new AddGroupsPerUser(user,user.getProjects());
-				exec.process(q);
+				for (int i=user.getProjects().size()-1; i>=0; i--)
+					if (((DBProject)user.getProjects().get(i)).getID()<=0)
+						user.getProjects().remove(i);
+				if (user.getProjects().size()>0) {
+					AddGroupsPerUser q = new AddGroupsPerUser(user,user.getProjects());
+					exec.process(q);
+				}
 			}			
+		} catch (Exception x ) {
+			x.printStackTrace();
 		}
 		return result;
 	}
