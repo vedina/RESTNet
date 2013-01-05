@@ -2,6 +2,9 @@ package net.idea.restnet.user;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.query.IQueryUpdate;
@@ -33,18 +36,30 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 	protected UserCredentials credentials;
 	protected String aadbname;
 	protected UserRegistration registration = null;
-	protected String subject = "User Confirmation";
+	protected String subject = "Database User Activation";
+	protected abstract String getSender();
+	protected abstract String getSenderName();
+	protected abstract String getSystemName();
+	protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z");
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
 	
 	protected String emailContent = 
-	"Thank you for applying for user registration.\n"+
-	"\n"+
-	"Please point your browser to the following URL in order to proceed with the registration of the \"%s\" user:\n"+
-	"%s%s%s?code=%s\n"+
-	"Please note that your registration will be cancelled automatically if it is not confirmed within 48 hours. If you miss this deadline you should start over the registration procedure and get a new confirmation code.\n"+
-	"\n"+
-	"If you change your mind and decide that you do NOT want to confirm the registration, then please discard this message and let the request expire on its own.\n"
-	;
-	
+			"Dear %s %s,\n\n"+
+			"Thanks for your interest in the %s. Please click the following link to activate the %s account that you have registered on %s:\n"+
+			"%s%s%s?code=%s\n\n"+
+			"If you click the link and it appears to be broken, please copy and paste it into a new browser window.\n\n"+
+			"Please note that your registration will be cancelled automatically if it is not activated within 48 hours " +
+			"(before %s). " +
+			"If you miss this deadline you should start over the registration procedure and obtain a new activation code.\n\n"+
+			"If you did not register an account for accessing the %s, please ignore this message and let the request expire on its own.\n\n"+
+			"Yours faithfully,\n"+
+			"%s\n%s\n";
 	
 	public CallableUserCreator(Method method,DBUser item,UserURIReporter<IQueryRetrieval<DBUser>> reporter,
 						Form input,
@@ -151,6 +166,7 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 	protected Object executeQuery(IQueryUpdate<? extends Object, DBUser> query)
 			throws Exception {
 		Object result = super.executeQuery(query);
+
 		if (Method.POST.equals(method)) try {
 			DBUser user = query.getObject();
 			if ((user.getOrganisations()!=null) && (user.getOrganisations().size()>0)) {
@@ -174,6 +190,9 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 		} catch (Exception x ) {
 			x.printStackTrace();
 		}
+		try {
+			query.getObject().setRegisteredAt(System.currentTimeMillis());
+		} catch (Exception x) { query.getObject().setRegisteredAt(0);}
 		return result;
 	}
 
@@ -182,9 +201,24 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 		if (passwordChange)
 			return String.format("%s%s", baseReference, Resources.myaccount);
 		else if (Method.POST.equals(method) && registration!=null && target != null && target.getEmail()!=null) {
+			Date registeredAt = new Date(target.getRegisteredAt());
+			Calendar cal = Calendar.getInstance();
+		    cal.setTime(registeredAt);
+		    cal.add(Calendar.DATE, 2);
 			Notification notification = new Notification(getConfig());
-			notification.sendNotification(target.getEmail(), subject, 
-					String.format(emailContent,target.getUserName(),baseReference,Resources.register,Resources.confirm,registration.getConfirmationCode()),
+			notification.sendNotification(target.getEmail(), 
+					String.format("%s (%s %s)",subject,target.getFirstname(),target.getLastname()), 
+					String.format(emailContent,
+							target.getFirstname(),target.getLastname(),
+							getSystemName(),getSystemName(),
+							dateFormat.format(registeredAt),
+							baseReference,
+							Resources.register,
+							Resources.confirm,
+							registration.getConfirmationCode(),
+							dateFormat.format(cal.getTime()),
+							getSystemName(),
+							getSenderName(),getSender()),
 					"text/plain");
 			return String.format("%s%s%s", baseReference, Resources.register, Resources.notify);
 		} else
