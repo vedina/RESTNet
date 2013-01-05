@@ -36,7 +36,7 @@ public class AlertJSONReporter <Q extends IQueryRetrieval<DBAlert>>  extends Que
 	public AlertJSONReporter(Request request) {
 		this.baseReference = (request==null?null:request.getRootRef());
 		setRequest(request);
-		uriReporter = new AlertURIReporter<IQueryRetrieval<DBAlert>>();
+		uriReporter = new AlertURIReporter<IQueryRetrieval<DBAlert>>(request);
 	
 	}	
 
