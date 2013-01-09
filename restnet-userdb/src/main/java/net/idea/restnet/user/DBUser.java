@@ -57,7 +57,7 @@ public class DBUser extends User implements IUser {
 		title {
 			@Override
 			public Object getValue(DBUser user) {
-				return  user==null?null:user.getTitle();
+				return  user==null?"":user.getTitle()==null?"":user.getTitle();
 			}	
 		},
 		firstname {
