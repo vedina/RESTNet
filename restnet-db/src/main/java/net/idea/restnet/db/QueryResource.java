@@ -23,7 +23,6 @@ import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.exception.RResourceException;
-import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.TaskCreator;
@@ -47,7 +46,6 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.ObjectRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -178,8 +176,9 @@ Then, when the "get(Variant)" method calls you back,
 	        	Connection connection = null;
 	        	int retry=0;
 	        	while (retry <maxRetry) {
+	        		DBConnection dbc = null;
 		        	try {
-		        		DBConnection dbc = new DBConnection(getContext(),getConfigFile());
+		        		dbc = new DBConnection(getContext(),getConfigFile());
 		        		configureRDFWriterOption(dbc.rdfWriter());
 		        		configureDatasetMembersPrefixOption(dbc.dataset_prefixed_compound_uri());
 		        		convertor = createConvertor(variant);
@@ -229,7 +228,7 @@ Then, when the "get(Variant)" method calls you back,
 		    			throw new RResourceException(Status.SERVER_ERROR_INTERNAL,x,variant);
 	
 		        	} finally {
-
+		        		dbc = null;
 		        		//if no exceptions, will be closed by reporters	
 		        	}
 	        	}
@@ -253,6 +252,8 @@ Then, when the "get(Variant)" method calls you back,
 			throw new RResourceException(x.getStatus(),x,variant);
 		} catch (Exception x) {
 			throw new RResourceException(Status.SERVER_ERROR_INTERNAL,x,variant);
+		} finally {
+			
 		}
 	}		
 	
