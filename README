@@ -1,9 +1,10 @@
 REST application classes
 
-originally a fork from [https://ambit.svn.sourceforge.net/svnroot/ambit/trunk/ambit2-all/ambit2-rest] (AMBIT REST) classes
+originally a fork from [AMBIT REST](https://ambit.svn.sourceforge.net/svnroot/ambit/trunk/ambit2-all/ambit2-rest) classes.
+More information on AMBIT at http://ambit.sourceforge.net .
 
 
-Available via Maven repository 
+JAR and WAR artifacts Available via Maven repository 
 http://ambit.uni-plovdiv.bg:8083/nexus/index.html#nexus-search;gav~~restnet*~~~
 
 
