@@ -4,8 +4,7 @@ originally a fork from [AMBIT REST](https://ambit.svn.sourceforge.net/svnroot/am
 More information on AMBIT at http://ambit.sourceforge.net .
 
 
-JAR and WAR artifacts Available via Maven repository 
-http://ambit.uni-plovdiv.bg:8083/nexus/index.html#nexus-search;gav~~restnet*~~~
+JAR and WAR artifacts are available via [Maven repository](http://ambit.uni-plovdiv.bg:8083/nexus/index.html#nexus-search;gav~~restnet*~~~)
 
 
 Test database (as per aalocal-test Maven profile) 
