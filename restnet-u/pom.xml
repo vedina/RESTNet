@@ -4,12 +4,12 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>0.0.10</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-u</artifactId>
   <name>Local users support</name>
-  <version>0.0.10</version>
+  <version>1.0.0-SNAPSHOT</version>
   <description>Local users support</description>
   <dependencies>
     <dependency>
