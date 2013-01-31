@@ -111,8 +111,8 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 		user.setTitle(input.getFirstValue(ReadUser.fields.title.name()));
 		user.setKeywords(input.getFirstValue(ReadUser.fields.keywords.name()));
 		user.setEmail(input.getFirstValue(ReadUser.fields.email.name()));
-		if (input.getFirstValue(ReadUser.fields.reviewer.name())!=null)
-			user.setReviewer("on".equals(input.getFirstValue(ReadUser.fields.reviewer.name())));
+		if (input.getFirstValue(ReadUser.fields.reviewer.name())!=null) //this is a checkbox, not radio box!
+			user.setReviewer(ReadUser.fields.reviewer.name().equals(input.getFirstValue(ReadUser.fields.reviewer.name())));
 		try {user.setHomepage(new URL(input.getFirstValue(ReadUser.fields.homepage.name()))); } catch (Exception x) {}
 		try {user.setWeblog(new URL(input.getFirstValue(ReadUser.fields.weblog.name())));} catch (Exception x) {}
 		
