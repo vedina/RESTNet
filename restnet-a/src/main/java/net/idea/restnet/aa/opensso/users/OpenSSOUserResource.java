@@ -10,6 +10,7 @@ import net.idea.restnet.aa.opensso.OpenSSOUser;
 import net.idea.restnet.c.StringConvertor;
 import net.idea.restnet.c.resource.CatalogResource;
 
+import org.opentox.aa.exception.AAException;
 import org.opentox.aa.opensso.OpenSSOToken;
 import org.restlet.Context;
 import org.restlet.Request;
@@ -94,10 +95,11 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
 			Form form = new Form(entity);	
 			
 			try {
-				OpenSSOToken ssoToken = new OpenSSOToken(OpenSSOServicesConfig.getInstance().getOpenSSOService());
+				OpenSSOToken ssoToken = new OpenSSOToken(getOpenSSOService());
 				String username = form.getFirstValue("user");
 				String pass = form.getFirstValue("password");
 				if (ssoToken.login(username,pass)) {
+					System.out.println("Login successful "+ssoToken);
 					OpenSSOUser user = new OpenSSOUser();
 					user.setToken(ssoToken.getToken());
 					try {
@@ -123,7 +125,7 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
 	protected Representation delete() throws ResourceException {
 		String token = getToken();
 		if (token != null) try {
-			OpenSSOToken ssoToken = new OpenSSOToken(OpenSSOServicesConfig.getInstance().getOpenSSOService());
+			OpenSSOToken ssoToken = new OpenSSOToken(getOpenSSOService());
 			if (ssoToken.logout()) {
 				getRequest().getClientInfo().setUser(null);
 				this.getResponse().getCookieSettings().removeAll("subjectid");
@@ -140,7 +142,7 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
 	protected Representation delete(Variant variant) throws ResourceException {
 		String token = getToken();
 		if (token != null) try {
-			OpenSSOToken ssoToken = new OpenSSOToken(OpenSSOServicesConfig.getInstance().getOpenSSOService());
+			OpenSSOToken ssoToken = new OpenSSOToken(getOpenSSOService());
 			ssoToken.setToken(token);
 			if (ssoToken.logout()) {
 				getRequest().getClientInfo().setUser(null);
@@ -164,5 +166,13 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser>{
 				return yes;
 			}
 		else return false;
+	}
+	/**
+	 * Override to set the proper configuration
+	 * @return
+	 * @throws AAException
+	 */
+	protected String getOpenSSOService() throws AAException {
+		return OpenSSOServicesConfig.getInstance().getOpenSSOService();
 	}
 }
