@@ -3,6 +3,7 @@ package net.idea.restnet.user.resource;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.ArrayList;
 
 import net.idea.modbcum.i.IQueryCondition;
 import net.idea.modbcum.i.IQueryRetrieval;
@@ -11,6 +12,7 @@ import net.idea.modbcum.p.DefaultAmbitProcessor;
 import net.idea.modbcum.p.MasterDetailsProcessor;
 import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.db.QueryURIReporter;
+import net.idea.restnet.db.aalocal.user.ReadUserRoles;
 import net.idea.restnet.groups.DBOrganisation;
 import net.idea.restnet.groups.db.ReadOrganisation;
 import net.idea.restnet.groups.resource.GroupQueryURIReporter;
@@ -61,8 +63,27 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 				return target;
 			}
 		};
-		
 		getProcessors().add(orgReader);
+
+		final ReadUserRoles queryR = createUserRolesQuery();
+		if (queryR!=null) {
+			MasterDetailsProcessor<DBUser, String, IQueryCondition> roleReader = new MasterDetailsProcessor<DBUser, String, IQueryCondition>(queryR) {
+				public DBUser process(DBUser target) throws Exception {
+					queryR.setValue(target.getUserName());
+					return super.process(target);
+				};
+				@Override
+				protected DBUser processDetail(DBUser target, String role) throws Exception {
+					if (target.getID()>0) {
+						if (target.getRoles()==null) target.setRoles(new ArrayList<String>());
+						target.getRoles().add(role);
+					}
+					return target;
+				}
+			};
+			getProcessors().add(roleReader);
+		}
+
 		processors.add(new DefaultAmbitProcessor<DBUser, DBUser>() {
 			public DBUser process(DBUser target) throws Exception {
 				processItem(target);
@@ -70,8 +91,12 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 			};
 		});			
 	}	
+	
+	protected ReadUserRoles createUserRolesQuery() {
+		return new ReadUserRoles();
+	}
 
-	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"username\": \"%s\",\n\t\"title\": \"%s\",\n\t\"firstname\": \"%s\",\n\t\"lastname\": \"%s\",\n\t\"email\": \"%s\",\n\t\"homepage\": \"%s\",\n\t\"keywords\": \"%s\",\n\t\"reviewer\": %s,\n\t\"organisation\": [\n\t\t%s\n\t]\n}";
+	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"username\": \"%s\",\n\t\"title\": \"%s\",\n\t\"firstname\": \"%s\",\n\t\"lastname\": \"%s\",\n\t\"email\": \"%s\",\n\t\"homepage\": \"%s\",\n\t\"keywords\": \"%s\",\n\t\"reviewer\": %s,\n\t\"organisation\": [\n\t\t%s\n\t]\n,\n\t\"roles\": [\n\t\t%s\n\t]\n}";
 	private static String formatGroup = "{\n\t\t\"uri\":\"%s\",\n\t\t\"title\": \"%s\"\n\t\t}";
 	//output.write("Title,First name,Last name,user name,email,Keywords,Reviewer\n");
 
@@ -91,6 +116,15 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 							));
 				}
 
+			StringBuilder roles = null;
+			if (user.getRoles()!=null) 
+				for (String role:user.getRoles()) {
+					if (roles == null) roles = new StringBuilder();
+					else roles.append(",");
+					roles.append(String.format("\"%s\"",role));
+				}
+				
+			
 			String uri = user.getID()>0?uriReporter.getURI(user):"";
 			
 			getOutput().write(String.format(format,
@@ -104,7 +138,8 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 					user.getHomepage()==null?"":user.getHomepage(),
 					user.getKeywords()==null?"":user.getKeywords(),
 					user.isReviewer(),
-					group==null?"":group.toString()
+					group==null?"":group.toString(),
+					roles==null?"":roles.toString()							
 					));
 			comma = ",";
 		} catch (IOException x) {

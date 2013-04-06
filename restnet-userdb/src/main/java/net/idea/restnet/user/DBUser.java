@@ -16,6 +16,13 @@ import org.restlet.routing.Template;
 
 public class DBUser extends User implements IUser {
 	public static final String resourceKey = "key";
+	public List<String> roles = null;
+	public List<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
 	protected long registeredAt = 0;
 	public long getRegisteredAt() {
 		return registeredAt;
