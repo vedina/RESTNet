@@ -96,10 +96,21 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 		return new ReadUserRoles();
 	}
 
-	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"username\": \"%s\",\n\t\"title\": \"%s\",\n\t\"firstname\": \"%s\",\n\t\"lastname\": \"%s\",\n\t\"email\": \"%s\",\n\t\"homepage\": \"%s\",\n\t\"keywords\": \"%s\",\n\t\"reviewer\": %s,\n\t\"organisation\": [\n\t\t%s\n\t]\n,\n\t\"roles\": [\n\t\t%s\n\t]\n}";
+	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": %s,\n\t\"username\": \"%s\",\n\t\"title\": \"%s\",\n\t\"firstname\": \"%s\",\n\t\"lastname\": \"%s\",\n\t\"email\": \"%s\",\n\t\"homepage\": \"%s\",\n\t\"keywords\": \"%s\",\n\t\"reviewer\": %s,\n\t\"organisation\": [\n\t\t%s\n\t]\n,\n\t\"roles\": {\n\t\t%s\n\t}\n}";
 	private static String formatGroup = "{\n\t\t\"uri\":\"%s\",\n\t\t\"title\": \"%s\"\n\t\t}";
 	//output.write("Title,First name,Last name,user name,email,Keywords,Reviewer\n");
 
+	protected String writeRoles(DBUser user) {
+
+		StringBuilder roles = null;
+		if (user.getRoles()!=null) 
+			for (String role:user.getRoles()) {
+				if (roles == null) roles = new StringBuilder();
+				else roles.append(",");
+				roles.append(String.format("\"%s\":true",role));
+			}
+		return roles==null?"":roles.toString();
+	}
 	@Override
 	public Object processItem(DBUser user) throws Exception {
 		try {
@@ -116,14 +127,7 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 							));
 				}
 
-			StringBuilder roles = null;
-			if (user.getRoles()!=null) 
-				for (String role:user.getRoles()) {
-					if (roles == null) roles = new StringBuilder();
-					else roles.append(",");
-					roles.append(String.format("\"%s\"",role));
-				}
-				
+			String roles = writeRoles(user);
 			
 			String uri = user.getID()>0?uriReporter.getURI(user):"";
 			
@@ -139,7 +143,7 @@ public class UserJSONReporter <Q extends IQueryRetrieval<DBUser>>  extends Query
 					user.getKeywords()==null?"":user.getKeywords(),
 					user.isReviewer(),
 					group==null?"":group.toString(),
-					roles==null?"":roles.toString()							
+					roles							
 					));
 			comma = ",";
 		} catch (IOException x) {
