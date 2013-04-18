@@ -8,6 +8,7 @@ import java.util.Date;
 
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.query.IQueryUpdate;
+import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
 import net.idea.restnet.db.update.CallableDBUpdateTask;
 import net.idea.restnet.groups.DBOrganisation;
@@ -144,14 +145,16 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
  		return user;
 	}
 
-	
+	protected DBRole getDefaultRole() {
+		return new DBRole("user", "Any user");
+	}
 	@Override
 	protected IQueryUpdate<? extends Object, DBUser> createUpdate(DBUser user)
 			throws Exception {
 		if (passwordChange) return new UpdateCredentials(credentials,user,getDatabaseName());
 		if (Method.POST.equals(method)) {
 			registration = new UserRegistration();
-			return  new CreateUser(user,registration,getDatabaseName());
+			return  new CreateUser(user,registration,getDefaultRole(),getDatabaseName());
 		}
 		else if (Method.DELETE.equals(method)) return  new DeleteUser(user);
 		else if (Method.PUT.equals(method)) return new  UpdateUser(user);

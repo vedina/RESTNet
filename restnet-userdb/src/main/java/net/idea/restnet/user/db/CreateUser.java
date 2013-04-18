@@ -6,11 +6,11 @@ import java.util.List;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractUpdate;
+import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
 import net.idea.restnet.groups.DBOrganisation;
 import net.idea.restnet.groups.db.CreateGroup;
 import net.idea.restnet.groups.user.db.AddGroupByName;
-import net.idea.restnet.groups.user.db.AddGroupsPerUser;
 import net.idea.restnet.u.UserCredentials;
 import net.idea.restnet.u.UserRegistration;
 import net.idea.restnet.u.db.CreateRegistration;
@@ -27,10 +27,13 @@ public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implement
 
 	
 	public CreateUser(DBUser user, UserRegistration reg, String dbname) {
+		this(user,reg,new DBRole("user", "Any user"),dbname);
+	}
+	public CreateUser(DBUser user, UserRegistration reg,DBRole role, String dbname) {
 		super(user);
 		createOrg = new CreateGroup(null);
 		orgs = new AddGroupByName<DBOrganisation>(user, null );
-		registerUser = new CreateRegistration(user, reg,dbname);
+		registerUser = new CreateRegistration(user, reg,role,dbname);
 		setObject(user);
 		setGroup(user.getCredentials());
 	}

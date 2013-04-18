@@ -17,11 +17,14 @@ public class CreateRegistration extends AbstractUpdate<IUser,UserRegistration>  
 	protected CreateUser createUser;
 	protected CreateUserRole createRole;
 	public CreateRegistration(IUser user,UserRegistration reg, String dbname) {
+		this(user,reg,new DBRole("user", "Any user"),dbname);
+	}
+	public CreateRegistration(IUser user,UserRegistration reg, DBRole role, String dbname) {
 		super();
 		setObject(reg);
 		setGroup(user);
 		createUser = new CreateUser(user);
-		createRole = new CreateUserRole(new DBRole("user", "Any user"),user);
+		createRole = new CreateUserRole(role,user);
 		setDatabaseName(dbname);
 	}
 	@Override
