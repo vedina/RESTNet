@@ -9,6 +9,14 @@ public class UserRegistration implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2291105142249204432L;
+	protected String title = "User registration";
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	long timestamp_created;
 	long timestamp_confirmed;
 	String confirmationCode;
@@ -45,5 +53,9 @@ public class UserRegistration implements Serializable {
 	}
 	public void setStatus(RegistrationStatus status) {
 		this.status = status;
+	}
+	@Override
+	public String toString() {
+		return getTitle();
 	}
 }
