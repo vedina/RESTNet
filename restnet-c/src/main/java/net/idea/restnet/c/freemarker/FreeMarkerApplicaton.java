@@ -12,6 +12,24 @@ import freemarker.template.ObjectWrapper;
 public class FreeMarkerApplicaton<USERID> extends TaskApplication<USERID> {
 	   private Configuration configuration;
 	   
+		protected String versionShort = "";
+		public String getVersionShort() {
+			return versionShort;
+		}
+
+		public void setVersionShort(String versionShort) {
+			this.versionShort = versionShort;
+		}
+		protected String versionLong = "";
+
+	    
+		public String getVersionLong() {
+			return versionLong;
+		}
+
+		public void setVersionLong(String versionLong) {
+			this.versionLong = versionLong;
+		}
 
 	    
 		public Configuration getConfiguration() {
