@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.ideaconsult.restnet</groupId>
@@ -18,7 +18,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>4.8.1</junit.version>
     <restlet.version>2.0-M6</restlet.version>
-    <modbcum.version>0.0.5</modbcum.version>
+    <modbcum.version>0.0.6-SNAPSHOT</modbcum.version>
   </properties>
   <issueManagement>
     <system>GitHub</system>

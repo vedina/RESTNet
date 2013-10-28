@@ -117,13 +117,7 @@ Then, when the "get(Variant)" method calls you back,
 	protected Form getParams() {
 		return getRequest().getResourceRef().getQueryAsForm();
 	}
-	/*
-	protected Connection getConnection() throws SQLException , AmbitException {
-		Connection connection = ((AmbitApplication)getApplication()).getConnection(getRequest());
-		if (connection.isClosed()) connection = ((AmbitApplication)getApplication()).getConnection(getRequest());
-		return connection;
-	}
-	*/
+
 	protected  Q returnQueryObject() {
 		return queryObject;
 	}
@@ -152,7 +146,11 @@ Then, when the "get(Variant)" method calls you back,
     	} else				
     		return getRepresentation(variant);
 	}
-	
+
+	protected DBConnection getConnection(Context context,String configFile) throws SQLException , AmbitException {
+		return new DBConnection(context, configFile);
+	}
+
 	protected Representation getRepresentation(Variant variant) throws ResourceException {
 		try {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
@@ -178,7 +176,7 @@ Then, when the "get(Variant)" method calls you back,
 	        	while (retry <maxRetry) {
 	        		DBConnection dbc = null;
 		        	try {
-		        		dbc = new DBConnection(getContext(),getConfigFile());
+		        		dbc = getConnection(getContext(),getConfigFile());
 		        		configureRDFWriterOption(dbc.rdfWriter());
 		        		configureDatasetMembersPrefixOption(dbc.dataset_prefixed_compound_uri());
 		        		convertor = createConvertor(variant);
