@@ -143,6 +143,7 @@ public class DBConnection {
 		return getConnection(getConnectionURI(request));
 	}
 	*/
+
 	public synchronized Connection getConnection(String connectionURI) throws AmbitException , SQLException{
 		SQLException error = null;
 		Connection c = null;
@@ -170,7 +171,7 @@ public class DBConnection {
 	   		*/
 			c = ds.getConnection();
 			t = c.createStatement();
-			rs = t.executeQuery("SELECT 1");
+			rs = t.executeQuery("SELECT 1 FROM DUAL");
 			while (rs.next()) {rs.getInt(1);}
 			rs.close(); rs = null;
 			t.close(); t = null;
