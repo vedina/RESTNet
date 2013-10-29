@@ -81,7 +81,7 @@ public class DBConnection {
 		p = properties.getProperty(Preferences.HOST);
 		li.setHostname(p==null||("${ambit.db.host}".equals(p))?"localhost":p);			
 		p = properties.getProperty(Preferences.DRIVERNAME);
-		li.setHostname(p==null||(p.startsWith("${"))?"com.mysql.jdbc.Driver":p);		
+		li.setDriverClassName(p==null||(p.startsWith("${"))?"com.mysql.jdbc.Driver":p);		
 		
 		if (context.getParameters().getFirstValue(Preferences.DATABASE)!=null)
 			li.setDatabase(context.getParameters().getFirstValue(Preferences.DATABASE));
