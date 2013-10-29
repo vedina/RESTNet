@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -17,7 +18,7 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import org.restlet.Context;
 
 public class DBConnection {
-	protected static Properties properties = null;
+	protected static ConcurrentHashMap<String, Properties> propertiesMap = new ConcurrentHashMap<String, Properties>();
 	protected String configFile;
 	
 	protected LoginInfo loginInfo;
@@ -30,58 +31,63 @@ public class DBConnection {
 		this.configFile = configFile;
 		loginInfo = getLoginInfo(context);
 	}
-	protected synchronized void loadProperties()  {
+	protected synchronized void loadProperties(String configFile)  {
 		try {
-		if (properties == null) {
-			properties = new Properties();
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream(configFile);
-			properties.load(in);
-			in.close();		
-		}
+			Properties properties = propertiesMap.get(configFile);
+			if (properties == null) {
+				properties = new Properties();
+				InputStream in = this.getClass().getClassLoader().getResourceAsStream(configFile);
+				properties.load(in);
+				in.close();		
+				propertiesMap.put(configFile,properties);
+			}
 		} catch (Exception x) {
-			properties = null;
+			Properties properties = new Properties();
+			properties.put("Exception", x.getMessage());
+			propertiesMap.put(configFile,properties);
 		}
 	}	
+
 	public boolean allowDBCreate() {
-		loadProperties();
-		String ok = properties.getProperty("database.create");
-		return (ok != null) && ok.toLowerCase().equals("true");
+		loadProperties(configFile);
+		Object ok = getProperty("database.create");
+		return (ok != null) && ok.toString().toLowerCase().equals("true");
 	}
 	public String rdfWriter() {
-		loadProperties();
-		String rdfwriter = properties.getProperty("rdf.writer");
-		return (rdfwriter==null)?"jena":rdfwriter;//jena or stax 
+		loadProperties(configFile);
+		Object rdfwriter = getProperty("rdf.writer");
+		return (rdfwriter==null)?"jena":rdfwriter.toString();//jena or stax 
 	}	
 	/**
 	 * 
 	 * @return
 	 */
 	public boolean dataset_prefixed_compound_uri() {
-		loadProperties();
-		String prefix = properties.getProperty("dataset.members.prefix");
+		loadProperties(configFile);
+		Object prefix = getProperty("dataset.members.prefix");
 		try {
-			return Boolean.parseBoolean(prefix);
+			return Boolean.parseBoolean(prefix.toString());
 		} catch (Exception x) {
 			return false;
 		}
 	}	
 
 	protected LoginInfo getLoginInfo(Context context) {
-		loadProperties();
+		loadProperties(configFile);
 		LoginInfo li = new LoginInfo();
 		
-		String p = properties.getProperty("Database");
-		li.setDatabase(p==null||("${ambit.db}".equals(p))?"ambit2":p);
-		p = properties.getProperty("Port");
-		li.setPort(p==null?"3306":p);		
-		p = properties.getProperty("User");
-		li.setUser(p==null?"guest":p);			
-		p = properties.getProperty("Password");
-		li.setPassword(p==null?"guest":p);	
-		p = properties.getProperty(Preferences.HOST);
-		li.setHostname(p==null||("${ambit.db.host}".equals(p))?"localhost":p);			
-		p = properties.getProperty(Preferences.DRIVERNAME);
-		li.setDriverClassName(p==null||(p.startsWith("${"))?"com.mysql.jdbc.Driver":p);		
+		Object p = getProperty("Database");
+		li.setDatabase(p==null||("${ambit.db}".equals(p))?"ambit2":p.toString());
+		p = getProperty("Port");
+		li.setPort(p==null?"3306":p.toString());		
+		p = getProperty("User");
+		li.setUser(p==null?"guest":p.toString());			
+		p = getProperty("Password");
+		li.setPassword(p==null?"guest":p.toString());	
+		p = getProperty(Preferences.HOST);
+		li.setHostname(p==null||("${ambit.db.host}".equals(p))?"localhost":p.toString());			
+		p = getProperty(Preferences.DRIVERNAME);
+		li.setDriverClassName(p==null||(p.toString().startsWith("${"))?"com.mysql.jdbc.Driver":p.toString());		
 		
 		if (context.getParameters().getFirstValue(Preferences.DATABASE)!=null)
 			li.setDatabase(context.getParameters().getFirstValue(Preferences.DATABASE));
@@ -200,5 +206,9 @@ public class DBConnection {
 
 	}
 	*/
+	protected Object getProperty(String key) {
+		Properties p = propertiesMap.get(configFile);
+		return p==null?null:p.get(key);
+	}
 	
 }
