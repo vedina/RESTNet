@@ -1,4 +1,5 @@
 #MySQL Database config
+DriverClassName=com.mysql.jdbc.Driver
 Host=${ambit.db.host}
 Scheme=jdbc\:mysql
 Port=3306

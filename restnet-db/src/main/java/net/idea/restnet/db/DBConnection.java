@@ -16,8 +16,6 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 
 import org.restlet.Context;
 
-import com.mchange.v2.c3p0.PooledDataSource;
-
 public class DBConnection {
 	protected static Properties properties = null;
 	protected String configFile;
@@ -82,6 +80,8 @@ public class DBConnection {
 		li.setPassword(p==null?"guest":p);	
 		p = properties.getProperty(Preferences.HOST);
 		li.setHostname(p==null||("${ambit.db.host}".equals(p))?"localhost":p);			
+		p = properties.getProperty(Preferences.DRIVERNAME);
+		li.setHostname(p==null||(p.startsWith("${"))?"com.mysql.jdbc.Driver":p);		
 		
 		if (context.getParameters().getFirstValue(Preferences.DATABASE)!=null)
 			li.setDatabase(context.getParameters().getFirstValue(Preferences.DATABASE));
@@ -93,7 +93,8 @@ public class DBConnection {
 			li.setHostname(context.getParameters().getFirstValue(Preferences.HOST));
 		if (context.getParameters().getFirstValue(Preferences.PORT)!=null)
 			li.setPort(context.getParameters().getFirstValue(Preferences.PORT));
-		
+		if (context.getParameters().getFirstValue(Preferences.DRIVERNAME)!=null)
+			li.setDriverClassName(context.getParameters().getFirstValue(Preferences.DRIVERNAME));
 
 		
 		return li;
@@ -150,7 +151,7 @@ public class DBConnection {
 		Statement t = null;
 		for (int retry=0; retry< 3; retry++)
 		try {
-			DataSource ds = DatasourceFactory.getDataSource(connectionURI);
+			DataSource ds = DatasourceFactory.getDataSource(connectionURI,loginInfo.getDriverClassName());
 			/*
 			if ( ds instanceof PooledDataSource)
 			{
