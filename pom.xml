@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.ideaconsult.restnet</groupId>
@@ -41,14 +41,14 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
       <name>ambit-plovdiv-snapshots</name>
       <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
     </repository>
-   <repository>
+    <repository>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
       <id>toxbank-releases</id>
       <name>toxbank-releases</name>
       <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-releases</url>
-    </repository>    
+    </repository>
     <repository>
       <id>maven-restlet</id>
       <name>Public online Restlet repository</name>
