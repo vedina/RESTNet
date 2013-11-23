@@ -164,6 +164,13 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
 	try {
+			Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
+			if (headers == null) {
+				headers = new Form();
+				getResponse().getAttributes().put("org.restlet.http.headers", headers);
+			}
+			headers.add("X-Frame-Options", "SAMEORIGIN");			
+			
 			setTokenCookies(variant, useSecureCookie(getRequest()));
 	        // SEND RESPONSE
 	        setStatus(Status.SUCCESS_OK);
