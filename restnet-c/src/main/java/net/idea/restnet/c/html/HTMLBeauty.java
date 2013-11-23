@@ -228,7 +228,6 @@ public class HTMLBeauty {
 		
 		w.write("<meta name=\"robots\" content=\"index,follow\"><META NAME=\"GOOGLEBOT\" CONTENT=\"index,FOLLOW\">\n");
 		w.write("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n");
-		w.write("<meta http-equiv='content-type' content='text/html; charset=iso-8859-1' />\n");
 		w.write(String.format("<script type=\"text/javascript\" src=\"%s/jme/jme.js\"></script>\n",baseReference));
 		w.write("<script>$(function() {$( \".accordion\" ).accordion({autoHeight: false,navigation: true});});</script>");
 		// Don't style the submit button with jQ if the browser is MSIE 7.
