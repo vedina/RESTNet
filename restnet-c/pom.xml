@@ -4,11 +4,11 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-c</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <name>RESTNet core classes</name>
   <dependencies>
     <dependency>
