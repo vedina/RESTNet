@@ -62,7 +62,7 @@ public class RDFJenaConvertor<T,Q extends IQueryRetrieval<T>>  extends AbstractO
 		return "http://opentox.org/api/1.1";
 	}
 	@Override
-	public Representation process(final Model jenaModel) throws AmbitException {
+	public Representation processDoc(final Model jenaModel) throws AmbitException {
 		/*
 		To optimise the speed of writing RDF/XML it is suggested that all URI processing is turned off. 
 		Also do not use RDF/XML-ABBREV. 
