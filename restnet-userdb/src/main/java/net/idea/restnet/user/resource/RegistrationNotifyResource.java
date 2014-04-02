@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.resource.CatalogResource;
+import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.resources.Resources;
 
@@ -41,9 +42,9 @@ public abstract class RegistrationNotifyResource  extends CatalogResource<String
 		return "register_notify.ftl";
 	}
 
-	
 	@Override
-	public void configureTemplateMap(Map<String, Object> map) {
+	public void configureTemplateMap(Map<String, Object> map, Request request,
+			IFreeMarkerApplication app) {
 	
 		map.put("searchURI",Resources.register);
 		map.put("managerRole", "false");

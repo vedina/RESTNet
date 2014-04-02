@@ -15,6 +15,7 @@ import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.ClientResourceWrapper;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.aa.IAuthToken;
+import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 import net.idea.restnet.i.freemarker.IFreeMarkerSupport;
 import net.idea.restnet.i.task.ITaskStorage;
 
@@ -68,7 +69,7 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 		freeMarkerSupport.setHtmlbyTemplate(htmlbyTemplate);
 	}
 	
-	public void configureTemplateMap(Map<String, Object> map) {
+	public void configureTemplateMap(Map<String, Object> map, Request request, IFreeMarkerApplication app) {
         if (getClientInfo().getUser()!=null) 
         	map.put("username", getClientInfo().getUser().getIdentifier());
         map.put("creator",getClass().getName());
@@ -147,7 +148,7 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
         Map<String, Object> map = new HashMap<String, Object>();
         if (getClientInfo().getUser()!=null) 
         	map.put("username", getClientInfo().getUser().getIdentifier());
-        configureTemplateMap(map);
+        configureTemplateMap(map, getRequest(), (IFreeMarkerApplication)getApplication());
         return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
 	}
 	

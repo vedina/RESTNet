@@ -29,6 +29,7 @@ import net.idea.restnet.c.task.TaskCreator;
 import net.idea.restnet.c.task.TaskCreatorFile;
 import net.idea.restnet.c.task.TaskCreatorForm;
 import net.idea.restnet.c.task.TaskCreatorMultiPartForm;
+import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
@@ -791,7 +792,7 @@ Then, when the "get(Variant)" method calls you back,
 		        Map<String, Object> map = new HashMap<String, Object>();
 		        if (getClientInfo().getUser()!=null) 
 		        	map.put("username", getClientInfo().getUser().getIdentifier());
-		        configureTemplateMap(map);
+		        configureTemplateMap(map, getRequest(), (IFreeMarkerApplication)getApplication());
 		        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
 	}
 		
