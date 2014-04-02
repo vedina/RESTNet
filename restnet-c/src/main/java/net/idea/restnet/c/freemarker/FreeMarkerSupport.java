@@ -2,6 +2,8 @@ package net.idea.restnet.c.freemarker;
 
 import java.util.Map;
 
+import net.idea.restnet.i.freemarker.IFreeMarkerSupport;
+
 public class FreeMarkerSupport implements IFreeMarkerSupport {
 	
 	protected boolean htmlbyTemplate = false;

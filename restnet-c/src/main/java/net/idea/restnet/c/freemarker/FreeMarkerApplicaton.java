@@ -1,6 +1,7 @@
 package net.idea.restnet.c.freemarker;
 
 import net.idea.restnet.c.TaskApplication;
+import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 
 import org.restlet.ext.freemarker.ContextTemplateLoader;
 
@@ -9,10 +10,11 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 
-public class FreeMarkerApplicaton<USERID> extends TaskApplication<USERID> {
+public class FreeMarkerApplicaton<USERID> extends TaskApplication<USERID> implements IFreeMarkerApplication {
 	   private Configuration configuration;
 	   
 		protected String versionShort = "";
+		@Override
 		public String getVersionShort() {
 			return versionShort;
 		}
@@ -22,7 +24,7 @@ public class FreeMarkerApplicaton<USERID> extends TaskApplication<USERID> {
 		}
 		protected String versionLong = "";
 
-	    
+	    @Override
 		public String getVersionLong() {
 			return versionLong;
 		}
@@ -39,6 +41,7 @@ public class FreeMarkerApplicaton<USERID> extends TaskApplication<USERID> {
 		public void setConfiguration(Configuration configuration) {
 			this.configuration = configuration;
 		}
+		
 		protected void initFreeMarkerConfiguration() {
 			configuration = new Configuration();
 			

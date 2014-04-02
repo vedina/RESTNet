@@ -1,4 +1,4 @@
-package net.idea.restnet.c.freemarker;
+package net.idea.restnet.i.freemarker;
 
 import java.util.Map;
 

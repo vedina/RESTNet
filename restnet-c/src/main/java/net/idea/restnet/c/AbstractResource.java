@@ -11,11 +11,11 @@ import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.exception.RResourceException;
 import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.freemarker.FreeMarkerSupport;
-import net.idea.restnet.c.freemarker.IFreeMarkerSupport;
 import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.ClientResourceWrapper;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.aa.IAuthToken;
+import net.idea.restnet.i.freemarker.IFreeMarkerSupport;
 import net.idea.restnet.i.task.ITaskStorage;
 
 import org.restlet.Context;
