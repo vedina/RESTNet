@@ -1,9 +1,7 @@
 package net.idea.restnet.c.resource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.UUID;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
@@ -13,7 +11,6 @@ import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.StringConvertor;
 import net.idea.restnet.c.TaskApplication;
-import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.reporters.CatalogHTMLReporter;
 import net.idea.restnet.c.reporters.CatalogURIReporter;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
@@ -28,7 +25,6 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;

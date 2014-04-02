@@ -9,7 +9,6 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.exception.RResourceException;
-import net.idea.restnet.c.freemarker.FreeMarkerApplicaton;
 import net.idea.restnet.c.freemarker.FreeMarkerSupport;
 import net.idea.restnet.c.html.HTMLBeauty;
 import net.idea.restnet.c.task.ClientResourceWrapper;
@@ -35,6 +34,8 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import freemarker.template.Configuration;
 
 /**
  * Abstract class for resources
@@ -157,7 +158,7 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
         
         return new TemplateRepresentation(
         		templateName,
-        		((FreeMarkerApplicaton)getApplication()).getConfiguration(),
+        		(Configuration)((IFreeMarkerApplication)getApplication()).getConfiguration(),
         		map,
         		MediaType.TEXT_HTML);
 }	  

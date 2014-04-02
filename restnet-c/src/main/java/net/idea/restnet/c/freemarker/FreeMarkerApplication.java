@@ -10,7 +10,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 
-public class FreeMarkerApplicaton<USERID> extends TaskApplication<USERID> implements IFreeMarkerApplication {
+public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> implements IFreeMarkerApplication<Configuration> {
 	   private Configuration configuration;
 	   
 		protected String versionShort = "";
