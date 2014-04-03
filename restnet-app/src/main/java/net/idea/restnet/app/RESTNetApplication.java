@@ -24,8 +24,8 @@ import net.idea.restnet.db.aalocal.ChallengeAuthenticatorDBLocal;
 import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.UserRolesResource;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 import net.idea.restnet.sparql.TDBEndpointRouter;
 
 import org.restlet.Component;
@@ -266,7 +266,7 @@ public class RESTNetApplication extends TaskApplication<String> {
 			
 			
 			@Override
-			protected Task<TaskResult, String> createTask(String user,ICallableTask callable) {
+			protected Task<ITaskResult, String> createTask(String user,ICallableTask callable) {
 				
 				return new PolicyProtectedTask(user,!(callable instanceof CallablePolicyCreator)) {
 					@Override

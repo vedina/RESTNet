@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
@@ -70,7 +69,7 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 				tasks.add(task.getUuid());
 			}
 			else {
-				TaskResult ref = callable.call();
+				ITaskResult ref = callable.call();
 			}
 
 		} catch (Exception x) {

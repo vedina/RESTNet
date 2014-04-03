@@ -9,9 +9,9 @@ import java.util.UUID;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.c.SimpleTaskResource;
 import net.idea.restnet.c.reporters.TaskURIReporter;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 import net.idea.restnet.rdf.ns.OT;
 
 import org.restlet.Request;
@@ -55,7 +55,7 @@ public class TaskRDFReporter<USERID> extends CatalogRDFReporter<UUID> {
 	public void processItem(UUID name, Writer output) {
 		String ref;
 
-		Task<TaskResult,USERID> item = storage.findTask(name.toString());
+		Task<ITaskResult,USERID> item = storage.findTask(name.toString());
 		try {
 			ref = item.getUri().toString();
 		} catch (Exception x) {

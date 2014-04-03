@@ -6,7 +6,7 @@ import org.restlet.data.Reference;
 
 
 
-public class TaskResult {
+public class TaskResult implements ITaskResult{
 	protected String uri;
 	protected boolean newResource = true;
 	protected List<String> policies = null;
@@ -44,5 +44,9 @@ public class TaskResult {
 	@Override
 	public String toString() {
 		return uri;
+	}
+	@Override
+	public float getPercentCompleted() {
+		return 0;
 	}
 }

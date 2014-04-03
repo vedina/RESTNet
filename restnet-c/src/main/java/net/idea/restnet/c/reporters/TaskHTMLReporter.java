@@ -7,12 +7,12 @@ import java.util.UUID;
 
 import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.ResourceDoc;
-import net.idea.restnet.c.SimpleTaskResource;	
+import net.idea.restnet.c.SimpleTaskResource;
 import net.idea.restnet.c.html.HTMLBeauty;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.i.task.Task.TaskStatus;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.Request;
 
@@ -83,7 +83,7 @@ public class TaskHTMLReporter<USERID> extends CatalogURIReporter<UUID> {
 	}
 	@Override
 	public void processItem(UUID name, Writer output) {
-		Task<TaskResult,USERID> item = storage.findTask(name);
+		Task<ITaskResult,USERID> item = storage.findTask(name);
 		String t = "";
 		String status = "Unknown";
 		try {

@@ -14,9 +14,10 @@ import javax.net.ssl.X509TrustManager;
 
 import net.idea.restnet.c.task.TaskStorage;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITaskApplication;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -28,7 +29,7 @@ import org.restlet.routing.Router;
 import org.restlet.util.RouteList;
 import org.xml.sax.EntityResolver;
 
-public class TaskApplication<USERID> extends Application {
+public class TaskApplication<USERID> extends Application implements ITaskApplication<USERID> {
 	/**
 	 * Properties specific to the application, loaded by config file
 	 */
@@ -75,12 +76,13 @@ public class TaskApplication<USERID> extends Application {
 		taskStorage.removeTasks();
 	}
 
-	public synchronized Task<TaskResult,USERID> addTask(String taskName, 
+	@Override
+	public synchronized Task<ITaskResult,USERID> addTask(String taskName, 
 			ICallableTask callable, 
 			Reference baseReference, USERID user) {
 		return taskStorage.addTask(taskName,callable,baseReference,user);
 	}
-	public synchronized Task<TaskResult,USERID> findTask(String id) {
+	public synchronized Task<ITaskResult,USERID> findTask(String id) {
 		return taskStorage.findTask(id);
 	}
 	/*

@@ -3,14 +3,14 @@ package net.idea.restnet.aa.opensso.policy;
 import java.util.Hashtable;
 
 import net.idea.restnet.aa.opensso.OpenSSOServicesConfig;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.opentox.aa.opensso.OpenSSOPolicy;
 import org.opentox.aa.opensso.OpenSSOToken;
 import org.restlet.data.Reference;
 
-public class PolicyProtectedTask extends Task<TaskResult, String> {
+public class PolicyProtectedTask extends Task<ITaskResult, String> {
 	/**
 	 * 
 	 */

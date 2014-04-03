@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.restlet.resource.ResourceException;
 
-public class Task<REFERENCE,USERID> implements Serializable /*, PropertyChangeListener */ {
+public class Task<REFERENCE,USERID> implements Serializable, ITask<REFERENCE,USERID>  {
 	
 	public enum TaskProperty {
 		PROPERTY_NAME {
