@@ -123,7 +123,6 @@ protected static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.g
 	  ClientResource cr = null;
 	  Representation repr = null;
 	  try {
-		  System.out.println(ref);
 		cr = new ClientResource(ref);
 		repr = cr.get(MediaType.TEXT_URI_LIST);
 		if (org.restlet.data.Status.SUCCESS_OK.equals(cr.getStatus())) {
@@ -150,7 +149,6 @@ protected static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.g
 		return null;
   }
   protected List<String> queryAlert(User user, Alert alert, String token) throws Exception {
-      System.out.println(alert);
     switch (alert.getQuery().getType()) {
     case FREETEXT:
       Reference ref = new Reference(String.format("%s%s?%s",root,alert.getTitle(),alert.getQuery().getContent()));
