@@ -505,8 +505,10 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
         return isInterceptingLogout()
                 && getLogoutPath().equals(
                         ref.getRemainingPart())
-                && (Method.GET.equals(request.getMethod()) || Method.POST
-                        .equals(request.getMethod()));
+                && (Method.GET.equals(request.getMethod()) 
+                  || Method.POST.equals(request.getMethod())
+                  || Method.DELETE.equals(request.getMethod()))
+                  ;
     }
 
     /**
