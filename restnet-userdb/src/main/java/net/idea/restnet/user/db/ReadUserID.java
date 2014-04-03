@@ -21,8 +21,17 @@ public class ReadUserID<T>  extends AbstractQuery<T, DBUser, EQCondition, DBUser
 	 */
 	private static final long serialVersionUID = 6228939989116141217L;
 	
-	protected static String sql_idtemplate =	"SELECT iduser from user %s %s";
+	protected static String sql_idtemplate =	"SELECT iduser from %s %s %s";
 
+	protected String usertable = "user";
+	
+	public String getUsertable() {
+		return usertable;
+	}
+
+	public void setUsertable(String usertable) {
+		this.usertable = usertable;
+	}
 
 	public ReadUserID(DBUser user) {
 		super();
@@ -73,7 +82,7 @@ public class ReadUserID<T>  extends AbstractQuery<T, DBUser, EQCondition, DBUser
 	public String getSQL() throws AmbitException {
 		if (getValue()!=null) {
 			if (getValue().getID()>0)
-				return String.format(getSQLTemplate(),"where ",ReadUser.fields.iduser.getCondition());
+				return String.format(getSQLTemplate(),getUsertable(),"where ",ReadUser.fields.iduser.getCondition());
 			else {
 				String where = " ";
 				StringBuilder b = new StringBuilder();
@@ -89,10 +98,11 @@ public class ReadUserID<T>  extends AbstractQuery<T, DBUser, EQCondition, DBUser
 					b.append(where);
 					b.append(ReadUser.fields.username.getCondition());
 				}				
-				return String.format(getSQLTemplate(),"where ",b.toString());
+				String q =  String.format(getSQLTemplate(),getUsertable(),"where ",b.toString());
+				return q;
 			}
 		}
-		return String.format(getSQLTemplate(),"","");
+		return String.format(getSQLTemplate(),getUsertable(),"","");
 			
 	}
 
