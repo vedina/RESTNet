@@ -31,7 +31,6 @@ public class Task<REFERENCE,USERID> implements Serializable, ITask<REFERENCE,USE
 	 */
 	private static final long serialVersionUID = -646087833848914553L;
 
-	public enum TaskStatus {Running,Cancelled,Completed,Error,Queued};
 	//protected FutureTask<Reference> future;
 	protected REFERENCE result;
 	protected String name = "Default";

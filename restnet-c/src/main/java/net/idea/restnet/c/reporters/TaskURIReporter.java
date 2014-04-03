@@ -3,9 +3,9 @@ package net.idea.restnet.c.reporters;
 import java.util.UUID;
 
 import net.idea.restnet.c.ResourceDoc;
+import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-import net.idea.restnet.i.task.Task;
 
 import org.restlet.Request;
 import org.restlet.data.Reference;
@@ -34,7 +34,7 @@ public class TaskURIReporter<USERID> extends CatalogURIReporter<UUID> {
 		this.storage =storage;
 	}	
 	public String getURI(String ref, UUID name) {
-		Task<ITaskResult,USERID> task = storage.findTask(name);
+		ITask<ITaskResult,USERID> task = storage.findTask(name);
 		return task.getUri()==null?null:task.getUri().toString();
 
 	}

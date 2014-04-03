@@ -6,8 +6,8 @@ import java.util.UUID;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.SimpleTaskResource;
-import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
+import net.idea.restnet.i.task.ITaskApplication;
 import net.idea.restnet.i.task.ITaskStorage;
 
 import org.restlet.representation.Representation;
@@ -41,7 +41,7 @@ public class TaskResource<USERID> extends SimpleTaskResource<USERID> {
 	@Override
 	public synchronized IProcessor<Iterator<UUID>, Representation> createConvertor(
 			Variant variant) throws AmbitException, ResourceException {
-		ITaskStorage<USERID> storage = ((TaskApplication)getApplication()).getTaskStorage();
+		ITaskStorage<USERID> storage = ((ITaskApplication)getApplication()).getTaskStorage();
 		FactoryTaskConvertor<USERID> tc = getFactoryTaskConvertor(storage);
 	
 		return tc.createTaskConvertor(variant, getRequest(),getDocumentation());

@@ -14,10 +14,10 @@ import javax.net.ssl.X509TrustManager;
 
 import net.idea.restnet.c.task.TaskStorage;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskApplication;
 import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-import net.idea.restnet.i.task.Task;
 
 import org.restlet.Application;
 import org.restlet.Restlet;
@@ -76,13 +76,18 @@ public class TaskApplication<USERID> extends Application implements ITaskApplica
 		taskStorage.removeTasks();
 	}
 
+	public net.idea.restnet.i.task.ITask<ITaskResult,USERID> addTask(String taskName, 
+			ICallableTask callable, Reference baseReference, boolean internal, USERID user) {
+		return taskStorage.addTask(taskName,callable,baseReference,user,internal);
+	};
 	@Override
-	public synchronized Task<ITaskResult,USERID> addTask(String taskName, 
+	public synchronized ITask<ITaskResult,USERID> addTask(String taskName, 
 			ICallableTask callable, 
 			Reference baseReference, USERID user) {
-		return taskStorage.addTask(taskName,callable,baseReference,user);
+		return taskStorage.addTask(taskName,callable,baseReference,user,false);
 	}
-	public synchronized Task<ITaskResult,USERID> findTask(String id) {
+	@Override
+	public synchronized ITask<ITaskResult,USERID> findTask(String id) {
 		return taskStorage.findTask(id);
 	}
 	/*

@@ -8,8 +8,8 @@ import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskResult;
-import net.idea.restnet.i.task.Task;
 
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
@@ -65,7 +65,7 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 		try {
 			ICallableTask callable = getCallable(input,item);
 			if (async)	{
-				Task<Reference,USERID> task = createTask(callable,item);
+				ITask<Reference,USERID> task = createTask(callable,item);
 				tasks.add(task.getUuid());
 			}
 			else {
@@ -85,7 +85,7 @@ public class TaskCreator<USERID,T,INPUT> extends QueryReporter<T,IQueryRetrieval
 	protected ICallableTask getCallable(INPUT input,T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
-	protected Task<Reference,USERID> createTask(ICallableTask callable, T item) throws ResourceException  {
+	protected ITask<Reference,USERID> createTask(ICallableTask callable, T item) throws ResourceException  {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 	

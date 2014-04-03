@@ -10,14 +10,14 @@ import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.StringConvertor;
-import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.reporters.CatalogHTMLReporter;
 import net.idea.restnet.c.reporters.CatalogURIReporter;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITask;
+import net.idea.restnet.i.task.ITaskApplication;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
@@ -194,7 +194,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				T model = query.next();
 				Reference reference = getSourceReference(form,model);
 				ICallableTask callable= createCallable(method,form,model);
-				Task<TaskResult,String> task =  ((TaskApplication)getApplication()).addTask(
+				ITask<ITaskResult,String> task =  ((ITaskApplication)getApplication()).addTask(
 						getTaskTitle(model,reference),
 						callable,
 						getRequest().getRootRef(),
@@ -213,7 +213,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 				throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
 			else {
 				
-				ITaskStorage storage = ((TaskApplication)getApplication()).getTaskStorage();
+				ITaskStorage storage = ((ITaskApplication)getApplication()).getTaskStorage();
 				FactoryTaskConvertor<Object> tc = getFactoryTaskConvertor(storage);
 				if (tasks.size()==1)
 					return tc.createTaskRepresentation(tasks.get(0), variant, getRequest(),getResponse(),getDocumentation());

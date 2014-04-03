@@ -7,22 +7,22 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskResult;
-import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.Task.TaskStatus;
+import net.idea.restnet.i.task.TaskStatus;
 
 import org.restlet.resource.ResourceException;
 
 public class ExecutableTask<USERID> extends FutureTask<ITaskResult> {
-	protected Task<ITaskResult,USERID> task;
+	protected ITask<ITaskResult,USERID> task;
 	
-	public Task<ITaskResult, USERID> getTask() {
+	public ITask<ITaskResult, USERID> getTask() {
 		return task;
 	}
-	public void setTask(Task<ITaskResult, USERID> task) {
+	public void setTask(ITask<ITaskResult, USERID> task) {
 		this.task = task;
 	}
-	public ExecutableTask(Callable<ITaskResult> callable,Task<ITaskResult,USERID> task) {
+	public ExecutableTask(Callable<ITaskResult> callable,ITask<ITaskResult,USERID> task) {
 		super(callable);
 		this.task = task;
 	}

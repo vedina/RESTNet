@@ -3,9 +3,9 @@ package net.idea.restnet.c.task;
 import java.util.Iterator;
 import java.util.UUID;
 
+import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-import net.idea.restnet.i.task.Task;
 
 public class FilteredTasksIterator<USERID> implements Iterator<UUID> {
 	protected Iterator<UUID> keys;
@@ -41,7 +41,7 @@ public class FilteredTasksIterator<USERID> implements Iterator<UUID> {
 
 	public void remove() {
 	}
-	protected boolean accepted(Task<ITaskResult,USERID> task) {
+	protected boolean accepted(ITask<ITaskResult,USERID> task) {
 		return task==null?false:true;
 	}
 	

@@ -9,10 +9,12 @@ import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.FilteredTasksIterator;
 import net.idea.restnet.c.task.SingleTaskIterator;
+import net.idea.restnet.i.task.ITask;
+import net.idea.restnet.i.task.ITaskApplication;
 import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.Task.TaskStatus;
+import net.idea.restnet.i.task.TaskStatus;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -113,7 +115,8 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 		}		
 	}
 
-	protected boolean filterTask(Task<ITaskResult, USERID> task, int taskNumber) {
+	
+	protected boolean filterTask(ITask<ITaskResult, USERID> task, int taskNumber) {
 		if ((max > 0) && (taskNumber>=max)) return false;
 		else return searchStatus==null?true:searchStatus.equals(task.getStatus().toString());
 	}
@@ -123,7 +126,7 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 		
 		return new FilteredTasksIterator<USERID>(((TaskApplication)getApplication()).getTaskStorage()){
 			@Override
-			protected boolean accepted(Task<ITaskResult, USERID> task) {
+			protected boolean accepted(ITask<ITaskResult, USERID> task) {
 				//task.update();
 				if (!task.isDone()) getResponse().setStatus(Status.SUCCESS_ACCEPTED);
 				return filterTask(task,getNum());
@@ -160,7 +163,7 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 
 			} else {
 
-				Task<ITaskResult,USERID> task = ((TaskApplication<USERID>)getApplication()).findTask(Reference.decode(id.toString()));
+				ITask<ITaskResult,USERID> task = ((ITaskApplication<USERID>)getApplication()).findTask(Reference.decode(id.toString()));
 				
 				if (task==null) throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
 			
@@ -218,7 +221,7 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 	@Override
 	public synchronized IProcessor<Iterator<UUID>, Representation> createConvertor(
 			Variant variant) throws AmbitException, ResourceException {
-		ITaskStorage<USERID> storage = ((TaskApplication)getApplication()).getTaskStorage();
+		ITaskStorage<USERID> storage = ((ITaskApplication)getApplication()).getTaskStorage();
 		FactoryTaskConvertor<USERID> tc = getFactoryTaskConvertor(storage);	
 		return tc.createTaskConvertor(variant, getRequest(),getDocumentation());
 

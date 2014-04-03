@@ -1,7 +1,6 @@
 package net.idea.restnet.aa.opensso.policy;
 
 import java.io.StringWriter;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -16,13 +15,13 @@ import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.aa.opensso.OpenSSOServicesConfig;
 import net.idea.restnet.aa.opensso.OpenSSOUser;
 import net.idea.restnet.c.StringConvertor;
-import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.resource.CatalogResource;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITask;
+import net.idea.restnet.i.task.ITaskApplication;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.opentox.aa.opensso.OpenSSOPolicy;
 import org.opentox.aa.opensso.OpenSSOToken;
@@ -163,7 +162,7 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 			Form form = entity.isAvailable()?new Form(entity):new Form();
 			
 				ICallableTask callable= createCallable(Method.POST,form,null);
-				Task<TaskResult,String> task =  ((TaskApplication)getApplication()).addTask(
+				ITask<ITaskResult,String> task =  ((ITaskApplication)getApplication()).addTask(
 						String.format("Create policy"),
 						callable,
 						getRequest().getRootRef(),
@@ -182,7 +181,7 @@ public class OpenSSOPoliciesResource extends CatalogResource<Policy> {
 				throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
 			else {
 				
-				ITaskStorage storage = ((TaskApplication)getApplication()).getTaskStorage();
+				ITaskStorage storage = ((ITaskApplication)getApplication()).getTaskStorage();
 				FactoryTaskConvertor<Object> tc = new FactoryTaskConvertor<Object>(storage);
 				if (tasks.size()==1)
 					return tc.createTaskRepresentation(tasks.get(0), variant, getRequest(),getResponse(),getDocumentation());

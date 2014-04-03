@@ -21,7 +21,6 @@ import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
-import net.idea.restnet.c.TaskApplication;
 import net.idea.restnet.c.exception.RResourceException;
 import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
@@ -31,9 +30,10 @@ import net.idea.restnet.c.task.TaskCreatorForm;
 import net.idea.restnet.c.task.TaskCreatorMultiPartForm;
 import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 import net.idea.restnet.i.task.ICallableTask;
+import net.idea.restnet.i.task.ITask;
+import net.idea.restnet.i.task.ITaskApplication;
+import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-import net.idea.restnet.i.task.Task;
-import net.idea.restnet.i.task.TaskResult;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -505,10 +505,10 @@ Then, when the "get(Variant)" method calls you back,
 				
 				if ((r==null) || (r.size()==0)) throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
 				else {
-					ITaskStorage storage = ((TaskApplication)getApplication()).getTaskStorage();
+					ITaskStorage storage = ((ITaskApplication)getApplication()).getTaskStorage();
 					FactoryTaskConvertor<Object> tc = getFactoryTaskConvertor(storage);
 					if (r.size()==1) {
-						Task<TaskResult,Object> task = storage.findTask(r.get(0));
+						ITask<ITaskResult,Object> task = storage.findTask(r.get(0));
 						task.update();
 						if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
 							getResponse().redirectSeeOther(task.getUri().getUri());
@@ -625,7 +625,7 @@ Then, when the "get(Variant)" method calls you back,
 				return createCallable(method,file,mediaType,item);
 			}
 			@Override
-			protected Task<Reference, Object> createTask(
+			protected ITask<Reference, Object> createTask(
 					ICallableTask callable,
 					T item) throws ResourceException {
 					return addTask(callable, item,null);
@@ -650,7 +650,7 @@ Then, when the "get(Variant)" method calls you back,
 				return createCallable(method,form,item);
 			}
 			@Override
-			protected Task<Reference, Object> createTask(
+			protected ITask<Reference, Object> createTask(
 					ICallableTask callable,
 					T item) throws ResourceException {
 					return addTask(callable, item,reference);
@@ -672,19 +672,19 @@ Then, when the "get(Variant)" method calls you back,
 				return createCallable(method,input,item);
 			};
 			@Override
-			protected Task createTask(ICallableTask callable, T item)
+			protected ITask createTask(ICallableTask callable, T item)
 					throws ResourceException {
 				return addTask(callable, item, (Reference)null);
 			}
 		};
 	} 
 	
-	protected Task<Reference, Object> addTask(
+	protected ITask<Reference, Object> addTask(
 			ICallableTask callable,
 			T item,
 			Reference reference) throws ResourceException {
 
-			return ((TaskApplication)getApplication()).addTask(
+			return ((ITaskApplication)getApplication()).addTask(
 				String.format("Apply %s %s %s",
 						item==null?"":item.toString(),
 						reference==null?"":"to",reference==null?"":reference),									
