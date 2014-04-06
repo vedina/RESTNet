@@ -32,4 +32,5 @@ public interface ITask<REFERENCE,USERID> {
 	boolean isExpired(long lifetime);
 	TaskStatus getStatus();
 	USERID getUserid();
+	String toJSON();
 }

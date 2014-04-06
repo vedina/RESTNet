@@ -30,28 +30,13 @@ public class TaskJSONReporter<USERID> extends TaskURIReporter<USERID> {
 		super(storage,baseRef,doc);
 	}	
 
-	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": \"%s\",\n\t\"name\": \"%s\",\n\t\"error\": \"%s\",\n\t\"policyError\": \"%s\",\n\t\"status\": \"%s\",\n\t\"started\": %d,\n\t\"completed\": %d,\n\t\"result\": \"%s\",\n\t\"user\": \"%s\"\n}";
-
 	@Override
 	public void processItem(UUID item, Writer output) {
 		try {
 			if (comma!=null) output.write(comma);
 
 			ITask<ITaskResult,USERID> task = storage.findTask(item);
-			String uri = task.getUri()==null?null:task.getUri().toString();
-			
-			output.write(String.format(format,
-					uri,
-					item.toString(),
-					task.getName()==null?"":task.getName(),
-					task.getError()==null?"":task.getError(),
-					task.getPolicyError()==null?"":task.getPolicyError(),
-					task.getStatus()==null?"":task.getStatus(),
-					task.getStarted(),
-					task.getTimeCompleted(),
-					task.getUri()==null?"":task.getUri(),
-					task.getUserid()==null?"":task.getUserid()
-					));
+			output.write(task.toJSON());
 			comma = ",";
 		} catch (IOException x) {
 			Context.getCurrentLogger().severe(x.getMessage());

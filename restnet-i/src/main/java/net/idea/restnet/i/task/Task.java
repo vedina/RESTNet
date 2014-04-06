@@ -1,9 +1,12 @@
 package net.idea.restnet.i.task;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Date;
 import java.util.UUID;
 
+import org.restlet.Context;
 import org.restlet.resource.ResourceException;
 
 public class Task<REFERENCE,USERID> implements Serializable, ITask<REFERENCE,USERID>  {
@@ -163,4 +166,23 @@ public class Task<REFERENCE,USERID> implements Serializable, ITask<REFERENCE,USE
 	public void setPolicy() throws Exception {
 		
 	}
+	private static String format = "\n{\n\t\"uri\":\"%s\",\n\t\"id\": \"%s\",\n\t\"name\": \"%s\",\n\t\"error\": \"%s\",\n\t\"policyError\": \"%s\",\n\t\"status\": \"%s\",\n\t\"started\": %d,\n\t\"completed\": %d,\n\t\"result\": \"%s\",\n\t\"user\": \"%s\"\n}";
+	
+	@Override
+	public String toJSON() {
+			String uri = getUri()==null?null:getUri().toString();
+			return String.format(format,
+					uri,
+					toString(),
+					getName()==null?"":getName(),
+					getError()==null?"":getError(),
+					getPolicyError()==null?"":getPolicyError(),
+					getStatus()==null?"":getStatus(),
+					getStarted(),
+					getTimeCompleted(),
+					getUri()==null?"":getUri(),
+					getUserid()==null?"":getUserid()
+					);
+	}
+
 }
