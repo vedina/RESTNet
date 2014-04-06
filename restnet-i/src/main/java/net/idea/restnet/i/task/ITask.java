@@ -1,10 +1,11 @@
 package net.idea.restnet.i.task;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.restlet.resource.ResourceException;
 
-public interface ITask<REFERENCE,USERID> {
+public interface ITask<REFERENCE,USERID> extends Serializable {
 	void update();
 	boolean isDone();
 	UUID getUuid();
