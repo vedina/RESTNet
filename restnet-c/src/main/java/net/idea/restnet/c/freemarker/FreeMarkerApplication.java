@@ -14,6 +14,16 @@ public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> imple
 	   private Configuration configuration;
 	   
 		protected String versionShort = "";
+		
+		protected String profile = "default";
+
+		public String getProfile() {
+			return profile;
+		}
+
+		public void setProfile(String profile) {
+			this.profile = profile;
+		}
 		@Override
 		public String getVersionShort() {
 			return versionShort;

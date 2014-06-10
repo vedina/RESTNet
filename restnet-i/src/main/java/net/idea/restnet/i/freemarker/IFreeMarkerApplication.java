@@ -5,4 +5,5 @@ public interface IFreeMarkerApplication<CONFIG> {
 	public String getVersionShort();
 	public String getVersionLong();
 	public CONFIG getConfiguration();
+	public String getProfile();
 }
