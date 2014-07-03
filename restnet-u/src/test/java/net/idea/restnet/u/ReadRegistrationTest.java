@@ -11,10 +11,6 @@ import net.idea.restnet.u.db.ReadRegistration;
 
 public class ReadRegistrationTest  extends QueryTest<ReadRegistration> {
 
-	public ReadRegistrationTest() {
-		super();
-		dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";	
-	}
 	@Override
 	protected ReadRegistration createQuery() throws Exception {
 		ReadRegistration reg =  new ReadRegistration("TEST");

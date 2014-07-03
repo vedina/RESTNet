@@ -2,9 +2,10 @@
 -- ----------------------------------------
 -- authz support
 -- ----------------------------------------
+DROP TABLE IF EXISTS `policy`;
 CREATE TABLE `policy` (
   `idpolicy` int(11) NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(16) NOT NULL DEFAULT 'ambit_guest',
+  `role_name` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'ambit_guest',
   `prefix` varchar(255) NOT NULL,
   `resource` varchar(255) NOT NULL,
   `mget` tinyint(1) NOT NULL DEFAULT '0',

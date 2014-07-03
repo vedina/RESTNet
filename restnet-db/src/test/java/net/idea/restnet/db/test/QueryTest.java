@@ -14,7 +14,7 @@ import org.junit.Test;
 public abstract class QueryTest<T extends IQueryObject> extends DbUnitTest {
 	protected T query;
 	protected QueryExecutor<T> executor;
-	protected String dbFile = "src/test/resources/net/idea/restnet/db/test/db.xml";	
+	protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";	
 	public String getDbFile() {
 		return dbFile;
 	}
