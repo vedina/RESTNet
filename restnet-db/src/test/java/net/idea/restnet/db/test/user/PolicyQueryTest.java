@@ -18,9 +18,7 @@ public class PolicyQueryTest extends QueryTest<PolicyQuery> {
 	protected PolicyQuery createQuery() throws Exception {
 		PolicyQuery q = new PolicyQuery();
 		q.setFieldname("/dataset");
-		IUser user = new TestUser();
-		user.setUserName("admin");
-		q.setValue(user);
+		q.setValue("admin");
 		q.setMethod(Method.GET);
 		return q;
 	}

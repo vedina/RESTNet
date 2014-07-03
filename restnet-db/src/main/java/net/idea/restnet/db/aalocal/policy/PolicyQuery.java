@@ -9,11 +9,11 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.conditions.EQCondition;
 import net.idea.modbcum.q.query.AbstractQuery;
-import net.idea.restnet.db.aalocal.user.IUser;
+import net.idea.restnet.db.aalocal.user.IDBConfig;
 
 import org.restlet.data.Method;
 
-public class PolicyQuery  extends AbstractQuery<String,IUser, EQCondition, Boolean> implements IQueryRetrieval<Boolean> {
+public class PolicyQuery  extends AbstractQuery<String,String, EQCondition, Boolean> implements IQueryRetrieval<Boolean>,  IDBConfig{ 
 	protected Method method = Method.GET;
 	public Method getMethod() {
 		return method;
@@ -31,7 +31,7 @@ public class PolicyQuery  extends AbstractQuery<String,IUser, EQCondition, Boole
 	@Override
 	public List<QueryParam> getParameters() throws AmbitException {
 		List<QueryParam> params = new ArrayList<QueryParam>();
-		params.add(new QueryParam<String>(String.class,getValue().getUserName()));
+		params.add(new QueryParam<String>(String.class,getValue()));
 		params.add(new QueryParam<String>(String.class,getFieldname()));
 		return params;
 	}
@@ -39,7 +39,9 @@ public class PolicyQuery  extends AbstractQuery<String,IUser, EQCondition, Boole
 	@Override
 	public String getSQL() throws AmbitException {
 		return String.format(
-				"select prefix,resource,count(*) from policy join user_roles using(role_name) where user_name=? and resource=? and m%s=1",
+				"select prefix,resource,count(*) from %s%spolicy join %s%suser_roles using(role_name) where user_name=? and resource=? and m%s=1",
+				databaseName==null?"":databaseName,databaseName==null?"":".",
+				databaseName==null?"":databaseName,databaseName==null?"":".",
 				getMethod().getName().toLowerCase()
 				);
 	}
@@ -64,4 +66,13 @@ public class PolicyQuery  extends AbstractQuery<String,IUser, EQCondition, Boole
 		return false;
 	}
 
+	protected String databaseName = null;
+	@Override
+	public void setDatabaseName(String name) {
+		databaseName = name;
+	}
+	@Override
+	public String getDatabaseName() {
+		return databaseName;
+	}
 }
