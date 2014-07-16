@@ -22,4 +22,4 @@ CREATE TABLE `policy` (
   CONSTRAINT `fkrole1` FOREIGN KEY (`role_name`) REFERENCES `roles` (`role_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-insert into version (idmajor,idminor,comment) values (2,1,"Local AA schema");
+insert into version (idmajor,idminor,comment) values (2,2,"Local AA schema");
