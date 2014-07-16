@@ -1,19 +1,20 @@
 package net.idea.restnet.db.test.user;
 
+import java.math.BigInteger;
+
 import junit.framework.Assert;
-
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.ITable;
-
 import net.idea.modbcum.i.query.IQueryUpdate;
 import net.idea.restnet.db.CreateDatabaseProcessor;
 import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
 import net.idea.restnet.db.aalocal.DBRole;
+import net.idea.restnet.db.aalocal.policy.CreatePolicy;
 import net.idea.restnet.db.aalocal.policy.DeletePolicy;
-import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.db.test.CRUDTest;
 import net.idea.restnet.i.aa.IRESTPolicy;
 import net.idea.restnet.i.aa.RESTPolicy;
+
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.ITable;
 
 public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 	@Override
@@ -29,15 +30,22 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 	@Override
 	protected IQueryUpdate<DBRole, IRESTPolicy<Integer>> createQuery()
 			throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected IQueryUpdate<DBRole, IRESTPolicy<Integer>> createQueryNew()
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		CreatePolicy q = new CreatePolicy();
+		RESTPolicy p = new RESTPolicy();
+		p.setAllowDELETE(false);
+		p.setAllowGET(true);
+		p.setAllowPOST(false);
+		p.setAllowPUT(false);
+		p.setRole("user");
+		p.setUri("http://localhost:8080/ambit2/dataset");
+		q.setObject(p);
+		return q;
 	}
 
 	@Override
@@ -57,7 +65,10 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 	@Override
 	protected void createVerifyNew(
 			IQueryUpdate<DBRole, IRESTPolicy<Integer>> query) throws Exception {
-		// TODO Auto-generated method stub
+        IDatabaseConnection c = getConnection();	
+		ITable table = 	c.createQueryTable("EXPECTED",String.format("SELECT count(*) c from policy "));
+		Assert.assertEquals(new BigInteger("3"),table.getValue(0,"c"));
+		c.close();	
 		
 	}
 
