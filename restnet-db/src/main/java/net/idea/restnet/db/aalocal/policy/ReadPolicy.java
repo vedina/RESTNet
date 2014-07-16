@@ -1,6 +1,7 @@
 package net.idea.restnet.db.aalocal.policy;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.idea.modbcum.i.IQueryRetrieval;
@@ -21,18 +22,32 @@ public class ReadPolicy  extends AbstractQuery<IRESTPolicy<Integer>, String, EQC
 	private static final long serialVersionUID = -740189128538619419L;
 	
 	private static String sql = "select idpolicy,prefix,resource,mget,mput,mpost,mdelete from %s%spolicy\n";
-	
+	private static String sql_byid = "idpolicy=?\n";
 	@Override
 	public String getSQL() throws AmbitException {
-		return String.format(sql,
-				getDatabaseName()==null?"":getDatabaseName(),
-				getDatabaseName()==null?"":"."
-				);
+		String q =  String.format(sql,
+				 getDatabaseName()==null?"":getDatabaseName(),
+						getDatabaseName()==null?"":"."
+						);
+		if (getFieldname()!=null) {
+			if (getFieldname().getId()>0) {
+				return String.format("%s where %s",q,sql_byid);
+			}
+		}	
+		return q;
 	}
 
 	@Override
 	public List<QueryParam> getParameters() throws AmbitException {
-		return null;
+		List<QueryParam> params = null;
+		if (getFieldname()!=null) {
+			if (getFieldname().getId()>0) {
+				QueryParam<Integer> p = new QueryParam<Integer>(Integer.class,getFieldname().getId());
+				params = new ArrayList<QueryParam>();
+				params.add(p);
+			}
+		}
+		return params;
 	}
 
 	@Override

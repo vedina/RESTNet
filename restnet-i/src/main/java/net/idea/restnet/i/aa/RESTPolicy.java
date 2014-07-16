@@ -7,6 +7,7 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	protected enum _fields {
 		id,
 		uri,
+		resource,
 		methods,
 		get,
 		post,
@@ -18,7 +19,12 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	protected boolean allowPOST;
 	protected boolean allowPUT;
 	protected boolean allowDELETE;
-	protected String uri;
+	
+	public String getPolicyURI(String baseRef) {
+		return String.format("%s/%d",baseRef==null?"":baseRef,getId());
+	}
+
+	protected String resource;
 	protected int id;
 	public boolean isAllowGET() {
 		return allowGET;
@@ -55,12 +61,12 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	
 	@Override
 	public String getUri() {
-		return uri;
+		return resource;
 	}
 
 	@Override
 	public void setUri(String uri) {
-		this.uri = uri;
+		this.resource = uri;
 	}
 
 	@Override
@@ -73,7 +79,7 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		this.id = id;
 	}
 	
-	public String toJSON() {
+	public String toJSON(String baseref) {
 		StringBuilder b = new StringBuilder();
 		b.append("{");
 
@@ -85,6 +91,11 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		b.append(",\n\t");
 		b.append(JSONUtils.jsonQuote(_fields.uri.name()));		
 		b.append(": ");
+		b.append(JSONUtils.jsonQuote(JSONUtils.jsonEscape(getPolicyURI(baseref))));
+		
+		b.append(",\n\t");
+		b.append(JSONUtils.jsonQuote(_fields.resource.name()));		
+		b.append(": ");
 		b.append(JSONUtils.jsonQuote(JSONUtils.jsonEscape(getUri())));
 		
 		b.append(",\n\t");
@@ -93,26 +104,26 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		b.append("{");
 			b.append(JSONUtils.jsonQuote(_fields.get.name()));
 			b.append(":");b.append(isAllowGET());
-		b.append("},\n");
+		b.append("},");
 		b.append("{");
 			b.append(JSONUtils.jsonQuote(_fields.post.name()));
 			b.append(":");b.append(isAllowPOST());
-		b.append("},\n");
+		b.append("},");
 		b.append("{");
 			b.append(JSONUtils.jsonQuote(_fields.put.name()));
 			b.append(":");b.append(isAllowPUT());
-		b.append("},\n");
+		b.append("},");
 		b.append("{");
 			b.append(JSONUtils.jsonQuote(_fields.delete.name()));
 			b.append(":");b.append(isAllowDELETE());
-		b.append("},\n");		
-		b.append("\n]}");
+		b.append("}");		
+		b.append("]\t\n\t}");
 		return b.toString();
 	}
 	
 	@Override
 	public String toString() {
-		return toJSON();
+		return toJSON(null);
 	}
 
 }

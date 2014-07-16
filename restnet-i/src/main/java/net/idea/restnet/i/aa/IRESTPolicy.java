@@ -10,5 +10,5 @@ public interface IRESTPolicy<ID> extends IPolicy<ID> {
 	public void setAllowPUT(boolean allowPUT);
 	public boolean isAllowDELETE();
 	public void setAllowDELETE(boolean allowDELETE);
-	String toJSON();
+	String toJSON(String baseref);
 }

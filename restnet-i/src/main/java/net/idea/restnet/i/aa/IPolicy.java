@@ -1,6 +1,8 @@
 package net.idea.restnet.i.aa;
 
-public interface IPolicy<ID> {
+import java.io.Serializable;
+
+public interface IPolicy<ID> extends Serializable {
 	public String getUri();
 	public void setUri(String uri);
 	public ID getId();
