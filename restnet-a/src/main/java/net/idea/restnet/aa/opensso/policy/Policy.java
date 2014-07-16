@@ -2,7 +2,9 @@ package net.idea.restnet.aa.opensso.policy;
 
 import java.io.Serializable;
 
-public class Policy implements Serializable {
+import net.idea.restnet.i.aa.IPolicy;
+
+public class Policy implements Serializable , IPolicy<String>{
 	/**
 	 * 
 	 */
