@@ -115,11 +115,6 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		b.append("{");
 
 		b.append("\n\t");
-		b.append(JSONUtils.jsonQuote(_fields.id.name()));		
-		b.append(": ");
-		b.append(getId());
-
-		b.append(",\n\t");
 		b.append(JSONUtils.jsonQuote(_fields.uri.name()));		
 		b.append(": ");
 		b.append(JSONUtils.jsonQuote(JSONUtils.jsonEscape(getPolicyURI(baseref))));
@@ -136,24 +131,24 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		
 		b.append(",\n\t");
 		b.append(JSONUtils.jsonQuote(_fields.methods.name()));		
-		b.append(": [");
-		b.append("{");
-			b.append(JSONUtils.jsonQuote(_fields.get.name()));
-			b.append(":");b.append(isAllowGET());
-		b.append("},");
-		b.append("{");
-			b.append(JSONUtils.jsonQuote(_fields.post.name()));
-			b.append(":");b.append(isAllowPOST());
-		b.append("},");
-		b.append("{");
-			b.append(JSONUtils.jsonQuote(_fields.put.name()));
-			b.append(":");b.append(isAllowPUT());
-		b.append("},");
-		b.append("{");
-			b.append(JSONUtils.jsonQuote(_fields.delete.name()));
-			b.append(":");b.append(isAllowDELETE());
-		b.append("}");		
-		b.append("]\t\n\t}");
+		b.append(": {");
+
+		b.append(JSONUtils.jsonQuote(_fields.get.name()));
+		b.append(":");b.append(isAllowGET());
+		b.append(",");
+
+		b.append(JSONUtils.jsonQuote(_fields.post.name()));
+		b.append(":");b.append(isAllowPOST());
+		b.append(",");
+		
+		b.append(JSONUtils.jsonQuote(_fields.put.name()));
+		b.append(":");b.append(isAllowPUT());
+		b.append(",");
+
+		b.append(JSONUtils.jsonQuote(_fields.delete.name()));
+		b.append(":");b.append(isAllowDELETE());
+		
+		b.append("}\t\n\t}");
 		return b.toString();
 	}
 	
