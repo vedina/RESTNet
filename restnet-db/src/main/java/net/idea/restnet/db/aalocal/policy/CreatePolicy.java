@@ -1,6 +1,5 @@
 package net.idea.restnet.db.aalocal.policy;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,24 +29,21 @@ public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		if ((getObject()==null) || (getObject().getRole()==null)
 			|| (getObject().getUri()==null)) throw new AmbitException("Undefined policy");
-		
-			String resource = (getObject().getUri());
-			String prefix = "";
-			try {
-				URI uri = new URI(getObject().getUri());
-				
-			} catch (Exception x) {
-				
-			}
+		try {
+			String[] prefix_resource = getObject().splitURI(getObject().getUri());
+			
 			List<QueryParam> params2 = new ArrayList<QueryParam>();
 			params2.add(new QueryParam<String>(String.class, getObject().getRole()));
-			params2.add(new QueryParam<String>(String.class, prefix));
-			params2.add(new QueryParam<String>(String.class, resource));
+			params2.add(new QueryParam<String>(String.class, prefix_resource[0]));
+			params2.add(new QueryParam<String>(String.class, prefix_resource[1]));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowGET()));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowPUT()));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowPOST()));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowDELETE()));
 			return params2;
+		} catch (Exception x) {
+			throw new AmbitException(x);
+		}
 		
 	}
 

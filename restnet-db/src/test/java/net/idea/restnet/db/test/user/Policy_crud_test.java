@@ -9,6 +9,7 @@ import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
 import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.policy.CreatePolicy;
 import net.idea.restnet.db.aalocal.policy.DeletePolicy;
+import net.idea.restnet.db.aalocal.policy.UpdatePolicy;
 import net.idea.restnet.db.test.CRUDTest;
 import net.idea.restnet.i.aa.IRESTPolicy;
 import net.idea.restnet.i.aa.RESTPolicy;
@@ -30,7 +31,16 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 	@Override
 	protected IQueryUpdate<DBRole, IRESTPolicy<Integer>> createQuery()
 			throws Exception {
-		return null;
+		CreatePolicy q = new CreatePolicy();
+		RESTPolicy p = new RESTPolicy();
+		p.setAllowDELETE(false);
+		p.setAllowGET(true);
+		p.setAllowPOST(false);
+		p.setAllowPUT(false);
+		p.setRole("user");
+		p.setUri("/ambit3/dataset");
+		q.setObject(p);
+		return q;
 	}
 
 	@Override
@@ -43,7 +53,7 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 		p.setAllowPOST(false);
 		p.setAllowPUT(false);
 		p.setRole("user");
-		p.setUri("http://localhost:8080/ambit2/dataset");
+		p.setUri("http://localhost:8080/ambit3/dataset/1234?q=10");
 		q.setObject(p);
 		return q;
 	}
@@ -51,14 +61,31 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 	@Override
 	protected IQueryUpdate<DBRole, IRESTPolicy<Integer>> updateQuery()
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		UpdatePolicy q = new UpdatePolicy();
+		RESTPolicy p = new RESTPolicy();
+		p.setAllowDELETE(false);
+		p.setAllowGET(true);
+		p.setAllowPOST(false);
+		p.setAllowPUT(false);
+		p.setRole("user");
+		p.setId(1);
+		p.setUri("http://localhost:8080/ambit3/dataset/789?q=10");
+		q.setObject(p);
+		return q;
 	}
 
 	@Override
 	protected void createVerify(IQueryUpdate<DBRole, IRESTPolicy<Integer>> query)
 			throws Exception {
-		// TODO Auto-generated method stub
+        IDatabaseConnection c = getConnection();	
+		ITable table = 	c.createQueryTable("EXPECTED",String.format("SELECT count(*) c from policy "));
+		Assert.assertEquals(new BigInteger("3"),table.getValue(0,"c"));
+		
+		table = 	c.createQueryTable("EXPECTED",String.format("SELECT idpolicy,role_name,prefix,resource from policy where prefix='/ambit3' "));
+		Assert.assertEquals(1,table.getRowCount());
+		Assert.assertEquals("/dataset",table.getValue(0,"resource"));
+		Assert.assertEquals("user",table.getValue(0,"role_name"));
+		c.close();	
 		
 	}
 
@@ -68,6 +95,11 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
         IDatabaseConnection c = getConnection();	
 		ITable table = 	c.createQueryTable("EXPECTED",String.format("SELECT count(*) c from policy "));
 		Assert.assertEquals(new BigInteger("3"),table.getValue(0,"c"));
+		
+		table = 	c.createQueryTable("EXPECTED",String.format("SELECT idpolicy,role_name,prefix,resource from policy where prefix='/ambit3' "));
+		Assert.assertEquals(1,table.getRowCount());
+		Assert.assertEquals("/dataset/1234",table.getValue(0,"resource"));
+		Assert.assertEquals("user",table.getValue(0,"role_name"));
 		c.close();	
 		
 	}
@@ -75,8 +107,16 @@ public class Policy_crud_test  extends CRUDTest<DBRole,IRESTPolicy<Integer>>  {
 	@Override
 	protected void updateVerify(IQueryUpdate<DBRole, IRESTPolicy<Integer>> query)
 			throws Exception {
-		// TODO Auto-generated method stub
-		
+	    IDatabaseConnection c = getConnection();	
+		ITable table = 	c.createQueryTable("EXPECTED",String.format("SELECT count(*) c from policy "));
+		Assert.assertEquals(new BigInteger("2"),table.getValue(0,"c"));
+			
+		table = 	c.createQueryTable("EXPECTED",String.format("SELECT idpolicy,role_name,prefix,resource from policy where idpolicy=1 "));
+		Assert.assertEquals(1,table.getRowCount());
+		Assert.assertEquals("/dataset/789",table.getValue(0,"resource"));
+		Assert.assertEquals("/ambit3",table.getValue(0,"prefix"));
+		Assert.assertEquals("user",table.getValue(0,"role_name"));
+		c.close();
 	}
 
 	@Override

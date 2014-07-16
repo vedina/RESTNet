@@ -1,5 +1,7 @@
 package net.idea.restnet.i.aa;
 
+import java.net.URI;
+
 import net.idea.restnet.i.tools.JSONUtils;
 
 
@@ -89,6 +91,25 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		this.id = id;
 	}
 	
+	@Override
+	public String[] splitURI(String href) throws Exception {
+		String[] prefix_resource = {null,null};
+		URI uri = new URI(href);
+		String[] segments = uri.getPath().split("\\/");
+		for (int i=0; i < segments.length; i++) {
+			if (!"".equals(segments[i])) {
+				if (prefix_resource[0]==null) {
+					//prefix_resource[0] = "//" + uri.getHost() + ":" + uri.getPort() + "/"+segments[i];
+					prefix_resource[0] = "/"+segments[i];
+				}
+				else {
+					if (prefix_resource[1]==null) prefix_resource[1] = "/" + segments[i];
+					else prefix_resource[1] += "/" + segments[i];
+				}
+			}
+		}
+		return prefix_resource;
+	}
 	public String toJSON(String baseref) {
 		StringBuilder b = new StringBuilder();
 		b.append("{");

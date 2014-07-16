@@ -13,4 +13,5 @@ public interface IRESTPolicy<ID> extends IPolicy<ID> {
 	String toJSON(String baseref);
 	String getRole();
 	void setRole(String rolename);
+	String[] splitURI(String uri)  throws Exception;
 }
