@@ -7,6 +7,7 @@ import net.idea.restnet.aa.opensso.OpenSSOAuthenticator;
 import net.idea.restnet.aa.opensso.OpenSSOAuthorizer;
 import net.idea.restnet.aa.opensso.OpenSSOVerifierSetUser;
 import net.idea.restnet.aa.opensso.policy.CallablePolicyCreator;
+import net.idea.restnet.aa.opensso.policy.OpenSSOPoliciesResource;
 import net.idea.restnet.aa.opensso.policy.PolicyProtectedTask;
 import net.idea.restnet.aa.opensso.users.OpenSSOUserResource;
 import net.idea.restnet.aa.resource.AdminResource;
@@ -23,6 +24,8 @@ import net.idea.restnet.c.task.TaskStorage;
 import net.idea.restnet.db.aalocal.ChallengeAuthenticatorDBLocal;
 import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.UserRolesResource;
+import net.idea.restnet.db.aalocal.policy.RESTPolicyResource;
+import net.idea.restnet.i.aa.RESTPolicy;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.Task;
@@ -298,7 +301,14 @@ public class RESTNetApplication extends TaskApplication<String> {
 	 * @return
 	 */
 	protected Restlet createAdminRouter() {
-		AdminRouter adminRouter = new AdminRouter(getContext());
+		AdminRouter adminRouter = new AdminRouter(getContext()) {
+			@Override
+			protected void init() {
+				super.init();
+				attach(String.format("/%s",RESTPolicyResource.resource),RESTPolicyResource.class);
+				attach(String.format("/%s/{%s}",RESTPolicyResource.resource,RESTPolicyResource.resourceid),RESTPolicy.class);
+			}
+		};
 		//DBCreateAllowedGuard dbguard = new DBCreateAllowedGuard();
 		//dbguard.setNext(adminRouter);
 		//return dbguard;

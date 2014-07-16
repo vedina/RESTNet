@@ -2,6 +2,8 @@ package net.idea.restnet.db.reporter;
 
 import java.io.Writer;
 
+import org.restlet.Context;
+
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.r.QueryReporter;
@@ -66,7 +68,7 @@ public abstract class AbstractJSONReporter<T,Q extends IQueryRetrieval<T>> exten
 			output.write(item2json(item));
 			comma = ",";
 		} catch (Exception x) {
-			x.printStackTrace();
+			Context.getCurrentLogger().severe(x.getMessage());
 		}
 		return item;
 	}

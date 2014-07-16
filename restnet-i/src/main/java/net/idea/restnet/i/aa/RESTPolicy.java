@@ -6,7 +6,7 @@ import net.idea.restnet.i.tools.JSONUtils;
 
 
 public class RESTPolicy implements IRESTPolicy<Integer>{
-	protected enum _fields {
+	public enum _fields {
 		id,
 		uri,
 		resource,

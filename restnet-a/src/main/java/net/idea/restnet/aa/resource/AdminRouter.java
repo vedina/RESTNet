@@ -3,6 +3,7 @@ package net.idea.restnet.aa.resource;
 import net.idea.restnet.aa.opensso.policy.OpenSSOPoliciesResource;
 import net.idea.restnet.aa.opensso.policy.OpenSSOPolicyResource;
 import net.idea.restnet.c.routers.MyRouter;
+import net.idea.restnet.i.aa.RESTPolicy;
 
 import org.restlet.Context;
 
@@ -26,6 +27,7 @@ public class AdminRouter extends MyRouter {
 		 */
 		attach(String.format("/%s",OpenSSOPoliciesResource.resource),OpenSSOPoliciesResource.class);
 		attach(String.format("/%s/{%s}",OpenSSOPoliciesResource.resource,OpenSSOPolicyResource.policyKey),OpenSSOPolicyResource.class);
+		
 		
 	}
 }

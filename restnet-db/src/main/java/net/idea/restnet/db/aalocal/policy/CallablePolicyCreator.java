@@ -22,8 +22,9 @@ public class CallablePolicyCreator extends CallableDBUpdateTask<IRESTPolicy<Inte
 	@Override
 	protected IRESTPolicy<Integer> getTarget(Form input) throws Exception {
 		RESTPolicy policy = new RESTPolicy();
-		policy.setRole(input.getFirstValue("role_name"));
-		policy.setUri(input.getFirstValue("uri"));
+		policy.setRole(input.getFirstValue(RESTPolicy._fields.role.name()));
+		policy.setUri(input.getFirstValue(RESTPolicy._fields.resource.name()));
+
 		return policy;
 	}
 
