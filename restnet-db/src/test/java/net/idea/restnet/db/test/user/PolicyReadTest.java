@@ -24,6 +24,7 @@ public class PolicyReadTest extends QueryTest<ReadPolicy> {
 			IRESTPolicy<Integer> record = query.getObject(rs);
 			Assert.assertNotNull(record.getId());
 			Assert.assertNotNull(record.getUri());
+			Assert.assertNotNull(record.getRole());
 			count++;
 		}
 		Assert.assertEquals(2,count);

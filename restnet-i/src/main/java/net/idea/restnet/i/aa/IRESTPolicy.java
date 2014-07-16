@@ -11,4 +11,6 @@ public interface IRESTPolicy<ID> extends IPolicy<ID> {
 	public boolean isAllowDELETE();
 	public void setAllowDELETE(boolean allowDELETE);
 	String toJSON(String baseref);
+	String getRole();
+	void setRole(String rolename);
 }

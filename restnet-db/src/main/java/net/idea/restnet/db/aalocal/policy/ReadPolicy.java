@@ -21,7 +21,7 @@ public class ReadPolicy  extends AbstractQuery<IRESTPolicy<Integer>, String, EQC
 	 */
 	private static final long serialVersionUID = -740189128538619419L;
 	
-	private static String sql = "select idpolicy,prefix,resource,mget,mput,mpost,mdelete from %s%spolicy\n";
+	private static String sql = "select idpolicy,role_name,prefix,resource,mget,mput,mpost,mdelete from %s%spolicy\n";
 	private static String sql_byid = "idpolicy=?\n";
 	@Override
 	public String getSQL() throws AmbitException {
@@ -55,11 +55,12 @@ public class ReadPolicy  extends AbstractQuery<IRESTPolicy<Integer>, String, EQC
 		try {
 			RESTPolicy policy = new RESTPolicy();
 			policy.setId(rs.getInt(1));
-			policy.setUri(rs.getString(2)+rs.getString(3));
-			policy.setAllowGET(rs.getBoolean(4));
-			policy.setAllowPUT(rs.getBoolean(5));
-			policy.setAllowPOST(rs.getBoolean(6));
-			policy.setAllowDELETE(rs.getBoolean(7));
+			policy.setRole(rs.getString(2));
+			policy.setUri(rs.getString(3)+rs.getString(4));
+			policy.setAllowGET(rs.getBoolean(5));
+			policy.setAllowPUT(rs.getBoolean(6));
+			policy.setAllowPOST(rs.getBoolean(7));
+			policy.setAllowDELETE(rs.getBoolean(8));
 			return policy;
 		} catch (Exception x) {
 			throw new AmbitException(x);

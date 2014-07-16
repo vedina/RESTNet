@@ -8,6 +8,7 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		id,
 		uri,
 		resource,
+		role,
 		methods,
 		get,
 		post,
@@ -19,7 +20,16 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	protected boolean allowPOST;
 	protected boolean allowPUT;
 	protected boolean allowDELETE;
+	protected String role;
 	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public String getPolicyURI(String baseRef) {
 		return String.format("%s/%d",baseRef==null?"":baseRef,getId());
 	}
@@ -97,6 +107,11 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		b.append(JSONUtils.jsonQuote(_fields.resource.name()));		
 		b.append(": ");
 		b.append(JSONUtils.jsonQuote(JSONUtils.jsonEscape(getUri())));
+
+		b.append(",\n\t");
+		b.append(JSONUtils.jsonQuote(_fields.role.name()));		
+		b.append(": ");
+		b.append(JSONUtils.jsonQuote(JSONUtils.jsonEscape(getRole())));
 		
 		b.append(",\n\t");
 		b.append(JSONUtils.jsonQuote(_fields.methods.name()));		
