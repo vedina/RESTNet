@@ -54,13 +54,14 @@
       <version>2.5</version>
       <scope>provided</scope>
     </dependency>
-    <!--  test -->
+    <!--  test 
         <dependency>
       <groupId>ambit</groupId>
       <artifactId>opentox-client</artifactId>
       <version>1.0.5-SNAPSHOT</version>
       <type>test</type>
     </dependency>
+    -->
   </dependencies>
   <profiles>
     <profile>
