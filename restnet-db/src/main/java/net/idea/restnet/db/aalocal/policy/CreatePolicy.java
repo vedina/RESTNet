@@ -46,7 +46,7 @@ public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 		}
 		
 	}
-
+	@Override
 	public void setID(int index, int id) {
 		getObject().setId(id);
 	}
@@ -59,5 +59,9 @@ public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 	@Override
 	public String getDatabaseName() {
 		return databaseName;
+	}
+	@Override
+	public boolean returnKeys(int index) {
+		return true;
 	}
 }

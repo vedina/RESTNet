@@ -3,13 +3,13 @@ package net.idea.restnet.i.aa;
 public interface IRESTPolicy<ID> extends IPolicy<ID> {
 	
 	public boolean isAllowGET();
-	public void setAllowGET(boolean allowGET);
+	public void setAllowGET(Boolean allowGET);
 	public boolean isAllowPOST() ;
-	public void setAllowPOST(boolean allowPOST);
+	public void setAllowPOST(Boolean allowPOST);
 	public boolean isAllowPUT();
-	public void setAllowPUT(boolean allowPUT);
+	public void setAllowPUT(Boolean allowPUT);
 	public boolean isAllowDELETE();
-	public void setAllowDELETE(boolean allowDELETE);
+	public void setAllowDELETE(Boolean allowDELETE);
 	String toJSON(String baseref);
 	String getRole();
 	void setRole(String rolename);

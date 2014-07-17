@@ -29,7 +29,8 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	}
 
 	public void setRole(String role) {
-		this.role = role;
+		if (role!=null)
+			this.role = role;
 	}
 
 	public String getPolicyURI(String baseRef) {
@@ -42,32 +43,36 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 		return allowGET;
 	}
 
-	public void setAllowGET(boolean allowGET) {
-		this.allowGET = allowGET;
+	public void setAllowGET(Boolean allowGET) {
+		if (allowGET != null)
+			this.allowGET = allowGET;
 	}
 
 	public boolean isAllowPOST() {
 		return allowPOST;
 	}
 
-	public void setAllowPOST(boolean allowPOST) {
-		this.allowPOST = allowPOST;
+	public void setAllowPOST(Boolean allowPOST) {
+		if (allowPOST != null)
+			this.allowPOST = allowPOST;
 	}
 
 	public boolean isAllowPUT() {
 		return allowPUT;
 	}
 
-	public void setAllowPUT(boolean allowPUT) {
-		this.allowPUT = allowPUT;
+	public void setAllowPUT(Boolean allowPUT) {
+		if (allowPUT != null)
+			this.allowPUT = allowPUT;
 	}
 
 	public boolean isAllowDELETE() {
 		return allowDELETE;
 	}
 
-	public void setAllowDELETE(boolean allowDELETE) {
-		this.allowDELETE = allowDELETE;
+	public void setAllowDELETE(Boolean allowDELETE) {
+		if (allowDELETE!=null)
+			this.allowDELETE = allowDELETE;
 	}
 
 	
@@ -78,7 +83,8 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 
 	@Override
 	public void setUri(String uri) {
-		this.resource = uri;
+		if (uri!=null)
+			this.resource = uri;
 	}
 
 	@Override
@@ -154,7 +160,7 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	
 	@Override
 	public String toString() {
-		return toJSON(null);
+		return getPolicyURI("");
 	}
 
 }
