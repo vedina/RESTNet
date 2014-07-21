@@ -13,7 +13,7 @@ import net.idea.restnet.i.aa.IRESTPolicy;
 public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> implements IDBConfig{
 
 	public static String sql =
-			"insert into %s%spolicy (idpolicy,role_name,prefix,resource,mget,mput,mpost,mdelete) values (null,?,?,?,?,?,?,?)"
+			"insert into %s%spolicy (idpolicy,role_name,prefix,resource,level,mget,mput,mpost,mdelete) values (null,?,?,?,?,?,?,?,?)"
 	;
 	
 	public CreatePolicy() {
@@ -36,6 +36,7 @@ public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 			params2.add(new QueryParam<String>(String.class, getObject().getRole()));
 			params2.add(new QueryParam<String>(String.class, prefix_resource[0]));
 			params2.add(new QueryParam<String>(String.class, prefix_resource[1]));
+			params2.add(new QueryParam<Integer>(Integer.class, getObject().getLevel(prefix_resource[1])));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowGET()));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowPUT()));
 			params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowPOST()));

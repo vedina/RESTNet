@@ -2,10 +2,17 @@ package net.idea.restnet.i.aa;
 
 import java.net.URI;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.idea.restnet.i.tools.JSONUtils;
 
 
 public class RESTPolicy implements IRESTPolicy<Integer>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7179443591458321559L;
+
 	public enum _fields {
 		id,
 		uri,
@@ -24,6 +31,10 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 	protected boolean allowDELETE;
 	protected String role;
 	
+	public int getLevel(String resource) {
+		return StringUtils.countMatches(resource,"/");
+	}
+
 	public String getRole() {
 		return role;
 	}
@@ -113,6 +124,10 @@ public class RESTPolicy implements IRESTPolicy<Integer>{
 					else prefix_resource[1] += "/" + segments[i];
 				}
 			}
+		}
+		if (prefix_resource[1]==null) {
+			prefix_resource[1] = prefix_resource[0];
+			prefix_resource[0] = "";
 		}
 		return prefix_resource;
 	}

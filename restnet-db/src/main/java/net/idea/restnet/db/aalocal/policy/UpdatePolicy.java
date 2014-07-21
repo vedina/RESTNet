@@ -14,7 +14,7 @@ import net.idea.restnet.i.aa.IRESTPolicy;
 public class UpdatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> implements IDBConfig{
 
 	public static String sql =
-			"update %s%spolicy set role_name=?,prefix=?,resource=?,mget=?,mput=?,mpost=?,mdelete=? where idpolicy=?"
+			"update %s%spolicy set role_name=?,prefix=?,resource=?,level=?,mget=?,mput=?,mpost=?,mdelete=? where idpolicy=?"
 	;
 	
 	public UpdatePolicy() {
@@ -38,6 +38,7 @@ public class UpdatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 				params2.add(new QueryParam<String>(String.class, getObject().getRole()));
 				params2.add(new QueryParam<String>(String.class, prefix_resource[0]));
 				params2.add(new QueryParam<String>(String.class, prefix_resource[1]));
+				params2.add(new QueryParam<Integer>(Integer.class, getObject().getLevel(prefix_resource[1])));
 				params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowGET()));
 				params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowPUT()));
 				params2.add(new QueryParam<Boolean>(Boolean.class, getObject().isAllowPOST()));

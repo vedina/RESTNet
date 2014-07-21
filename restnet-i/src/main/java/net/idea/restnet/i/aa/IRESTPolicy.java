@@ -1,7 +1,7 @@
 package net.idea.restnet.i.aa;
 
 public interface IRESTPolicy<ID> extends IPolicy<ID> {
-	
+	public int getLevel(String resource);
 	public boolean isAllowGET();
 	public void setAllowGET(Boolean allowGET);
 	public boolean isAllowPOST() ;
@@ -14,6 +14,5 @@ public interface IRESTPolicy<ID> extends IPolicy<ID> {
 	String getRole();
 	void setRole(String rolename);
 	String[] splitURI(String uri)  throws Exception;
-	
 	String getPolicyURI(String baseRef);
 }

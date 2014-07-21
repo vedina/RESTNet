@@ -10,11 +10,14 @@ import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.conditions.EQCondition;
 import net.idea.modbcum.q.query.AbstractQuery;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
+import net.idea.restnet.i.aa.IRESTPolicy;
+import net.idea.restnet.i.aa.RESTPolicy;
 
 import org.restlet.data.Method;
 
-public class PolicyQuery  extends AbstractQuery<String,String, EQCondition, Boolean> implements IQueryRetrieval<Boolean>,  IDBConfig{ 
+public class PolicyQuery  extends AbstractQuery<IRESTPolicy<Integer>,String, EQCondition, Boolean> implements IQueryRetrieval<Boolean>,  IDBConfig{ 
 	protected Method method = Method.GET;
+
 	public Method getMethod() {
 		return method;
 	}
@@ -22,6 +25,7 @@ public class PolicyQuery  extends AbstractQuery<String,String, EQCondition, Bool
 	public void setMethod(Method method) {
 		this.method = method;
 	}
+
 
 	/**
 	 * 
@@ -31,15 +35,23 @@ public class PolicyQuery  extends AbstractQuery<String,String, EQCondition, Bool
 	@Override
 	public List<QueryParam> getParameters() throws AmbitException {
 		List<QueryParam> params = new ArrayList<QueryParam>();
+		
 		params.add(new QueryParam<String>(String.class,getValue()));
-		params.add(new QueryParam<String>(String.class,getFieldname()));
+		try {
+			String[] uri = getFieldname().splitURI(getFieldname().getUri());
+			params.add(new QueryParam<String>(String.class,uri[0]));
+			params.add(new QueryParam<String>(String.class,uri[1]));
+		} catch (Exception x) {
+			throw new AmbitException(x);
+		}
 		return params;
 	}
 
 	@Override
 	public String getSQL() throws AmbitException {
 		return String.format(
-				"select prefix,resource,count(*) from %s%spolicy join %s%suser_roles using(role_name) where user_name=? and resource=? and m%s=1",
+				"select prefix,resource,sum(m%s) from %s%spolicy join %s%suser_roles using(role_name) where user_name=? and prefix=? and resource=? and m%s=1 group by prefix,resource\n",
+				getMethod().getName().toLowerCase(),
 				databaseName==null?"":databaseName,databaseName==null?"":".",
 				databaseName==null?"":databaseName,databaseName==null?"":".",
 				getMethod().getName().toLowerCase()

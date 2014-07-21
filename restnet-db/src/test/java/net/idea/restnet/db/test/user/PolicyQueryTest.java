@@ -6,8 +6,8 @@ import junit.framework.Assert;
 import net.idea.restnet.db.CreateDatabaseProcessor;
 import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
 import net.idea.restnet.db.aalocal.policy.PolicyQuery;
-import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.db.test.QueryTest;
+import net.idea.restnet.i.aa.RESTPolicy;
 
 import org.restlet.data.Method;
 
@@ -17,7 +17,9 @@ public class PolicyQueryTest extends QueryTest<PolicyQuery> {
 	@Override
 	protected PolicyQuery createQuery() throws Exception {
 		PolicyQuery q = new PolicyQuery();
-		q.setFieldname("/dataset");
+		RESTPolicy p = new RESTPolicy();
+		p.setUri("/dataset");
+		q.setFieldname(p);
 		q.setValue("admin");
 		q.setMethod(Method.GET);
 		return q;
