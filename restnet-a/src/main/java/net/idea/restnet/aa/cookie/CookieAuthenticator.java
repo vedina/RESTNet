@@ -612,14 +612,14 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
             	//timeout
             	return null;
             }
-            
+            /*
             String ip = decrypted.substring(ipIndex+1,agentIndex);
             if (!ip.equals(clientInfo.getAddress())) {
             	if (isIPv4(ip)&&isIPv4(clientInfo.getAddress())) return null;
             	if (isIPv6(ip)&&isIPv6(clientInfo.getAddress())) return null;
             	//else go on, stupid browsers
             }
-            
+            */
             String agent = decrypted.substring(agentIndex+1,identifierIndex);
             
             if (!agent.equals(clientInfo.getAgent())) {
