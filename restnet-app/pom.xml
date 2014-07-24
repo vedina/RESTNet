@@ -4,11 +4,11 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-app</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <packaging>war</packaging>
   <name>Application</name>
   <dependencies>
@@ -54,14 +54,7 @@
       <version>2.5</version>
       <scope>provided</scope>
     </dependency>
-    <!--  test 
-        <dependency>
-      <groupId>ambit</groupId>
-      <artifactId>opentox-client</artifactId>
-      <version>1.0.5-SNAPSHOT</version>
-      <type>test</type>
-    </dependency>
-    -->
+
   </dependencies>
   <profiles>
     <profile>
