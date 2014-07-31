@@ -91,12 +91,16 @@ public class Notification implements INotificationUtility {
 	          msg.saveChanges();
 	          tr.sendMessage(msg, msg.getAllRecipients());
 	        } catch (MessagingException x) {
+	        	log.log(Level.SEVERE, "Error sending message to "+toEmail+ " on " + subject, x);  	
 	        	throw x;
 	        } finally {
 	          try { tr.close(); } catch (Exception e) {}
 	        }
-	      } else {
+	      } else try {
 	        Transport.send(msg);
+	      } catch (MessagingException x) {
+	    	  log.log(Level.SEVERE, "Error sending message to "+toEmail+ " on " + subject, x);
+	         throw x;
 	      }
 	    } else {
 	      log.log(Level.SEVERE, "Tried to send alert notification but the mail session has not been configured");
