@@ -90,6 +90,8 @@ public class Notification implements INotificationUtility {
 	          tr.connect();
 	          msg.saveChanges();
 	          tr.sendMessage(msg, msg.getAllRecipients());
+	        } catch (MessagingException x) {
+	        	throw x;
 	        } finally {
 	          try { tr.close(); } catch (Exception e) {}
 	        }
