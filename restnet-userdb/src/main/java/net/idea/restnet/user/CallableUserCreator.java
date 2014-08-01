@@ -31,6 +31,7 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Form,String> implements IDBConfig {
+	protected boolean enableEmailVerification = true;
 	protected UserURIReporter<IQueryRetrieval<DBUser>> reporter;
 	protected DBUser user;
 	protected boolean passwordChange;
@@ -68,12 +69,14 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 						Connection connection,
 						String token,
 						boolean passwordChange,
+						boolean enableEmailVerification,
 						String usersdbname)  {
 		super(method, input,connection,token);
 		this.reporter = reporter;
 		this.user = item;
 		this.baseReference = baseReference;
 		this.passwordChange = passwordChange;
+		this.enableEmailVerification = enableEmailVerification;
 		setDatabaseName(usersdbname);
 	}
 
@@ -206,26 +209,29 @@ public abstract class CallableUserCreator extends CallableDBUpdateTask<DBUser,Fo
 		if (passwordChange)
 			return String.format("%s%s", baseReference, Resources.myaccount);
 		else if (Method.POST.equals(method) && registration!=null && target != null && target.getEmail()!=null) {
-			Date registeredAt = new Date(target.getRegisteredAt());
-			Calendar cal = Calendar.getInstance();
-		    cal.setTime(registeredAt);
-		    cal.add(Calendar.DATE, 2);
-			Notification notification = new Notification(getConfig());
-			notification.sendNotification(target.getEmail(), 
-					String.format("%s (%s %s)",subject,target.getFirstname(),target.getLastname()), 
-					String.format(emailContent,
-							target.getFirstname(),target.getLastname(),
-							getSystemName(),getSystemName(),
-							dateFormat.format(registeredAt),
-							baseReference,
-							Resources.register,
-							Resources.confirm,
-							registration.getConfirmationCode(),
-							dateFormat.format(cal.getTime()),
-							getSystemName(),
-							getSenderName(),getSender()),
-					"text/plain");
-			return String.format("%s%s%s", baseReference, Resources.register, Resources.notify);
+			
+			if (enableEmailVerification) {
+				Date registeredAt = new Date(target.getRegisteredAt());
+				Calendar cal = Calendar.getInstance();
+			    cal.setTime(registeredAt);
+			    cal.add(Calendar.DATE, 2);
+				Notification notification = new Notification(getConfig());
+				notification.sendNotification(target.getEmail(), 
+						String.format("%s (%s %s)",subject,target.getFirstname(),target.getLastname()), 
+						String.format(emailContent,
+								target.getFirstname(),target.getLastname(),
+								getSystemName(),getSystemName(),
+								dateFormat.format(registeredAt),
+								baseReference,
+								Resources.register,
+								Resources.confirm,
+								registration.getConfirmationCode(),
+								dateFormat.format(cal.getTime()),
+								getSystemName(),
+								getSenderName(),getSender()),
+						"text/plain");
+				return String.format("%s%s%s", baseReference, Resources.register, Resources.notify);
+			} else return super.getURI(target, method); 
 		} else
 			return super.getURI(target, method);
 		

@@ -19,7 +19,7 @@ import net.toxbank.client.resource.Organisation;
 
 
 public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implements IDBConfig {
-	private static String user_sql = "insert into user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer,institute) values (?,?,?,?,?,?,?,?,?,?,?)";
+	private static String user_sql = "insert into %s.user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer,institute) values (?,?,?,?,?,?,?,?,?,?,?)";
 	
 	protected CreateRegistration registerUser;
 	protected CreateGroup createOrg;
@@ -36,6 +36,7 @@ public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implement
 		registerUser = new CreateRegistration(user, reg,role,dbname);
 		setObject(user);
 		setGroup(user.getCredentials());
+		setDatabaseName(dbname);
 	}
 	@Override
 	public void setObject(DBUser object) {
@@ -66,7 +67,7 @@ public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implement
 		String[] sql2 = orgs.getSQL();
 		String[] sql3 = registerUser.getSQL();
 		String[] newsql = new String[sql1.length+sql2.length+sql3.length+1];
-		newsql[0] = user_sql;
+		newsql[0] = String.format(user_sql,getDatabaseName());
 		for (int i = 0; i < sql1.length; i++) newsql[i+1] = sql1[i];
 		for (int i = 0; i < sql2.length; i++) newsql[i+sql1.length+1] = sql2[i];
 		for (int i = 0; i < sql3.length; i++) newsql[i+sql1.length+sql2.length+1] = sql3[i];

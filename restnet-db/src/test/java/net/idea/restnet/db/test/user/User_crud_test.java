@@ -34,7 +34,7 @@ import net.idea.modbcum.i.query.IQueryUpdate;
 import net.idea.restnet.db.CreateDatabaseProcessor;
 import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
 import net.idea.restnet.db.aalocal.DBRole;
-import net.idea.restnet.db.aalocal.user.CreateUser;
+import net.idea.restnet.db.aalocal.user.CreateUserCredentials;
 import net.idea.restnet.db.aalocal.user.CreateUserRole;
 import net.idea.restnet.db.aalocal.user.DeleteUserRole;
 import net.idea.restnet.db.aalocal.user.IUser;
@@ -63,7 +63,7 @@ public class User_crud_test<T extends Object>  extends CRUDTest<T,IUser>  {
 		IUser ref = new TestUser();
 		ref.setUserName("QWERTY");
 		ref.setPassword("ASDFG");
-		CreateUser q =  new CreateUser(ref);
+		CreateUserCredentials q =  new CreateUserCredentials(ref);
 		q.setDatabaseName(getDatabase());
 		return q;
 	}
