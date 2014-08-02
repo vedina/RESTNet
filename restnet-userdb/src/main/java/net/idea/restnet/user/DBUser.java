@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.restnet.db.aalocal.user.IUser;
+import net.idea.restnet.u.RegistrationStatus;
 import net.idea.restnet.u.UserCredentials;
 import net.idea.restnet.user.alerts.db.DBAlert;
 import net.toxbank.client.Resources;
@@ -224,4 +225,11 @@ public class DBUser extends User implements IUser {
 		credentials = new UserCredentials(null,password);
 	}
 	
+	protected RegistrationStatus registrationStatus;
+	public RegistrationStatus getRegistrationStatus() {
+		return registrationStatus;
+	}
+	public void setRegistrationStatus(RegistrationStatus registrationStatus) {
+		this.registrationStatus = registrationStatus;
+	}
 }
