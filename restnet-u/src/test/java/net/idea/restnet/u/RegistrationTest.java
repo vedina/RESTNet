@@ -9,7 +9,7 @@ import net.idea.restnet.db.test.CRUDTest;
 import net.idea.restnet.db.test.user.TestUser;
 import net.idea.restnet.u.db.ConfirmRegistration;
 import net.idea.restnet.u.db.CreateRegistration;
-import net.idea.restnet.u.db.DeleteUser;
+import net.idea.restnet.u.db.UpdateRegistrationStatus;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.dbunit.database.IDatabaseConnection;
@@ -85,7 +85,7 @@ public class RegistrationTest extends CRUDTest<IUser,UserRegistration>  {
 			throws Exception {
 		IUser user = new TestUser();
 		user.setUserName("newuser");
-		DeleteUser q =  new DeleteUser(user);
+		UpdateRegistrationStatus q =  new UpdateRegistrationStatus(user);
 		q.setDatabaseName(getDatabase());
 		return q;
 	}

@@ -37,22 +37,29 @@ import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractUpdate;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
 import net.idea.restnet.db.aalocal.user.IUser;
+import net.idea.restnet.u.RegistrationStatus;
 import net.idea.restnet.u.UserRegistration;
 
-public class DeleteUser extends AbstractUpdate<IUser,UserRegistration> implements IDBConfig {
+public class UpdateRegistrationStatus extends AbstractUpdate<IUser,UserRegistration> implements IDBConfig {
+	
+	public static final String delete_sql = "update %s%suser_registration set status=?, confirmed=now() where user_name=?";
 
-	public static final String delete_sql = "update %s%suser_registration set status='disabled' where user_name=?";
-
-	public DeleteUser(IUser user) {
+	public UpdateRegistrationStatus(IUser user,RegistrationStatus status) {
 		super();
-		setObject(null);
+		UserRegistration ur = new UserRegistration();
+		ur.setStatus(status);
+		setObject(ur);
 		setGroup(user);
 	}
-	public DeleteUser() {
+	public UpdateRegistrationStatus(IUser user) {
+		this(user,RegistrationStatus.disabled);
+	}
+	public UpdateRegistrationStatus() {
 		this(null);
 	}		
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		List<QueryParam> params = new ArrayList<QueryParam>();
+		params.add(new QueryParam<String>(String.class, getObject().getStatus()==null?RegistrationStatus.disabled.name():getObject().getStatus().name()));
 		params.add(new QueryParam<String>(String.class, getGroup().getUserName()));
 		return params;
 		
