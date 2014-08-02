@@ -6,4 +6,6 @@ public interface IFreeMarkerApplication<CONFIG> {
 	public String getVersionLong();
 	public CONFIG getConfiguration();
 	public String getProfile();
+	public String getGACode();
+
 }

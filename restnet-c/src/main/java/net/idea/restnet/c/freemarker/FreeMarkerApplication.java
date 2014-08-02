@@ -43,7 +43,13 @@ public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> imple
 			this.versionLong = versionLong;
 		}
 
-	    
+		protected String gaCode = null;
+
+		
+		public String getGACode() {
+			return gaCode;
+		}
+		
 		public Configuration getConfiguration() {
 			return configuration;
 		}
