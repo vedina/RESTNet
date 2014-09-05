@@ -4,12 +4,12 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-sparql</artifactId>
   <name>SPARQL endpoint </name>
-  <version>1.0.4</version>
+  <version>1.0.5-SNAPSHOT</version>
   <description>SPARQL endpoint  based on Jena 
 Moved from
 https://ambit.svn.sourceforge.net/svnroot/ambit/branches/opentox/ontology-service</description>
