@@ -63,7 +63,7 @@ public class PolicyAuthorizer extends RoleAuthorizer {
 //				System.out.print(executor.getConnection());
 //				System.out.print("\t");
 //				System.out.println(executor.getConnection().isClosed());
-				
+				query.setMethod(request.getMethod());
 				query.setFieldname(policy);
 				query.setValue(request.getClientInfo().getUser().getIdentifier());
 				try {
