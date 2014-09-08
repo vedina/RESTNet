@@ -12,6 +12,7 @@ import net.idea.restnet.i.aa.RESTPolicy;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.data.Method;
 import org.restlet.security.RoleAuthorizer;
 
 import com.mysql.fabric.xmlrpc.base.Array;
@@ -30,6 +31,13 @@ public class PolicyAuthorizer extends RoleAuthorizer {
 
 	}
 	
+	protected String rewriteURI(String uri) {
+		return uri;
+	}
+	
+	protected Method rewriteMethod(String uri,Method method) {
+		return method;
+	}	
 	public boolean authorizeSpecialCases(Request request, Response response,List<String> uri) {
 		return false;
 	}
@@ -57,13 +65,13 @@ public class PolicyAuthorizer extends RoleAuthorizer {
 			for (int j=uri.size()-1; j>=0; j--) {
 				//System.out.print(uri.get(j));
 				policy = new RESTPolicy();
-				policy.setUri(uri.get(j));
+				policy.setUri(rewriteURI(uri.get(j)));
 				
 //				System.out.print("\tconnection\t");
 //				System.out.print(executor.getConnection());
 //				System.out.print("\t");
 //				System.out.println(executor.getConnection().isClosed());
-				query.setMethod(request.getMethod());
+				query.setMethod(rewriteMethod(uri.get(j),request.getMethod()));
 				query.setFieldname(policy);
 				query.setValue(request.getClientInfo().getUser().getIdentifier());
 				try {
