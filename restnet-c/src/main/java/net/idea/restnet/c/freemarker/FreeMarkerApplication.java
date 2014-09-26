@@ -67,4 +67,9 @@ public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> imple
 	        configuration.setTemplateLoader(mtl);
 	        configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER); 
 		}
+		
+		@Override
+		public boolean isEnableEmailVerification() {
+			return true;
+		}
 }
