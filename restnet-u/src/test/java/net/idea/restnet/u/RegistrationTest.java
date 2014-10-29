@@ -11,7 +11,7 @@ import net.idea.restnet.u.db.ConfirmRegistration;
 import net.idea.restnet.u.db.CreateRegistration;
 import net.idea.restnet.u.db.UpdateRegistrationStatus;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.ITable;
 

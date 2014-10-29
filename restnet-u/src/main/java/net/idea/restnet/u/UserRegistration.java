@@ -2,7 +2,7 @@ package net.idea.restnet.u;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class UserRegistration implements Serializable {
 	/**
