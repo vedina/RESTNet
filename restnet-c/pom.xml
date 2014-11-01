@@ -4,11 +4,11 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.5</version>
+    <version>1.0.6-SNAPSHOT</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-c</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6-SNAPSHOT</version>
   <name>RESTNet core classes</name>
   <dependencies>
     <dependency>
@@ -68,7 +68,7 @@
     <dependency>
       <groupId>ambit</groupId>
       <artifactId>opentox-opensso</artifactId>
-      <version>1.0.5-SNAPSHOT</version>
+      <version>2.0.0-SNAPSHOT</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
