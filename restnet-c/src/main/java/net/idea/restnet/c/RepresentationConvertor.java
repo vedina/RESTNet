@@ -17,7 +17,7 @@ import org.restlet.representation.Representation;
  */
 public abstract class RepresentationConvertor<Item,Content,Output,R extends Reporter<Content,Output>> 
 	extends AbstractRepresentationConvertor<Item,Content,Output,Representation,MediaType,R> {
-
+	
 	/**
 	 * 
 	 */
@@ -27,9 +27,9 @@ public abstract class RepresentationConvertor<Item,Content,Output,R extends Repo
 		super(reporter);
 	}
 	public RepresentationConvertor(R reporter, MediaType media) {
-		super(reporter,media);
-	}
-	public RepresentationConvertor(R reporter,MediaType media,String fileNamePrefix) {
+		this(reporter,media,null);
+	}	
+	public RepresentationConvertor(R reporter, MediaType media,String fileNamePrefix) {
 		super(reporter,media,fileNamePrefix);
 	}
 	
@@ -40,6 +40,7 @@ public abstract class RepresentationConvertor<Item,Content,Output,R extends Repo
 	public void setLicenseURI(String uri) {
 		if (getReporter()!=null) getReporter().setLicenseURI(uri);
 	}
+	
 	protected void setDisposition(Representation rep) {
         if (getReporter().getFileExtension()!=null) {
         	rep.setDownloadable(true);

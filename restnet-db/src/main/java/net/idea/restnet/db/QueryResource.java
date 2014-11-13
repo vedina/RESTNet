@@ -354,7 +354,7 @@ Then, when the "get(Variant)" method calls you back,
 		return new EmptyRepresentation();
 	};
 	*/
-	protected QueryURIReporter<T, Q>  getURUReporter(Request baseReference) throws ResourceException {
+	protected QueryURIReporter<T, Q>  getURIReporter(Request baseReference) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED,String.format("%s getURUReporter()", getClass().getName()) );
 	}
 	/*

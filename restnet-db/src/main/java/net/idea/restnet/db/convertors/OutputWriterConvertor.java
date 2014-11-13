@@ -27,9 +27,9 @@ public class OutputWriterConvertor<T,Q extends IQueryRetrieval<T>>  extends Quer
 	public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter,MediaType mediaType,String fileNamePrefix) {
 		super(reporter,mediaType,fileNamePrefix);
 	}
-	
+
 	public Representation process(final Q query) throws Exception {
-		 OutputRepresentation rep = new OutputRepresentation(mediaType) {
+		Representation rep = new OutputRepresentation(mediaType) {
 	            @Override
 	            public void write(OutputStream stream) throws IOException {
             		OutputStreamWriter writer = null;          	
@@ -59,7 +59,7 @@ public class OutputWriterConvertor<T,Q extends IQueryRetrieval<T>>  extends Quer
 	            		setReporter(null);
 	            	}
 	            }
-	        };		
+	        };	
 	        setDisposition(rep);
 	        return rep;
 	};	
