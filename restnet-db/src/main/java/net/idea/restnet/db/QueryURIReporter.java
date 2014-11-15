@@ -54,6 +54,7 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 	}
 	public QueryURIReporter(Request request,ResourceDoc doc) {
 		this(request==null?null:request.getRootRef(),doc,"\n");
+		this.request = request;
 	}
 
 	public Reference getResourceRef() {
