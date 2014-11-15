@@ -24,20 +24,14 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 	 * 
 	 */
 	private static final long serialVersionUID = -4566136103208284105L;
-	protected ResourceDoc documentation;
+
+	
+	private String delimiter = "\n";
+	
+	@Deprecated
 	public ResourceDoc getDocumentation() {
-		return documentation;
+		return null;
 	}
-	public void setDocumentation(ResourceDoc documentation) {
-		this.documentation = documentation;
-	}
-	protected String delimiter = "";
-	public String getDelimiter() {
-		return delimiter;
-	}
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}	
 	protected Request request;
 	
 	public Request getRequest() {
@@ -52,13 +46,16 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 		return baseReference;
 	}
 	protected QueryURIReporter(Reference baseRef,ResourceDoc doc) {
+		this(baseRef,null,"\n");
+	}
+	protected QueryURIReporter(Reference baseRef,ResourceDoc doc,String delimiter) {
 		this.baseReference = baseRef;
-		this.documentation = doc;
+		this.delimiter = delimiter;
 	}
 	public QueryURIReporter(Request request,ResourceDoc doc) {
-		this(request==null?null:request.getRootRef(),doc);
-		setRequest(request);
-	}	
+		this(request==null?null:request.getRootRef(),doc,"\n");
+	}
+
 	public Reference getResourceRef() {
 		return request==null?null:request.getResourceRef();
 	}
@@ -71,7 +68,7 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 			String o = getURI(item);
 			if (o != null) 	{
 				output.write(o);
-				output.write("\n");
+				output.write(delimiter);
 			}
 			output.flush();
 		} catch (IOException x) {
