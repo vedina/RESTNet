@@ -39,6 +39,7 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 		this.delimiter = delimiter;
 	}	
 	protected Request request;
+	
 	public Request getRequest() {
 		return request;
 	}
@@ -46,6 +47,7 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 		this.request = request;
 	}
 	protected Reference baseReference;
+	
 	public Reference getBaseReference() {
 		return baseReference;
 	}
@@ -57,6 +59,10 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 		this(request==null?null:request.getRootRef(),doc);
 		setRequest(request);
 	}	
+	public Reference getResourceRef() {
+		return request==null?null:request.getResourceRef();
+	}
+	
 	protected QueryURIReporter() {
 	}	
 	@Override
@@ -91,5 +97,5 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 	public void close() throws Exception {
 		setRequest(null);
 		super.close();
-	}
+}
 }
