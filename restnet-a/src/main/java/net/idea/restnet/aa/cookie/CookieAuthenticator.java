@@ -582,8 +582,13 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      */
     protected ChallengeResponse parseCredentials(String cookieValue,ClientInfo clientInfo) {
     	if ((cookieValue==null) || ("".equals(cookieValue))) return null;
-        // 1) Decode Base64 string
-        byte[] encrypted = Base64.decode(cookieValue);
+    	byte[] encrypted = null;
+    	try {
+    		encrypted = Base64.decode(cookieValue);
+    	} catch (Exception x) {
+            getLogger().warning(x.getMessage());
+            return null;
+    	}
 
         if (encrypted == null) {
             getLogger().warning(
