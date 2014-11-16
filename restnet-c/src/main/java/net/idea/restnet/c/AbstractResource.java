@@ -172,7 +172,7 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 				getResponse().getAttributes().put("org.restlet.http.headers", headers);
 			}
 			headers.add("X-Frame-Options", "SAMEORIGIN");			
-			
+			headers.removeAll("Server"); headers.add("Server", "Restlet");
 			setTokenCookies(variant, useSecureCookie(getRequest()));
 	        // SEND RESPONSE
 	        setStatus(Status.SUCCESS_OK);

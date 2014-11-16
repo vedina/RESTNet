@@ -258,7 +258,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 			getResponse().getAttributes().put("org.restlet.http.headers", headers);
 		}
 		headers.add("X-Frame-Options", "SAMEORIGIN");	
-		
+		headers.removeAll("Server"); headers.add("Server", "Restlet");
 		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
 			cS.setPath("/");
