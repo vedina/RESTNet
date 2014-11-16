@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.idea.modbcum.i.exceptions.NotFoundException;
+
 public abstract class TaskStorageWithNotifier extends TaskStorage<String> {
 	protected ScheduledThreadPoolExecutor notificationTimer;
 	protected AlertsNotifier notifier;
@@ -21,6 +23,8 @@ public abstract class TaskStorageWithNotifier extends TaskStorage<String> {
 					try {
 						String task = notifier.call();
 						logger.log(Level.INFO, task);
+					} catch (NotFoundException x) {
+						logger.log(Level.INFO, "No notifications defined", x);
 					} catch (Exception x) {
 						logger.log(Level.SEVERE, "Error launching notifications!", x);
 					}
