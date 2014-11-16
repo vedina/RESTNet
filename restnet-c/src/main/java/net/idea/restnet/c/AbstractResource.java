@@ -27,6 +27,7 @@ import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
+import org.restlet.data.ServerInfo;
 import org.restlet.data.Status;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.ObjectRepresentation;
@@ -172,7 +173,7 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 				getResponse().getAttributes().put("org.restlet.http.headers", headers);
 			}
 			headers.add("X-Frame-Options", "SAMEORIGIN");			
-			headers.removeAll("Server"); headers.add("Server", "Restlet");
+			ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 			setTokenCookies(variant, useSecureCookie(getRequest()));
 	        // SEND RESPONSE
 	        setStatus(Status.SUCCESS_OK);
