@@ -101,7 +101,6 @@ public abstract class CreateDatabaseProcessor  extends AbstractDBProcessor<Strin
                         table.append(line);
                         table.append("\n");
                         if (line.indexOf(delimiter) >= 0) {
-                            //t.addBatch(table.toString());
                             logger.log(Level.FINE,table.toString());
                             t.executeUpdate(table.toString());
                             
@@ -171,7 +170,7 @@ public abstract class CreateDatabaseProcessor  extends AbstractDBProcessor<Strin
 		}			
 		try {
 			st = connection.createStatement();
-			rs = st.executeQuery("show tables");
+			rs = st.executeQuery("show full tables where Table_Type != 'VIEW'");
 			while (rs.next()) {
 				tables++;
 				table_names.add(rs.getString(1));

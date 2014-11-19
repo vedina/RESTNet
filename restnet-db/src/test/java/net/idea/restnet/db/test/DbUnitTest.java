@@ -56,13 +56,16 @@ public abstract class DbUnitTest {
 		try {
 		if (properties == null) {
 			properties = new Properties();
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream("net/idea/restnet/db/aalocal/aalocal.pref");
+			InputStream in = this.getClass().getClassLoader().getResourceAsStream(getConfig());
 			properties.load(in);
 			in.close();		
 		}
 		} catch (Exception x) {
 			properties = null;
 		}
+	}
+	protected String getConfig()  {
+		return "net/idea/restnet/db/aalocal/aalocal.pref";
 	}
 	protected String getHost() {
 		loadProperties();
