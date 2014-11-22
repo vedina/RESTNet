@@ -45,15 +45,27 @@ public abstract class QueryURIReporter<T,Q extends IQueryRetrieval<T>>  extends 
 	public Reference getBaseReference() {
 		return baseReference;
 	}
-	protected QueryURIReporter(Reference baseRef,ResourceDoc doc) {
-		this(baseRef,null,"\n");
+	protected QueryURIReporter(Reference baseRef) {
+		this(baseRef,"\n");
 	}
+	@Deprecated
+	protected QueryURIReporter(Reference baseRef,ResourceDoc doc) {
+		this(baseRef,"\n");
+	}
+	@Deprecated
 	protected QueryURIReporter(Reference baseRef,ResourceDoc doc,String delimiter) {
+		this(baseRef,delimiter);
+	}
+	protected QueryURIReporter(Reference baseRef,String delimiter) {
 		this.baseReference = baseRef;
 		this.delimiter = delimiter;
 	}
+	@Deprecated
 	public QueryURIReporter(Request request,ResourceDoc doc) {
-		this(request==null?null:request.getRootRef(),doc,"\n");
+		this(request);
+	}
+	public QueryURIReporter(Request request) {
+		this(request==null?null:request.getRootRef(),"\n");
 		this.request = request;
 	}
 
