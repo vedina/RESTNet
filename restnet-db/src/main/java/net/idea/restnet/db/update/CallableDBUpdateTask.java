@@ -19,6 +19,7 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 	protected INPUT input;
 	protected Method method;
 	protected boolean autoCommit = false;
+	protected enum update_command {add,delete};
 	
 	public boolean isAutoCommit() {
 		return autoCommit;
