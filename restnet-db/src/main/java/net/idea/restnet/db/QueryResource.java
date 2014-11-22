@@ -22,6 +22,7 @@ import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.exception.RResourceException;
+import net.idea.restnet.c.freemarker.FreeMarkerApplication;
 import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.TaskCreator;
@@ -67,6 +68,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>,T extends Seria
 		stax
 	}
 	protected RDF_WRITER rdfwriter = RDF_WRITER.jena;
+	protected boolean changeLineSeparators;
 	protected boolean dataset_prefixed_compound_uri = false;
 	public final static String query_resource = "/query";
 	protected String configFile= "conf/restnet-db.pref";
@@ -137,6 +139,17 @@ Then, when the "get(Variant)" method calls you back,
 		}
 	}
 	
+
+	protected void configureSDFLineSeparators(boolean defaultSeparator) {
+		try { 
+			Object lsOption = getResourceRef(getRequest()).getQueryAsForm().getFirstValue("changeLineSeparators");
+			changeLineSeparators = lsOption==null?defaultSeparator:Boolean.parseBoolean(lsOption.toString());
+		} catch (Exception x) { 
+			changeLineSeparators = defaultSeparator;
+		}
+	}
+
+	
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
 		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
@@ -179,6 +192,7 @@ Then, when the "get(Variant)" method calls you back,
 		        	try {
 		        		dbc = getConnection(getContext(),getConfigFile());
 		        		configureRDFWriterOption(dbc.rdfWriter());
+		        		configureSDFLineSeparators(((IFreeMarkerApplication)getApplication()).isChangeLineSeparators());
 		        		configureDatasetMembersPrefixOption(dbc.dataset_prefixed_compound_uri());
 		        		convertor = createConvertor(variant);
 		        		if (convertor instanceof RepresentationConvertor)

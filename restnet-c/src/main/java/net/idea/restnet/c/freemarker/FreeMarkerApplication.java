@@ -72,4 +72,10 @@ public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> imple
 		public boolean isEnableEmailVerification() {
 			return true;
 		}
+		
+		protected boolean changeLineSeparators = false;
+		public boolean isChangeLineSeparators() {
+			return changeLineSeparators;
+		}
+
 }

@@ -8,4 +8,6 @@ public interface IFreeMarkerApplication<CONFIG> {
 	public String getProfile();
 	public String getGACode();
 	public boolean isEnableEmailVerification();
+	public boolean isChangeLineSeparators();
+
 }
