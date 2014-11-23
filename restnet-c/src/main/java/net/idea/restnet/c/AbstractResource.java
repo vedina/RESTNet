@@ -21,7 +21,6 @@ import net.idea.restnet.i.task.ITaskStorage;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.data.CacheDirective;
 import org.restlet.data.Cookie;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
@@ -157,14 +156,8 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	
 	protected Representation toRepresentation(Map<String, Object> map,
             String templateName, MediaType mediaType) {
-		Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
-		if (headers == null) {
-			headers = new Form();
-			getResponse().getAttributes().put("org.restlet.http.headers", headers);
-		}
-		headers.add("X-Frame-Options", "SAMEORIGIN");
+        setXHeaders();
 		setCacheHeaders();
-		ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 
         return new TemplateRepresentation(
         		templateName,
@@ -176,28 +169,23 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	protected void setCacheHeaders() {
 		
 	}
+	protected void setXHeaders() {
+		Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
+		if (headers == null) {
+			headers = new Form();
+			getResponse().getAttributes().put("org.restlet.http.headers", headers);
+		}
+		headers.remove("X-Frame-Options");
+		headers.add("X-Frame-Options", "SAMEORIGIN");
+		ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
+	}
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
 	try {
-			Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
-			if (headers == null) {
-				headers = new Form();
-				getResponse().getAttributes().put("org.restlet.http.headers", headers);
-			}
-			headers.add("X-Frame-Options", "SAMEORIGIN");
+		setXHeaders();
 			setCacheHeaders();
-			ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 			setTokenCookies(variant, useSecureCookie(getRequest()));
-	        // SEND RESPONSE
 	        setStatus(Status.SUCCESS_OK);
-	        /*
-			if (variant.getMediaType().equals(MediaType.APPLICATION_WADL)) {
-				WadlRepresentation wadl =  new WadlRepresentation(describe());
-				//wadl.setApplication(((WadlApplication)getApplication()).getApplicationInfo(getRequest(), getResponse()));
-
-				return wadl;
-			} else	
-			*/
 	    	if (MediaType.APPLICATION_JAVA_OBJECT.equals(variant.getMediaType())) {
 	    		if ((queryObject!=null) && (queryObject instanceof Serializable))
 	    		return new ObjectRepresentation((Serializable)queryObject,MediaType.APPLICATION_JAVA_OBJECT);

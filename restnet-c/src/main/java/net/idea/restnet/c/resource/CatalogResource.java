@@ -254,14 +254,8 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
-		Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
-		if (headers == null) {
-			headers = new Form();
-			getResponse().getAttributes().put("org.restlet.http.headers", headers);
-		}
-		headers.add("X-Frame-Options", "SAMEORIGIN");
+		setXHeaders();
 		setCacheHeaders();
-		ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
 			cS.setPath("/");

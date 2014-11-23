@@ -172,14 +172,8 @@ Then, when the "get(Variant)" method calls you back,
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
 			cS.setPath("/");
 	        this.getResponse().getCookieSettings().add(cS);
-			Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
-			if (headers == null) {
-				headers = new Form();
-				getResponse().getAttributes().put("org.restlet.http.headers", headers);
-			}
-			headers.add("X-Frame-Options", "SAMEORIGIN");
-			
-			ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);	        
+	        setXHeaders();
+	        setCacheHeaders();
 	        /*
 			if (variant.getMediaType().equals(MediaType.APPLICATION_WADL)) {
 				return new WadlRepresentation();
