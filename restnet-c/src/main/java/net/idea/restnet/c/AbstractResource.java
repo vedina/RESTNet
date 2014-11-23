@@ -1,7 +1,6 @@
 package net.idea.restnet.c;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,10 +174,8 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 				getResponse().getAttributes().put("org.restlet.http.headers", headers);
 			}
 			headers.add("X-Frame-Options", "SAMEORIGIN");
-			
-			List<CacheDirective> cache = new ArrayList<CacheDirective>();
-			cache.add(new CacheDirective("Cache-Control","max-age=2700, private"));
-			getResponse().setCacheDirectives(cache);
+			getResponse().getCacheDirectives().add(CacheDirective.privateInfo());
+			getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
 			
 			ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 			setTokenCookies(variant, useSecureCookie(getRequest()));

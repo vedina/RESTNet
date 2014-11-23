@@ -2,7 +2,6 @@ package net.idea.restnet.c.resource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
@@ -261,9 +260,8 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 			getResponse().getAttributes().put("org.restlet.http.headers", headers);
 		}
 		headers.add("X-Frame-Options", "SAMEORIGIN");
-		List<CacheDirective> cache = new ArrayList<CacheDirective>();
-		cache.add(new CacheDirective("Cache-Control","max-age=2700, private"));
-		getResponse().setCacheDirectives(cache);
+		getResponse().getCacheDirectives().add(CacheDirective.privateInfo());
+		getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
 		ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
