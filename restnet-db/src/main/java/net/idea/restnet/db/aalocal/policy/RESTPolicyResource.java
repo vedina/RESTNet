@@ -19,6 +19,7 @@ import net.idea.restnet.rdf.FactoryTaskConvertorRDF;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.data.CacheDirective;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -112,5 +113,9 @@ public class RESTPolicyResource <Q extends IQueryRetrieval<IRESTPolicy<Integer>>
 	protected FactoryTaskConvertor getFactoryTaskConvertor(ITaskStorage storage)
 			throws ResourceException {
 		return new FactoryTaskConvertorRDF(storage,getHTMLBeauty());
+	}
+	@Override
+	protected void setCacheHeaders() {
+		getResponse().getCacheDirectives().add(CacheDirective.noCache());
 	}
 }

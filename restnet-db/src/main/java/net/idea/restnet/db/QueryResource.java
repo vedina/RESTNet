@@ -22,7 +22,6 @@ import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.exception.RResourceException;
-import net.idea.restnet.c.freemarker.FreeMarkerApplication;
 import net.idea.restnet.c.task.CallableProtectedTask;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.TaskCreator;
@@ -41,12 +40,14 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.owasp.encoder.Encode;
 import org.restlet.Context;
 import org.restlet.Request;
+import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
+import org.restlet.data.ServerInfo;
 import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
 import org.restlet.representation.ObjectRepresentation;
@@ -171,7 +172,14 @@ Then, when the "get(Variant)" method calls you back,
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
 			cS.setPath("/");
 	        this.getResponse().getCookieSettings().add(cS);
-	        
+			Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
+			if (headers == null) {
+				headers = new Form();
+				getResponse().getAttributes().put("org.restlet.http.headers", headers);
+			}
+			headers.add("X-Frame-Options", "SAMEORIGIN");
+			
+			ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);	        
 	        /*
 			if (variant.getMediaType().equals(MediaType.APPLICATION_WADL)) {
 				return new WadlRepresentation();
@@ -813,5 +821,10 @@ Then, when the "get(Variant)" method calls you back,
 		
 	protected Reference cleanedResourceRef(Reference ref) {
 		return new Reference(Encode.forJavaScriptSource(ref.toString()));
-	}		    
+	}
+	@Override
+	protected void setCacheHeaders() {
+		getResponse().getCacheDirectives().add(CacheDirective.privateInfo());
+		getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
+	}
 }

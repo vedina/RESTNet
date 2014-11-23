@@ -260,8 +260,7 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 			getResponse().getAttributes().put("org.restlet.http.headers", headers);
 		}
 		headers.add("X-Frame-Options", "SAMEORIGIN");
-		getResponse().getCacheDirectives().add(CacheDirective.privateInfo());
-		getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
+		setCacheHeaders();
 		ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
 			CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
@@ -270,5 +269,10 @@ public abstract class CatalogResource<T> extends AbstractResource<Iterator<T>,T,
 	        return getHTMLByTemplate(variant);
     	} else				
     		return super.get(variant);
+	}
+	
+	@Override
+	protected void setCacheHeaders() {
+		getResponse().getCacheDirectives().add(CacheDirective.noCache());
 	}
 }

@@ -136,6 +136,10 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 			}
 		};
 	}
+	@Override
+	protected void setCacheHeaders() {
+		getResponse().getCacheDirectives().add(CacheDirective.noCache());
+	}
 	
 	@Override
 	protected synchronized Iterator<UUID> createQuery(Context context, Request request,
@@ -158,7 +162,7 @@ public class SimpleTaskResource<USERID> extends AbstractResource<Iterator<UUID>,
 			//response.setLocationRef(task.getReference());			
 			 * 
 			 */
-			response.getCacheDirectives().add(CacheDirective.noCache());
+			setCacheHeaders();
 			
 			if (id == null) {
 				response_status = Status.SUCCESS_OK;

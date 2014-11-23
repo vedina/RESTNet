@@ -157,14 +157,25 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 	
 	protected Representation toRepresentation(Map<String, Object> map,
             String templateName, MediaType mediaType) {
-        
+		Form headers = (Form) getResponse().getAttributes().get("org.restlet.http.headers");
+		if (headers == null) {
+			headers = new Form();
+			getResponse().getAttributes().put("org.restlet.http.headers", headers);
+		}
+		headers.add("X-Frame-Options", "SAMEORIGIN");
+		setCacheHeaders();
+		ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
+
         return new TemplateRepresentation(
         		templateName,
         		(Configuration)((IFreeMarkerApplication)getApplication()).getConfiguration(),
         		map,
         		MediaType.TEXT_HTML);
-}	  
-	
+	}	  
+
+	protected void setCacheHeaders() {
+		
+	}
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
 	try {
@@ -174,9 +185,7 @@ public abstract class AbstractResource<Q,T,P extends IProcessor<Q, Representatio
 				getResponse().getAttributes().put("org.restlet.http.headers", headers);
 			}
 			headers.add("X-Frame-Options", "SAMEORIGIN");
-			getResponse().getCacheDirectives().add(CacheDirective.privateInfo());
-			getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
-			
+			setCacheHeaders();
 			ServerInfo si = getResponse().getServerInfo();si.setAgent("Restlet");getResponse().setServerInfo(si);
 			setTokenCookies(variant, useSecureCookie(getRequest()));
 	        // SEND RESPONSE
