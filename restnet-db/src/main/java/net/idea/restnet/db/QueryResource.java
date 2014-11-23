@@ -38,6 +38,7 @@ import net.idea.restnet.i.task.ITaskStorage;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.owasp.encoder.Encode;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.CharacterSet;
@@ -810,5 +811,7 @@ Then, when the "get(Variant)" method calls you back,
 		        return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
 	}
 		
-	    
+	protected Reference cleanedResourceRef(Reference ref) {
+		return new Reference(Encode.forJavaScriptSource(ref.toString()));
+	}		    
 }
