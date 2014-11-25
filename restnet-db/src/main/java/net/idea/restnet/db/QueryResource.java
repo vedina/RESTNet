@@ -818,6 +818,7 @@ Then, when the "get(Variant)" method calls you back,
 	@Override
 	protected void setCacheHeaders() {
 		getResponse().getCacheDirectives().add(CacheDirective.privateInfo());
-		getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
+		//getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
+		getResponse().getCacheDirectives().add(CacheDirective.noCache());
 	}
 }
