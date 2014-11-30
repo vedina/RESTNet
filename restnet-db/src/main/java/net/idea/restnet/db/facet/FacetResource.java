@@ -6,15 +6,13 @@ import net.idea.modbcum.i.facet.IFacet;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.db.QueryResource;
 import net.idea.restnet.db.convertors.OutputWriterConvertor;
-import net.idea.restnet.db.convertors.QueryHTMLReporter;
 
-import org.restlet.Request;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
-public abstract class FacetResource<Q extends IQueryRetrieval<IFacet<String>>> extends	QueryResource<Q,IFacet<String>> {
+public abstract class FacetResource<FACET extends IFacet<String>,Q extends IQueryRetrieval<FACET>> extends	QueryResource<Q,FACET> {
 	public static final String resource = "/facet";
 	@Override
 	public IProcessor<Q, Representation> createConvertor(Variant variant)
@@ -41,13 +39,10 @@ public abstract class FacetResource<Q extends IQueryRetrieval<IFacet<String>>> e
 							MediaType.TEXT_URI_LIST,filenamePrefix);				
 			} else 
 				return new OutputWriterConvertor(
-						getHTMLReporter(getRequest()),
-						MediaType.TEXT_HTML);
+						new FacetJSONReporter(getRequest()),
+						MediaType.APPLICATION_JSON);		
 	}
 	
-	protected QueryHTMLReporter getHTMLReporter(Request request) {
-		return new FacetHTMLReporter(request,getHTMLBeauty());
-	}
 
 	
 }
