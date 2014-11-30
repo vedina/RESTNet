@@ -1,393 +1,318 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.ideaconsult.restnet</groupId>
-  <artifactId>restnet</artifactId>
-  <version>1.0.6-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>RESTNet</name>
-  <description>Skeleton REST application
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.ideaconsult.restnet</groupId>
+	<artifactId>restnet</artifactId>
+	<version>1.0.6-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>RESTNet</name>
+	<description>Skeleton REST application
 Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</description>
-  <scm>
-    <connection>scm:git:git://github.com/vedina/RESTNet.git</connection>
-    <developerConnection>scm:git:git@github.com:vedina/RESTNet.git</developerConnection>
-    <url>https://vedina.@github.com/vedina/RESTNet</url>
-  </scm>
-  <url>https://github.com/vedina/RESTNet</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>4.8.1</junit.version>
-    <dbunit.version>2.4.9</dbunit.version>
-    <restlet.version>2.0-M6</restlet.version>
-    <modbcum.version>1.0.4-SNAPSHOT</modbcum.version>
-    <rdf.jena.version>2.6.4</rdf.jena.version>
-    <rdf.arq.version>2.8.8</rdf.arq.version>
-    <rdf.arqextra.version>2.7.0</rdf.arqextra.version>
-    <rdf.iri.version>0.8</rdf.iri.version>
-  </properties>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/vedina/RESTNet/issues</url>
-  </issueManagement>
-  <repositories>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>ambit-plovdiv-releases</id>
-      <name>ambit-plovdiv-releases</name>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <id>ambit-plovdiv-snapshots</id>
-      <name>ambit-plovdiv-snapshots</name>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>toxbank-releases</id>
-      <name>toxbank-releases</name>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-releases</url>
-    </repository>
-    <repository>
-      <id>maven-restlet</id>
-      <name>Public online Restlet repository</name>
-      <url>http://maven.restlet.org</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <organization>
-    <name>IdeaConsult Ltd.</name>
-    <url>http://www.ideaconsult.net</url>
-  </organization>
-  <build>
-    <finalName>RESTNet</finalName>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-      <resource>
-        <directory>src/test/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-    <plugins>
-      <!--
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>jar</goal>
-                        <goal>test-jar</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
--->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.1</version>
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-            <disableXmlReport>true</disableXmlReport>
-            <argLine>-Xmx1024m</argLine>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.2</version>
-          <configuration>
-            <releaseProfiles>release</releaseProfiles>
-            <remoteTagging>true</remoteTagging>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-            <!--               		<preparationGoals>clean install</preparationGoals> -->
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-  <modules>
-    <module>restnet-i</module>
-    <module>restnet-c</module>
-    <module>restnet-rdf</module>
-    <module>restnet-a</module>
-    <module>restnet-app</module>
-    <module>restnet-db</module>
-    <module>restnet-sparql</module>
-    <module>restnet-u</module>
-    <module>restnet-userdb</module>
-  </modules>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ambit-plovdiv-snapshots</id>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
-    <repository>
-      <id>ambit-plovdiv-releases</id>
-      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
-    </repository>
-    <!-- 
-    <site>
-      <id>website_ambit</id>
-      <url>scp://shell.sourceforge.net/home/groups/a/am/ambit/htdocs/AMBIT2-LIBS</url>
-    </site>
- 	 -->
-  </distributionManagement>
-  <inceptionYear>2005</inceptionYear>
-  <licenses>
-    <license>
-      <name>LGPL3</name>
-      <url>http://www.gnu.org/licenses/lgpl.html</url>
-      <distribution>repo</distribution>
-      <comments>LGPL 3</comments>
-    </license>
-  </licenses>
-  <reporting>
-    <plugins>
-      <!-- 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jxr-maven-plugin</artifactId>
-      </plugin>
--->
-      <!-- 
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-     <plugin>
-        <artifactId>maven-clover-plugin</artifactId>
-      </plugin>      
-	-->
-      <plugin>
-        <!-- UML class diagrams  -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
-        <!-- <docletPath>/path/to/UmlGraph.jar</docletPath> -->
-        <configuration>
-          <source>1.5</source>
-          <aggregate>false</aggregate>
-          <doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
-          <docletArtifact>
-            <groupId>gr.spinellis</groupId>
-            <artifactId>UmlGraph</artifactId>
-            <version>4.6</version>
-          </docletArtifact>
-          <additionalparam>
-            <!--  http://www.umlgraph.org/doc/cd-opt.html 
-	          	-attributes
-	          	-views
-	          	-types 
-	            -inferrel -inferdep -quiet -hide java.*
-	            -collpackages java.util.* -qualify
-	            -postfixpackage 
-	            --> 
-	            -all
-	          </additionalparam>
-        </configuration>
-      </plugin>
-      <!-- 
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-		    <artifactId>maven-project-info-reports-plugin</artifactId>
- 			<version>2.1</version> 		    
-		    <configuration>
-		      <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-		    </configuration>
-		  </plugin>
-		   -->
-      <!-- 
-          <plugin>
-          	<groupId>org.apache.maven.plugins</groupId>
-          	<artifactId>maven-pmd-plugin</artifactId>
-          	<version>2.4</version>
-			<configuration>
-				<linkXref>false</linkXref>
-				<sourceEncoding>utf-8</sourceEncoding>
-				<minimumTokens>100</minimumTokens>
-				<targetJdk>
-					1.5
-				</targetJdk>
-				<excludes>
-					<exclude>*/generated/.java</exclude>
-				</excludes>
-			</configuration>          	
-          </plugin>
-           -->
-      <!-- 
-          <plugin>
-          	<groupId>org.codehaus.mojo</groupId>
-          	<artifactId>taglist-maven-plugin</artifactId>
-			<configuration>
-				<tags>
-					<tag>TODO</tag>
-					<tag>@todo</tag>
-					<tag>FIXME</tag>
-					<tag>XXX</tag>
-				</tags>
-			</configuration>          	
-          </plugin>
-          -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jdepend-maven-plugin</artifactId>
-        <version>2.0-beta-2</version>
-      </plugin>
-      <!-- 
-          <plugin>
-          	<groupId>org.codehaus.mojo</groupId>
-          	<artifactId>cobertura-maven-plugin</artifactId>
-          </plugin>
-           -->
-      <!-- Develop our own rules or follow foreign ones ...
-          <plugin>
-          	<groupId>org.apache.maven.plugins</groupId>
-          	<artifactId>maven-checkstyle-plugin</artifactId>
-          	<configuration>
-				<configLocation>config/maven_checks.xml</configLocation>
-			</configuration>
-          </plugin>
-           -->
-      <!-- needs svn executable  
- 	  <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changelog-plugin</artifactId>
-      </plugin>
- 	
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
+	<scm>
+		<connection>scm:git:git://github.com/vedina/RESTNet.git</connection>
+		<developerConnection>scm:git:git@github.com:vedina/RESTNet.git</developerConnection>
+		<url>https://vedina.@github.com/vedina/RESTNet</url>
+	</scm>
+	<url>https://github.com/vedina/RESTNet</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.8.1</junit.version>
+		<dbunit.version>2.4.9</dbunit.version>
+		<restlet.version>2.0-M6</restlet.version>
+		<modbcum.version>1.0.4-SNAPSHOT</modbcum.version>
+		<rdf.jena.version>2.6.4</rdf.jena.version>
+		<rdf.arq.version>2.8.8</rdf.arq.version>
+		<rdf.arqextra.version>2.7.0</rdf.arqextra.version>
+		<rdf.iri.version>0.8</rdf.iri.version>
+	</properties>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/vedina/RESTNet/issues</url>
+	</issueManagement>
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>ambit-plovdiv-releases</id>
+			<name>ambit-plovdiv-releases</name>
+			<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<id>ambit-plovdiv-snapshots</id>
+			<name>ambit-plovdiv-snapshots</name>
+			<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
+		</repository>
 
-          <aggregate>true</aggregate>
-        </configuration>
-      </plugin>
- 	  -->
-    </plugins>
-  </reporting>
-  <profiles>
-    <profile>
-      <id>development</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <debug>true</debug>
-              <optimize>false</optimize>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>production</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <debug>false</debug>
-              <optimize>true</optimize>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!--  release build, with AA -->
-    <profile>
-      <id>aa-enabled</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <aa.opensso>http://opensso.in-silico.ch/opensso/identity</aa.opensso>
-        <aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
-        <aa.user>guest</aa.user>
-        <aa.pass>guest</aa.pass>
-        <aa.enabled>true</aa.enabled>
-      </properties>
-    </profile>
-    <!--  release build, without AA -->
-    <profile>
-      <id>aa-disabled</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <aa.enabled>false</aa.enabled>
-        <aa.opensso>http://opensso.in-silico.ch/opensso/identity</aa.opensso>
-        <aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
-        <aa.user>guest</aa.user>
-        <aa.pass>guest</aa.pass>
-      </properties>
-    </profile>
-    <!--  Test local AA -->
-    <profile>
-      <id>aalocal-test</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <!-- After deployment, these settings could be found (and modified) in {servlet-container}/webapps/{this-app}/WEB-INF/conf/qmrf-db.pref -->
-        <!-- The host where MySQL is running -->
-        <aalocal.db.host>localhost</aalocal.db.host>
-        <!-- The database name -->
-        <aalocal.db>tomcat_users</aalocal.db>
-        <!-- The user name -->
-        <aalocal.db.user>guest</aalocal.db.user>
-        <aalocal.db.user.password>guest</aalocal.db.user.password>
-        <aalocal.db.test>aalocal_test</aalocal.db.test>
-        <!-- DB user for tests -->
-        <aalocal.db.user.test>guest</aalocal.db.user.test>
-        <!-- DB password for tests -->
-        <aalocal.db.user.password.test>guest</aalocal.db.user.password.test>
-      </properties>
-    </profile>
-  </profiles>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>toxbank-releases</id>
+			<name>toxbank-releases</name>
+			<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-releases</url>
+		</repository>
+		<repository>
+			<id>mvnrepository</id>
+			<name>mvnrepository</name>
+			<url>http://mvnrepository.com/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>repo1.maven.org</id>
+			<name>repo1.maven.org</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<organization>
+		<name>IdeaConsult Ltd.</name>
+		<url>http://www.ideaconsult.net</url>
+	</organization>
+	<build>
+		<finalName>RESTNet</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-source-plugin</artifactId> 
+				<executions> <execution> <goals> <goal>jar</goal> <goal>test-jar</goal> </goals> 
+				</execution> </executions> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.2</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+						<disableXmlReport>true</disableXmlReport>
+						<argLine>-Xmx1024m</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.1</version>
+					<configuration>
+						<releaseProfiles>release</releaseProfiles>
+						<remoteTagging>true</remoteTagging>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<!-- <preparationGoals>clean install</preparationGoals> -->
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<modules>
+		<module>restnet-i</module>
+		<module>restnet-c</module>
+		<module>restnet-rdf</module>
+		<module>restnet-a</module>
+		<module>restnet-app</module>
+		<module>restnet-db</module>
+		<module>restnet-sparql</module>
+		<module>restnet-u</module>
+		<module>restnet-userdb</module>
+	</modules>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ambit-plovdiv-snapshots</id>
+			<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+		<repository>
+			<id>ambit-plovdiv-releases</id>
+			<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
+		</repository>
+		<!-- <site> <id>website_ambit</id> <url>scp://shell.sourceforge.net/home/groups/a/am/ambit/htdocs/AMBIT2-LIBS</url> 
+			</site> -->
+	</distributionManagement>
+	<inceptionYear>2005</inceptionYear>
+	<licenses>
+		<license>
+			<name>LGPL3</name>
+			<url>http://www.gnu.org/licenses/lgpl.html</url>
+			<distribution>repo</distribution>
+			<comments>LGPL 3</comments>
+		</license>
+	</licenses>
+	<reporting>
+		<plugins>
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>jxr-maven-plugin</artifactId> 
+				</plugin> -->
+			<!-- <plugin> <artifactId>maven-surefire-plugin</artifactId> </plugin> 
+				<plugin> <artifactId>maven-clover-plugin</artifactId> </plugin> -->
+			<plugin>
+				<!-- UML class diagrams -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+				<!-- <docletPath>/path/to/UmlGraph.jar</docletPath> -->
+				<configuration>
+					<source>1.5</source>
+					<aggregate>false</aggregate>
+					<doclet>gr.spinellis.umlgraph.doclet.UmlGraphDoc</doclet>
+					<docletArtifact>
+						<groupId>gr.spinellis</groupId>
+						<artifactId>UmlGraph</artifactId>
+						<version>4.6</version>
+					</docletArtifact>
+					<additionalparam>
+						<!-- http://www.umlgraph.org/doc/cd-opt.html -attributes -views -types 
+							-inferrel -inferdep -quiet -hide java.* -collpackages java.util.* -qualify 
+							-postfixpackage -->
+						-all
+					</additionalparam>
+				</configuration>
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-project-info-reports-plugin</artifactId> 
+				<version>2.1</version> <configuration> <dependencyLocationsEnabled>false</dependencyLocationsEnabled> 
+				</configuration> </plugin> -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId> 
+				<version>2.4</version> <configuration> <linkXref>false</linkXref> <sourceEncoding>utf-8</sourceEncoding> 
+				<minimumTokens>100</minimumTokens> <targetJdk> 1.5 </targetJdk> <excludes> 
+				<exclude>*/generated/.java</exclude> </excludes> </configuration> </plugin> -->
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>taglist-maven-plugin</artifactId> 
+				<configuration> <tags> <tag>TODO</tag> <tag>@todo</tag> <tag>FIXME</tag> 
+				<tag>XXX</tag> </tags> </configuration> </plugin> -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+				<version>2.0-beta-2</version>
+			</plugin>
+			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>cobertura-maven-plugin</artifactId> 
+				</plugin> -->
+			<!-- Develop our own rules or follow foreign ones ... <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-checkstyle-plugin</artifactId> <configuration> <configLocation>config/maven_checks.xml</configLocation> 
+				</configuration> </plugin> -->
+			<!-- needs svn executable <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-changelog-plugin</artifactId> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+				<artifactId>maven-javadoc-plugin</artifactId> <configuration> <aggregate>true</aggregate> 
+				</configuration> </plugin> -->
+		</plugins>
+	</reporting>
+	<profiles>
+		<profile>
+			<id>development</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<debug>true</debug>
+							<optimize>false</optimize>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>production</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<debug>false</debug>
+							<optimize>true</optimize>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!-- release build, with AA -->
+		<profile>
+			<id>aa-enabled</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<aa.opensso>http://opensso.in-silico.ch/opensso/identity</aa.opensso>
+				<aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
+				<aa.user>guest</aa.user>
+				<aa.pass>guest</aa.pass>
+				<aa.enabled>true</aa.enabled>
+			</properties>
+		</profile>
+		<!-- release build, without AA -->
+		<profile>
+			<id>aa-disabled</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<aa.enabled>false</aa.enabled>
+				<aa.opensso>http://opensso.in-silico.ch/opensso/identity</aa.opensso>
+				<aa.policy>http://opensso.in-silico.ch/Pol/opensso-pol</aa.policy>
+				<aa.user>guest</aa.user>
+				<aa.pass>guest</aa.pass>
+			</properties>
+		</profile>
+		<!-- Test local AA -->
+		<profile>
+			<id>aalocal-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- After deployment, these settings could be found (and modified) in 
+					{servlet-container}/webapps/{this-app}/WEB-INF/conf/qmrf-db.pref -->
+				<!-- The host where MySQL is running -->
+				<aalocal.db.host>localhost</aalocal.db.host>
+				<!-- The database name -->
+				<aalocal.db>tomcat_users</aalocal.db>
+				<!-- The user name -->
+				<aalocal.db.user>guest</aalocal.db.user>
+				<aalocal.db.user.password>guest</aalocal.db.user.password>
+				<aalocal.db.test>aalocal_test</aalocal.db.test>
+				<!-- DB user for tests -->
+				<aalocal.db.user.test>guest</aalocal.db.user.test>
+				<!-- DB password for tests -->
+				<aalocal.db.user.password.test>guest</aalocal.db.user.password.test>
+			</properties>
+		</profile>
+	</profiles>
 </project>
