@@ -15,9 +15,8 @@ public class DeletePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 	@Override
 	public String[] getSQL() throws AmbitException {
 		return new String[] {
-			String.format("delete from %s%spolicy where idpolicy=?",
-					databaseName==null?"":databaseName,
-							databaseName==null?"":".")
+			String.format("delete from %spolicy where idpolicy=?",
+					databaseName==null?"":String.format("`%s`.",databaseName))
 		};
 	}
 

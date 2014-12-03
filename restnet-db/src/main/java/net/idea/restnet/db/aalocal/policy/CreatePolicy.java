@@ -13,7 +13,7 @@ import net.idea.restnet.i.aa.IRESTPolicy;
 public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> implements IDBConfig{
 
 	public static String sql =
-			"insert into %s%spolicy (idpolicy,role_name,prefix,resource,level,mget,mput,mpost,mdelete) values (null,?,?,?,?,?,?,?,?)"
+			"insert into %spolicy (idpolicy,role_name,prefix,resource,level,mget,mput,mpost,mdelete) values (null,?,?,?,?,?,?,?,?)"
 	;
 	
 	public CreatePolicy() {
@@ -24,7 +24,7 @@ public class CreatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 	}
 	
 	public String[] getSQL() throws AmbitException {
-		return new String[] { String.format(sql,databaseName==null?"":databaseName,databaseName==null?"":".")};
+		return new String[] { String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName))};
 	}
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		if ((getObject()==null) || (getObject().getRole()==null)

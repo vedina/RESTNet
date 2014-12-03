@@ -31,7 +31,7 @@ IQueryRetrieval<UserRegistration>, IDBConfig {
 	public String getDatabaseName() {
 		return databaseName;
 	}
-	protected static String sql = "SELECT user_name,created,confirmed,status from %s.user_registration where user_name=?";
+	protected static String sql = "SELECT user_name,created,confirmed,status from `%s`.user_registration where user_name=?";
 	
 	
 	public ReadRegistrationStatus() {

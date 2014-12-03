@@ -43,7 +43,7 @@ import net.idea.modbcum.q.update.AbstractUpdate;
  */
 public class UpdateUser<T> extends AbstractUpdate<T,IUser> implements IDBConfig {
 
-	public static final String sql = "update %s%susers set user_pass=MD5(?) where user_name=?";
+	public static final String sql = "update %susers set user_pass=MD5(?) where user_name=?";
 
 	public UpdateUser(IUser user) {
 		super(user);
@@ -60,7 +60,7 @@ public class UpdateUser<T> extends AbstractUpdate<T,IUser> implements IDBConfig 
 	}
 
 	public String[] getSQL() throws AmbitException {
-		return new String[] { String.format(sql,databaseName==null?"":databaseName,databaseName==null?"":".")};
+		return new String[] { String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName))};
 	}
 	public void setID(int index, int id) {
 			

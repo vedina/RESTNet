@@ -19,7 +19,7 @@ import net.toxbank.client.resource.Organisation;
 
 
 public class CreateUser extends AbstractUpdate<UserCredentials,DBUser> implements IDBConfig {
-	private static String user_sql = "insert into %s.user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer,institute) values (?,?,?,?,?,?,?,?,?,?,?)";
+	private static String user_sql = "insert into `%s`.user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer,institute) values (?,?,?,?,?,?,?,?,?,?,?)";
 	
 	protected CreateRegistration registerUser;
 	protected CreateGroup createOrg;

@@ -50,10 +50,10 @@ public class PolicyQuery  extends AbstractQuery<IRESTPolicy<Integer>,String, EQC
 	@Override
 	public String getSQL() throws AmbitException {
 		return String.format(
-				"select prefix,resource,sum(m%s) from %s%spolicy join %s%suser_roles using(role_name) where user_name=? and prefix=? and resource=? and m%s=1 group by prefix,resource\n",
+				"select prefix,resource,sum(m%s) from %spolicy join %suser_roles using(role_name) where user_name=? and prefix=? and resource=? and m%s=1 group by prefix,resource\n",
 				getMethod().getName().toLowerCase(),
-				databaseName==null?"":databaseName,databaseName==null?"":".",
-				databaseName==null?"":databaseName,databaseName==null?"":".",
+				databaseName==null?"":String.format("`%s`.",databaseName),
+				databaseName==null?"":String.format("`%s`.",databaseName),
 				getMethod().getName().toLowerCase()
 				);
 	}

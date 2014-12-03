@@ -30,7 +30,7 @@ IQueryRetrieval<UserRegistration>, IDBConfig {
 	public String getDatabaseName() {
 		return databaseName;
 	}
-	protected static String sql = "SELECT user_name,created,confirmed,code,status from %s.user_registration where code=? and status='confirmed' and date_add(created,interval 2 day)>=now()";
+	protected static String sql = "SELECT user_name,created,confirmed,code,status from `%s`.user_registration where code=? and status='confirmed' and date_add(created,interval 2 day)>=now()";
 	
 	public ReadRegistration(String code) {
 		super();

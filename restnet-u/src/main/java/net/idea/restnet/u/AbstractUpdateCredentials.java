@@ -26,7 +26,7 @@ public abstract class AbstractUpdateCredentials<U> extends AbstractUpdate<UserCr
 	}
 	protected String hash = "md5";
 	
-	private String sql = "update %s.users set user_pass = %s(?) where user_pass=%s(?) and user_name = ?";
+	private String sql = "update `%s`.users set user_pass = %s(?) where user_pass=%s(?) and user_name = ?";
 
 	
 	public AbstractUpdateCredentials(UserCredentials c,U ref) {

@@ -39,7 +39,7 @@ import net.idea.modbcum.q.update.AbstractUpdate;
 public class CreateUserCredentials<T> extends AbstractUpdate<T,IUser> implements IDBConfig{
 
 	public static String sql =
-			"insert into %s%susers (user_name,user_pass) values (?,MD5(?))"
+			"insert into %susers (user_name,user_pass) values (?,MD5(?))"
 	;
 	
 	public CreateUserCredentials() {
@@ -50,7 +50,7 @@ public class CreateUserCredentials<T> extends AbstractUpdate<T,IUser> implements
 	}
 	
 	public String[] getSQL() throws AmbitException {
-		return new String[] { String.format(sql,databaseName==null?"":databaseName,databaseName==null?"":".")};
+		return new String[] { String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName))};
 	}
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 			List<QueryParam> params2 = new ArrayList<QueryParam>();

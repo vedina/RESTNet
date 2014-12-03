@@ -16,10 +16,10 @@ public class ReadRole extends AbstractQuery<String, String, EQCondition, String>
 	 * 
 	 */
 	private static final long serialVersionUID = -769124569395580317L;
-	protected static final String sql = "SELECT role_name FROM %s%sroles";
+	protected static final String sql = "SELECT role_name FROM %sroles";
 	@Override
 	public String getSQL() throws AmbitException {
-		return String.format(sql,databaseName==null?"":databaseName,databaseName==null?"":".");
+		return String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName));
 	}
 
 	@Override

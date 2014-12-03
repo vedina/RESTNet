@@ -13,8 +13,8 @@ public class DeleteUserRole extends AbstractUpdate<DBRole,IUser> implements IDBC
 	@Override
 	public String[] getSQL() throws AmbitException {
 		return new String[] {
-			String.format("delete from %s%suser_roles where user_name=? and role_name=?",
-					databaseName==null?"":databaseName,databaseName==null?"":".")
+			String.format("delete from %suser_roles where user_name=? and role_name=?",
+					databaseName==null?"":String.format("`%s`.",databaseName))
 		};
 	}
 

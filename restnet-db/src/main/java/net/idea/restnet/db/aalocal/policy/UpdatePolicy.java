@@ -1,6 +1,5 @@
 package net.idea.restnet.db.aalocal.policy;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import net.idea.restnet.i.aa.IRESTPolicy;
 public class UpdatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> implements IDBConfig{
 
 	public static String sql =
-			"update %s%spolicy set role_name=?,prefix=?,resource=?,level=?,mget=?,mput=?,mpost=?,mdelete=? where idpolicy=?"
+			"update %spolicy set role_name=?,prefix=?,resource=?,level=?,mget=?,mput=?,mpost=?,mdelete=? where idpolicy=?"
 	;
 	
 	public UpdatePolicy() {
@@ -25,7 +24,7 @@ public class UpdatePolicy extends AbstractUpdate<DBRole,IRESTPolicy<Integer>> im
 	}
 	
 	public String[] getSQL() throws AmbitException {
-		return new String[] { String.format(sql,databaseName==null?"":databaseName,databaseName==null?"":".")};
+		return new String[] { String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName))};
 	}
 	public List<QueryParam> getParameters(int index) throws AmbitException {
 		if ((getObject()==null) || (getObject().getRole()==null) || (getObject().getId()==null) || (getObject().getId()<=0)

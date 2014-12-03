@@ -33,7 +33,7 @@ public class CreateRegistration extends AbstractUpdate<IUser,UserRegistration>  
 			createUser.getSQL()[0],
 			createRole.getSQL()[0],
 			createRole.getSQL()[1],
-			String.format("insert into %s.user_registration (user_name,created,code,status) values (?,now(),?,'commenced')",getDatabaseName())
+			String.format("insert into `%s`.user_registration (user_name,created,code,status) values (?,now(),?,'commenced')",getDatabaseName())
 		};
 	}
 

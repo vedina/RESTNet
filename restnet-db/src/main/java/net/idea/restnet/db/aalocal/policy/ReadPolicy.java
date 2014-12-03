@@ -21,13 +21,12 @@ public class ReadPolicy  extends AbstractQuery<IRESTPolicy<Integer>, String, EQC
 	 */
 	private static final long serialVersionUID = -740189128538619419L;
 	
-	private static String sql = "select idpolicy,role_name,prefix,resource,mget,mput,mpost,mdelete from %s%spolicy\n";
+	private static String sql = "select idpolicy,role_name,prefix,resource,mget,mput,mpost,mdelete from %spolicy\n";
 	private static String sql_byid = "idpolicy=?\n";
 	@Override
 	public String getSQL() throws AmbitException {
 		String q =  String.format(sql,
-				 getDatabaseName()==null?"":getDatabaseName(),
-						getDatabaseName()==null?"":"."
+				 getDatabaseName()==null?"":String.format("`%s`.",getDatabaseName())
 						);
 		if (getFieldname()!=null) {
 			if (getFieldname().getId()>0) {

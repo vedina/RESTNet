@@ -11,7 +11,7 @@ import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.u.UserRegistration;
 
 public class ConfirmRegistration extends AbstractUpdate<IUser,UserRegistration>  implements IDBConfig {
-	private String sql = "update %s.user_registration set confirmed=now(),status='confirmed' where code=? and status='commenced' and date_add(created,interval ? hour)>=now()";
+	private String sql = "update `%s`.user_registration set confirmed=now(),status='confirmed' where code=? and status='commenced' and date_add(created,interval ? hour)>=now()";
 	protected int hoursValid = 48;
 	
 	public int getHoursValid() {
