@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.6</version>
   </parent>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet-app</artifactId>
-  <version>1.0.6-SNAPSHOT</version>
+  <version>1.0.6</version>
   <packaging>war</packaging>
   <name>Application</name>
   <dependencies>
@@ -35,7 +35,7 @@
       <artifactId>restnet-u</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
-    </dependency>    
+    </dependency>
     <!--  Only if triple storage is necessary -->
     <dependency>
       <groupId>net.ideaconsult.restnet</groupId>
@@ -54,7 +54,6 @@
       <version>2.5</version>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
   <profiles>
     <profile>
