@@ -75,6 +75,10 @@ public abstract class CallableDBUpdateTask<Target,INPUT,USERID> extends Callable
 			if (!isAutoCommit())
 				try { connection.rollback();} catch (Exception xx) {}
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,x);
+		} catch (ResourceException x) {
+			if (!isAutoCommit())
+				try {connection.rollback();} catch (Exception xx) {}
+			throw x;			
 		} catch (Exception x) {
 			if (!isAutoCommit())
 				try {connection.rollback();} catch (Exception xx) {}
