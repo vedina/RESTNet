@@ -48,142 +48,153 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public abstract class DbUnitTest {
-	protected Properties properties;
-	
-	protected void loadProperties()  {
-		try {
-		if (properties == null) {
-			properties = new Properties();
-			InputStream in = this.getClass().getClassLoader().getResourceAsStream(getConfig());
-			properties.load(in);
-			in.close();		
-		}
-		} catch (Exception x) {
-			properties = null;
-		}
-	}
-	protected String getConfig()  {
-		return "net/idea/restnet/db/aalocal/aalocal.pref";
-	}
-	protected String getHost() {
-		loadProperties();
-		String p = properties.getProperty("Host");
-		return p==null?"localhost":p.startsWith("$")?"localhost":p;
-	}
-	protected String getDatabase() {
-		loadProperties();
-		String p = properties.getProperty("database.test");
-		return (p==null)||(p.startsWith("$"))?"test":p;
-	}
-	protected String getPort() {
-		loadProperties();
-		String p = properties.getProperty("database.test.port");
-		return p==null?"3306":p;		
-	}
-	protected String getUser() {
-		loadProperties();
-		String p = properties.getProperty("database.user.test");
-		return (p==null) || (p.startsWith("$"))?"guest":p;			
-	}
-	protected String getPWD() {
-		loadProperties();
-		String p = properties.getProperty("database.user.test.password");
-		return (p==null) || (p.startsWith("$"))?"guest":p;	
-	}
-	
-	protected abstract CreateDatabaseProcessor getDBCreateProcessor();
-	
-	@Before
-	public void setUp() throws Exception {
-		IDatabaseConnection c = getConnection(getHost(),getDatabase(),getPort(),getUser(),getPWD());
-		DatabaseConfig config = c.getConfig();
-	    config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());		
-		Connection conn = c.getConnection();
-		conn.setAutoCommit(false);
-		try {
-				CreateDatabaseProcessor db = getDBCreateProcessor();
-				db.setConnection(conn);
-				if (!db.dbExists(getDatabase())) {
-					db.process(getDatabase());
-				} else {
-					List<String> tables = db.tablesExists(getDatabase());
-					if (tables.size()==0)
-						db.process(getDatabase());
-					else if (!tables.contains("version")) {
-						db.dropTables(getDatabase(), tables);
-						db.process(getDatabase());
-					} else {
-						String dbVersion = db.getDbVersion(getDatabase());
-						if (!db.isSameVersion(dbVersion)) {
-							db.dropTables(getDatabase(), tables);
-							db.process(getDatabase());
-						} 
-					}
-				}
-				conn.commit();
-		} catch (Exception x) {
-			conn.rollback();
-			throw x;
-		} finally {
-			c.close();
-		}
+    protected Properties properties;
 
+    protected void loadProperties() {
+	try {
+	    if (properties == null) {
+		properties = new Properties();
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(getConfig());
+		properties.load(in);
+		in.close();
+	    }
+	} catch (Exception x) {
+	    properties = null;
 	}
-	protected IDatabaseConnection getConnection(String host,String db,String port,String user, String pass) throws Exception {
-		  
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection jdbcConnection = DriverManager.getConnection(
-                String.format("jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8&profileSQL=%s",
-                		host,port,db,Boolean.toString(isProfileSQL()))
-                , user,pass);
-//SET NAMES utf8	        
-        IDatabaseConnection c = new DatabaseConnection(jdbcConnection);
-		DatabaseConfig config = c.getConfig();
-	    config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
-	    return c;
-	}	
-	protected boolean isProfileSQL() {
-		return false;
+    }
+
+    protected String getConfig() {
+	return "net/idea/restnet/db/aalocal/aalocal.pref";
+    }
+
+    protected String getHost() {
+	loadProperties();
+	String p = properties.getProperty("Host");
+	return p == null ? "localhost" : p.startsWith("$") ? "localhost" : p;
+    }
+
+    protected String getDatabase() {
+	loadProperties();
+	String p = properties.getProperty("database.test");
+	return (p == null) || (p.startsWith("$")) ? "test" : p;
+    }
+
+    protected String getPort() {
+	loadProperties();
+	String p = properties.getProperty("database.test.port");
+	return p == null ? "3306" : p;
+    }
+
+    protected String getUser() {
+	loadProperties();
+	String p = properties.getProperty("database.user.test");
+	return (p == null) || (p.startsWith("$")) ? "guest" : p;
+    }
+
+    protected String getPWD() {
+	loadProperties();
+	String p = properties.getProperty("database.user.test.password");
+	return (p == null) || (p.startsWith("$")) ? "guest" : p;
+    }
+
+    protected abstract CreateDatabaseProcessor getDBCreateProcessor();
+
+    @Before
+    public void setUp() throws Exception {
+	IDatabaseConnection c = getConnection(getHost(), getDatabase(), getPort(), getUser(), getPWD());
+	DatabaseConfig config = c.getConfig();
+	config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
+	Connection conn = c.getConnection();
+	conn.setAutoCommit(false);
+	try {
+	    CreateDatabaseProcessor db = getDBCreateProcessor();
+	    db.setConnection(conn);
+	    if (!db.dbExists(getDatabase())) {
+		db.process(getDatabase());
+	    } else {
+		List<String> tables = db.tablesExists(getDatabase());
+		if (tables.size() == 0)
+		    db.process(getDatabase());
+		else if (!tables.contains("version")) {
+		    db.dropTables(getDatabase(), tables);
+		    db.process(getDatabase());
+		} else {
+		    String dbVersion = db.getDbVersion(getDatabase());
+		    if (!db.isSameVersion(dbVersion)) {
+			db.dropTables(getDatabase(), tables);
+			db.process(getDatabase());
+		    }
+		}
+	    }
+	    conn.commit();
+	} catch (Exception x) {
+	    conn.rollback();
+	    throw x;
+	} finally {
+	    c.close();
 	}
-	protected IDatabaseConnection getConnection() throws Exception {
-	   return getConnection(getHost(),getDatabase(),getPort(),getUser(),getPWD());
-	}
-	/**
-	 * Returns path to tables.xml
-	 * @return
-	 */
-	public abstract String getDBTables();
-	
+
+    }
+
+    protected IDatabaseConnection getConnection(String host, String db, String port, String user, String pass)
+	    throws Exception {
+
+	Class.forName("com.mysql.jdbc.Driver");
+	Connection jdbcConnection = DriverManager.getConnection(String.format(
+		"jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8&profileSQL=%s",
+		host, port, db, Boolean.toString(isProfileSQL())), user, pass);
+	// SET NAMES utf8
+	IDatabaseConnection c = new DatabaseConnection(jdbcConnection);
+	DatabaseConfig config = c.getConfig();
+	config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
+	return c;
+    }
+
+    protected boolean isProfileSQL() {
+	return false;
+    }
+
+    protected IDatabaseConnection getConnection() throws Exception {
+	return getConnection(getHost(), getDatabase(), getPort(), getUser(), getPWD());
+    }
+
+    /**
+     * Returns path to tables.xml
+     * 
+     * @return
+     */
+    public abstract String getDBTables();
+
     public void setUpDatabase(String xmlfile) throws Exception {
-    	//This ensures all tables as defined in the schema are cleaned up, and is a single place to modify if a schema changes
-    	initDB(getDBTables(),DatabaseOperation.DELETE_ALL,true);
-    	//This will import only records, defined in the xmlfile
-    	initDB(xmlfile,DatabaseOperation.INSERT,false);
+	// This ensures all tables as defined in the schema are cleaned up, and
+	// is a single place to modify if a schema changes
+	initDB(getDBTables(), DatabaseOperation.DELETE_ALL, true);
+	// This will import only records, defined in the xmlfile
+	initDB(xmlfile, DatabaseOperation.INSERT, false);
     }
-    
-    private void initDB(String xmlfile,DatabaseOperation op,boolean admin ) throws Exception {
-        IDatabaseConnection connection = admin?getConnection(getHost(),getDatabase(),getPort(),
-        		getUser(),getPWD()):getConnection();
-        		//getAdminUser(),getAdminPWD()):getConnection();
-        FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
-        builder.setCaseSensitiveTableNames(false);
-        IDataSet dataSet = builder.build(new File(xmlfile));
-        try {
-            //DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
-            op.execute(connection, dataSet);
-        } catch (Exception x) {
-        	x.printStackTrace();
-        	throw x;
-        } finally {
-            connection.close();
 
-        }
+    private void initDB(String xmlfile, DatabaseOperation op, boolean admin) throws Exception {
+	IDatabaseConnection connection = admin ? getConnection(getHost(), getDatabase(), getPort(), getUser(), getPWD())
+		: getConnection();
+	// getAdminUser(),getAdminPWD()):getConnection();
+	FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
+	builder.setCaseSensitiveTableNames(false);
+	IDataSet dataSet = builder.build(new File(xmlfile));
+	try {
+	    // DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+	    op.execute(connection, dataSet);
+	} catch (Exception x) {
+	    x.printStackTrace();
+	    throw x;
+	} finally {
+	    connection.close();
+
+	}
     }
-    
+
     @Test
     public void emptyTest() {
-    	
+
     }
 }

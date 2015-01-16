@@ -7,27 +7,28 @@ import org.restlet.Request;
 import org.restlet.security.User;
 
 public class OpenSSOVerifierSetUser extends OpenSSOVerifier {
-	
-	public OpenSSOVerifierSetUser(boolean enabled) {
-		super(enabled);
-	}
-	public OpenSSOVerifierSetUser() {
-		super();
-	}
-	@Override
-	protected User createUser(OpenSSOToken ssoToken, Request request)
-			throws Exception {
 
-		User user = super.createUser(ssoToken, request);
-		Hashtable<String,String> results = new Hashtable<String, String>();
-				
-		try {
-			ssoToken.getAttributes(new String[] {"uid"}, results);
+    public OpenSSOVerifierSetUser(boolean enabled) {
+	super(enabled);
+    }
 
-			user.setIdentifier(results.get("uid"));} 
-		catch (Exception x) {
-			x.printStackTrace();
-		}
-		return user;
+    public OpenSSOVerifierSetUser() {
+	super();
+    }
+
+    @Override
+    protected User createUser(OpenSSOToken ssoToken, Request request) throws Exception {
+
+	User user = super.createUser(ssoToken, request);
+	Hashtable<String, String> results = new Hashtable<String, String>();
+
+	try {
+	    ssoToken.getAttributes(new String[] { "uid" }, results);
+
+	    user.setIdentifier(results.get("uid"));
+	} catch (Exception x) {
+	    x.printStackTrace();
 	}
+	return user;
+    }
 }

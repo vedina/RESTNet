@@ -10,72 +10,75 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 
-public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> implements IFreeMarkerApplication<Configuration> {
-	   private Configuration configuration;
-	   
-		protected String versionShort = "";
-		
-		protected String profile = "default";
+public class FreeMarkerApplication<USERID> extends TaskApplication<USERID> implements
+	IFreeMarkerApplication<Configuration> {
+    private Configuration configuration;
 
-		public String getProfile() {
-			return profile;
-		}
+    protected String versionShort = "";
 
-		public void setProfile(String profile) {
-			this.profile = profile;
-		}
-		@Override
-		public String getVersionShort() {
-			return versionShort;
-		}
+    protected String profile = "default";
 
-		public void setVersionShort(String versionShort) {
-			this.versionShort = versionShort;
-		}
-		protected String versionLong = "";
+    public String getProfile() {
+	return profile;
+    }
 
-	    @Override
-		public String getVersionLong() {
-			return versionLong;
-		}
+    public void setProfile(String profile) {
+	this.profile = profile;
+    }
 
-		public void setVersionLong(String versionLong) {
-			this.versionLong = versionLong;
-		}
+    @Override
+    public String getVersionShort() {
+	return versionShort;
+    }
 
-		protected String gaCode = null;
+    public void setVersionShort(String versionShort) {
+	this.versionShort = versionShort;
+    }
 
-		
-		public String getGACode() {
-			return gaCode;
-		}
-		
-		public Configuration getConfiguration() {
-			return configuration;
-		}
+    protected String versionLong = "";
 
-		public void setConfiguration(Configuration configuration) {
-			this.configuration = configuration;
-		}
-		
-		protected void initFreeMarkerConfiguration() {
-			configuration = new Configuration();
-			
-	        ContextTemplateLoader templatesLoader = new ContextTemplateLoader(getContext(),"war:///WEB-INF/templates/");
-	        TemplateLoader[] loaders = new TemplateLoader[] { templatesLoader};
-	        MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
-	        configuration.setTemplateLoader(mtl);
-	        configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER); 
-		}
-		
-		@Override
-		public boolean isEnableEmailVerification() {
-			return true;
-		}
-		
-		protected boolean changeLineSeparators = false;
-		public boolean isChangeLineSeparators() {
-			return changeLineSeparators;
-		}
+    @Override
+    public String getVersionLong() {
+	return versionLong;
+    }
+
+    public void setVersionLong(String versionLong) {
+	this.versionLong = versionLong;
+    }
+
+    protected String gaCode = null;
+
+    public String getGACode() {
+	return gaCode;
+    }
+
+    public Configuration getConfiguration() {
+	return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+	this.configuration = configuration;
+    }
+
+    protected void initFreeMarkerConfiguration() {
+	configuration = new Configuration();
+
+	ContextTemplateLoader templatesLoader = new ContextTemplateLoader(getContext(), "war:///WEB-INF/templates/");
+	TemplateLoader[] loaders = new TemplateLoader[] { templatesLoader };
+	MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
+	configuration.setTemplateLoader(mtl);
+	configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
+    }
+
+    @Override
+    public boolean isEnableEmailVerification() {
+	return true;
+    }
+
+    protected boolean changeLineSeparators = false;
+
+    public boolean isChangeLineSeparators() {
+	return changeLineSeparators;
+    }
 
 }

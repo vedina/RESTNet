@@ -9,61 +9,61 @@ import net.idea.restnet.i.task.TaskResult;
 
 public abstract class CallableProtectedTask<USERID> implements ICallableTask, IAuthToken {
 
-	protected UUID uuid;
-	private USERID token;
-	protected String title;
-	private final Logger logger ;
-	
-	public String getTitle() {
-		return title;
-	}
+    protected UUID uuid;
+    private USERID token;
+    protected String title;
+    private final Logger logger;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public String getTitle() {
+	return title;
+    }
 
-	public CallableProtectedTask(USERID token) {
-		this.token = token;
-		logger = Logger.getLogger(getClass().getName());
-	}
-	
-	@Override
-	public UUID getUuid() {
-		return uuid;
-	}
+    public void setTitle(String title) {
+	this.title = title;
+    }
 
-	@Override
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
+    public CallableProtectedTask(USERID token) {
+	this.token = token;
+	logger = Logger.getLogger(getClass().getName());
+    }
 
-	}
+    @Override
+    public UUID getUuid() {
+	return uuid;
+    }
 
-	@Override
-	public String getToken() {
-		return token==null?null:token.toString();
-	}
-	public abstract TaskResult doCall() throws Exception;
-	
-	@Override
-	public TaskResult call() throws Exception {
-		try {
-			ClientResourceWrapper.setTokenFactory(this);
-			return doCall();
-		} catch (Exception x) {
-			throw x;
-		} finally {
-			ClientResourceWrapper.setTokenFactory(null);
-		}
-	}
-	
-	@Override
-	public String getTaskCategory() {
-		return null;
-	}
+    @Override
+    public void setUuid(UUID uuid) {
+	this.uuid = uuid;
 
-	
-	@Override
-	public String toString() {
-		return title;
+    }
+
+    @Override
+    public String getToken() {
+	return token == null ? null : token.toString();
+    }
+
+    public abstract TaskResult doCall() throws Exception;
+
+    @Override
+    public TaskResult call() throws Exception {
+	try {
+	    ClientResourceWrapper.setTokenFactory(this);
+	    return doCall();
+	} catch (Exception x) {
+	    throw x;
+	} finally {
+	    ClientResourceWrapper.setTokenFactory(null);
 	}
+    }
+
+    @Override
+    public String getTaskCategory() {
+	return null;
+    }
+
+    @Override
+    public String toString() {
+	return title;
+    }
 }

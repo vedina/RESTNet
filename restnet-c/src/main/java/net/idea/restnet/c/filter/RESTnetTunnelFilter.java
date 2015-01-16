@@ -33,11 +33,12 @@ import org.restlet.util.Series;
 
 public class RESTnetTunnelFilter extends Filter {
 
-	public RESTnetTunnelFilter(Context context) {
-		super(context);
+    public RESTnetTunnelFilter(Context context) {
+	super(context);
 
-	}
-	   /**
+    }
+
+    /**
      * Used to describe the replacement value for an old client preference and
      * for a a series of specific agent (i.e. web client) attributes.
      * 
@@ -45,66 +46,65 @@ public class RESTnetTunnelFilter extends Filter {
      * 
      */
     private static class AcceptReplacer {
-        /** New accept header value. */
-        private volatile String acceptNew;
+	/** New accept header value. */
+	private volatile String acceptNew;
 
-        /** Old accept header value. */
-        private volatile String acceptOld;
+	/** Old accept header value. */
+	private volatile String acceptOld;
 
-        /** Agent attributes that must be checked. */
-        private volatile Map<String, String> agentAttributes;
+	/** Agent attributes that must be checked. */
+	private volatile Map<String, String> agentAttributes;
 
-        public String getAcceptNew() {
-            return acceptNew;
-        }
+	public String getAcceptNew() {
+	    return acceptNew;
+	}
 
-        public String getAcceptOld() {
-            return acceptOld;
-        }
+	public String getAcceptOld() {
+	    return acceptOld;
+	}
 
-        public Map<String, String> getAgentAttributes() {
-            if (agentAttributes == null) {
-                agentAttributes = new HashMap<String, String>();
-            }
+	public Map<String, String> getAgentAttributes() {
+	    if (agentAttributes == null) {
+		agentAttributes = new HashMap<String, String>();
+	    }
 
-            return agentAttributes;
-        }
+	    return agentAttributes;
+	}
 
-        public void setAcceptNew(String acceptNew) {
-            this.acceptNew = acceptNew;
-        }
+	public void setAcceptNew(String acceptNew) {
+	    this.acceptNew = acceptNew;
+	}
 
-        public void setAcceptOld(String acceptOld) {
-            this.acceptOld = acceptOld;
-        }
+	public void setAcceptOld(String acceptOld) {
+	    this.acceptOld = acceptOld;
+	}
     }
 
     /** Used to replace accept header values. */
     private volatile List<AcceptReplacer> acceptReplacers;
 
-
     @Override
     public int beforeHandle(Request request, Response response) {
-    	try {
-	        if (getTunnelService().isUserAgentTunnel()) {
-	            processUserAgent(request);
-	        }
-	
-	        if (getTunnelService().isExtensionsTunnel()) {
-	            processExtensions(request);
-	        }
-	
-	        if (getTunnelService().isQueryTunnel()) {
-	            processQuery(request);
-	        }
-	
-	        if (getTunnelService().isHeadersTunnel()) {
-	            processHeaders(request);
-	        }
-    	} catch (Exception x) {
-    		getLogger().warning(x.getMessage());
-    	}
-        return CONTINUE;
+	try {
+	    if (getTunnelService().isUserAgentTunnel()) {
+		processUserAgent(request);
+	    }
+
+	    if (getTunnelService().isExtensionsTunnel()) {
+		processExtensions(request);
+	    }
+
+	    if (getTunnelService().isQueryTunnel()) {
+		processQuery(request);
+	    }
+
+	    if (getTunnelService().isHeadersTunnel()) {
+		processHeaders(request);
+	    }
+	} catch (Exception x) {
+	    getLogger().warning(x.getMessage());
+	}
+	return CONTINUE;
     }
 
     /**
@@ -114,67 +114,60 @@ public class RESTnetTunnelFilter extends Filter {
      * @return The list of new accept header values.
      */
     private List<AcceptReplacer> getAcceptReplacers() {
-        // Lazy initialization with double-check.
-        List<AcceptReplacer> a = this.acceptReplacers;
-        if (a == null) {
-            synchronized (this) {
-                a = this.acceptReplacers;
-                if (a == null) {
-                    this.acceptReplacers = a = new ArrayList<AcceptReplacer>();
+	// Lazy initialization with double-check.
+	List<AcceptReplacer> a = this.acceptReplacers;
+	if (a == null) {
+	    synchronized (this) {
+		a = this.acceptReplacers;
+		if (a == null) {
+		    this.acceptReplacers = a = new ArrayList<AcceptReplacer>();
 
-                    // Load the accept.properties file.
-                    final URL userAgentPropertiesUrl = Engine.getClassLoader()
-                            .getResource(
-                                    "net/idea/rest/org/restlet/service/accept.properties");
-                    if (userAgentPropertiesUrl != null) {
-                        BufferedReader reader;
-                        try {
-                            reader = new BufferedReader(new InputStreamReader(
-                                    userAgentPropertiesUrl.openStream(),
-                                    CharacterSet.UTF_8.getName()));
+		    // Load the accept.properties file.
+		    final URL userAgentPropertiesUrl = Engine.getClassLoader().getResource(
+			    "net/idea/rest/org/restlet/service/accept.properties");
+		    if (userAgentPropertiesUrl != null) {
+			BufferedReader reader;
+			try {
+			    reader = new BufferedReader(new InputStreamReader(userAgentPropertiesUrl.openStream(),
+				    CharacterSet.UTF_8.getName()));
 
-                            AcceptReplacer acceptReplacer = new AcceptReplacer();
+			    AcceptReplacer acceptReplacer = new AcceptReplacer();
 
-                            // Read the entire file, excluding comment lines
-                            // starting with "#" character.
-                            String line = reader.readLine();
-                            for (; line != null; line = reader.readLine()) {
-                                if (!line.startsWith("#")) {
-                                    final String[] keyValue = line.split(":");
-                                    if (keyValue.length == 2) {
-                                        final String key = keyValue[0].trim();
-                                        final String value = keyValue[1].trim();
-                                        if ("acceptOld".equalsIgnoreCase(key)) {
-                                            acceptReplacer.setAcceptOld((""
-                                                    .equals(value)) ? null
-                                                    : value);
-                                        } else if ("acceptNew"
-                                                .equalsIgnoreCase(key)) {
-                                            acceptReplacer.setAcceptNew(value);
-                                            this.acceptReplacers
-                                                    .add(acceptReplacer);
+			    // Read the entire file, excluding comment lines
+			    // starting with "#" character.
+			    String line = reader.readLine();
+			    for (; line != null; line = reader.readLine()) {
+				if (!line.startsWith("#")) {
+				    final String[] keyValue = line.split(":");
+				    if (keyValue.length == 2) {
+					final String key = keyValue[0].trim();
+					final String value = keyValue[1].trim();
+					if ("acceptOld".equalsIgnoreCase(key)) {
+					    acceptReplacer.setAcceptOld(("".equals(value)) ? null : value);
+					} else if ("acceptNew".equalsIgnoreCase(key)) {
+					    acceptReplacer.setAcceptNew(value);
+					    this.acceptReplacers.add(acceptReplacer);
 
-                                            acceptReplacer = new AcceptReplacer();
-                                        } else {
-                                            acceptReplacer.getAgentAttributes()
-                                                    .put(key, value);
-                                        }
-                                    }
-                                }
-                            }
+					    acceptReplacer = new AcceptReplacer();
+					} else {
+					    acceptReplacer.getAgentAttributes().put(key, value);
+					}
+				    }
+				}
+			    }
 
-                            reader.close();
-                        } catch (IOException e) {
-                            getContext().getLogger().warning(
-                                    "Cannot read '"
-                                            + userAgentPropertiesUrl.toString()
-                                            + "' due to: " + e.getMessage());
-                        }
-                    }
-                }
-            }
-        }
-        return a;
+			    reader.close();
+			} catch (IOException e) {
+			    getContext().getLogger()
+				    .warning(
+					    "Cannot read '" + userAgentPropertiesUrl.toString() + "' due to: "
+						    + e.getMessage());
+			}
+		    }
+		}
+	    }
+	}
+	return a;
     }
 
     /**
@@ -186,7 +179,7 @@ public class RESTnetTunnelFilter extends Filter {
      * @return The matched metadata.
      */
     private Metadata getMetadata(String extension) {
-        return getMetadataService().getMetadata(extension);
+	return getMetadataService().getMetadata(extension);
     }
 
     /**
@@ -195,7 +188,7 @@ public class RESTnetTunnelFilter extends Filter {
      * @return The metadata service of the parent application.
      */
     public MetadataService getMetadataService() {
-        return getApplication().getMetadataService();
+	return getApplication().getMetadataService();
     }
 
     /**
@@ -204,7 +197,7 @@ public class RESTnetTunnelFilter extends Filter {
      * @return The tunnel service of the parent application.
      */
     public TunnelService getTunnelService() {
-        return getApplication().getTunnelService();
+	return getApplication().getTunnelService();
     }
 
     /**
@@ -219,69 +212,65 @@ public class RESTnetTunnelFilter extends Filter {
      * @return True if the query has been updated, false otherwise.
      */
     private boolean processExtensions(Request request) {
-        final TunnelService tunnelService = getTunnelService();
-        boolean extensionsModified = false;
+	final TunnelService tunnelService = getTunnelService();
+	boolean extensionsModified = false;
 
-        // Tunnel the client preferences only for GET or HEAD requests
-        final Method method = request.getMethod();
-        if (tunnelService.isPreferencesTunnel()
-                && (method.equals(Method.GET) || method.equals(Method.HEAD))) {
-            final Reference resourceRef = request.getResourceRef();
+	// Tunnel the client preferences only for GET or HEAD requests
+	final Method method = request.getMethod();
+	if (tunnelService.isPreferencesTunnel() && (method.equals(Method.GET) || method.equals(Method.HEAD))) {
+	    final Reference resourceRef = request.getResourceRef();
 
-            if (resourceRef.hasExtensions()) {
-                final ClientInfo clientInfo = request.getClientInfo();
-                boolean encodingFound = false;
-                boolean characterSetFound = false;
-                boolean mediaTypeFound = false;
-                boolean languageFound = false;
-                String extensions = resourceRef.getExtensions();
+	    if (resourceRef.hasExtensions()) {
+		final ClientInfo clientInfo = request.getClientInfo();
+		boolean encodingFound = false;
+		boolean characterSetFound = false;
+		boolean mediaTypeFound = false;
+		boolean languageFound = false;
+		String extensions = resourceRef.getExtensions();
 
-                // Discover extensions from right to left and stop at the first
-                // unknown extension. Only one extension per type of metadata is
-                // also allowed: i.e. one language, one media type, one
-                // encoding, one character set.
-                while (true) {
-                    final int lastIndexOfPoint = extensions.lastIndexOf('.');
-                    final String extension = extensions
-                            .substring(lastIndexOfPoint + 1);
-                    final Metadata metadata = getMetadata(extension);
+		// Discover extensions from right to left and stop at the first
+		// unknown extension. Only one extension per type of metadata is
+		// also allowed: i.e. one language, one media type, one
+		// encoding, one character set.
+		while (true) {
+		    final int lastIndexOfPoint = extensions.lastIndexOf('.');
+		    final String extension = extensions.substring(lastIndexOfPoint + 1);
+		    final Metadata metadata = getMetadata(extension);
 
-                    if (!mediaTypeFound && (metadata instanceof MediaType)) {
-                        updateMetadata(clientInfo, metadata);
-                        mediaTypeFound = true;
-                    } else if (!languageFound && (metadata instanceof Language)) {
-                        updateMetadata(clientInfo, metadata);
-                        languageFound = true;
-                    } else if (!characterSetFound
-                            && (metadata instanceof CharacterSet)) {
-                        updateMetadata(clientInfo, metadata);
-                        characterSetFound = true;
-                    } else if (!encodingFound && (metadata instanceof Encoding)) {
-                        updateMetadata(clientInfo, metadata);
-                        encodingFound = true;
-                    } else {
-                        // extension do not match -> break loop
-                        break;
-                    }
-                    if (lastIndexOfPoint > 0) {
-                        extensions = extensions.substring(0, lastIndexOfPoint);
-                    } else {
-                        // no more extensions -> break loop
-                        extensions = "";
-                        break;
-                    }
-                }
+		    if (!mediaTypeFound && (metadata instanceof MediaType)) {
+			updateMetadata(clientInfo, metadata);
+			mediaTypeFound = true;
+		    } else if (!languageFound && (metadata instanceof Language)) {
+			updateMetadata(clientInfo, metadata);
+			languageFound = true;
+		    } else if (!characterSetFound && (metadata instanceof CharacterSet)) {
+			updateMetadata(clientInfo, metadata);
+			characterSetFound = true;
+		    } else if (!encodingFound && (metadata instanceof Encoding)) {
+			updateMetadata(clientInfo, metadata);
+			encodingFound = true;
+		    } else {
+			// extension do not match -> break loop
+			break;
+		    }
+		    if (lastIndexOfPoint > 0) {
+			extensions = extensions.substring(0, lastIndexOfPoint);
+		    } else {
+			// no more extensions -> break loop
+			extensions = "";
+			break;
+		    }
+		}
 
-                // Update the extensions if necessary
-                if (encodingFound || characterSetFound || mediaTypeFound
-                        || languageFound) {
-                    resourceRef.setExtensions(extensions);
-                    extensionsModified = true;
-                }
-            }
-        }
+		// Update the extensions if necessary
+		if (encodingFound || characterSetFound || mediaTypeFound || languageFound) {
+		    resourceRef.setExtensions(extensions);
+		    extensionsModified = true;
+		}
+	    }
+	}
 
-        return extensionsModified;
+	return extensionsModified;
     }
 
     /**
@@ -292,25 +281,23 @@ public class RESTnetTunnelFilter extends Filter {
      */
     @SuppressWarnings("unchecked")
     private void processHeaders(Request request) {
-        final TunnelService tunnelService = getTunnelService();
+	final TunnelService tunnelService = getTunnelService();
 
-        if (tunnelService.isMethodTunnel()) {
-            // get the headers
-            final Series<Parameter> extraHeaders = (Series<Parameter>) request
-                    .getAttributes().get(HttpConstants.ATTRIBUTE_HEADERS);
+	if (tunnelService.isMethodTunnel()) {
+	    // get the headers
+	    final Series<Parameter> extraHeaders = (Series<Parameter>) request.getAttributes().get(
+		    HttpConstants.ATTRIBUTE_HEADERS);
 
-            if (extraHeaders != null) {
-                // look for the new value of the method
-                final String newMethodValue = extraHeaders.getFirstValue(
-                        getTunnelService().getMethodHeader(), true);
+	    if (extraHeaders != null) {
+		// look for the new value of the method
+		final String newMethodValue = extraHeaders.getFirstValue(getTunnelService().getMethodHeader(), true);
 
-                if (newMethodValue != null
-                        && newMethodValue.trim().length() > 0) {
-                    // set the current method to the new method
-                    request.setMethod(Method.valueOf(newMethodValue));
-                }
-            }
-        }
+		if (newMethodValue != null && newMethodValue.trim().length() > 0) {
+		    // set the current method to the new method
+		    request.setMethod(Method.valueOf(newMethodValue));
+		}
+	    }
+	}
     }
 
     /**
@@ -322,107 +309,99 @@ public class RESTnetTunnelFilter extends Filter {
      * @return True if the query has been updated, false otherwise.
      */
     private boolean processQuery(Request request) {
-        TunnelService tunnelService = getTunnelService();
-        boolean queryModified = false;
-        Reference resourceRef = request.getResourceRef();
+	TunnelService tunnelService = getTunnelService();
+	boolean queryModified = false;
+	Reference resourceRef = request.getResourceRef();
 
-        if (resourceRef.hasQuery()) {
-            Form query = resourceRef.getQueryAsForm();
+	if (resourceRef.hasQuery()) {
+	    Form query = resourceRef.getQueryAsForm();
 
-            // Tunnel the request method
-            Method method = request.getMethod();
-            if (tunnelService.isMethodTunnel()) {
-                String methodName = query.getFirstValue(tunnelService
-                        .getMethodParameter());
+	    // Tunnel the request method
+	    Method method = request.getMethod();
+	    if (tunnelService.isMethodTunnel()) {
+		String methodName = query.getFirstValue(tunnelService.getMethodParameter());
 
-                Method tunnelledMethod = Method.valueOf(methodName);
-                // The OPTIONS method can be tunneled via GET requests.
-                if (tunnelledMethod != null
-                        && (Method.POST.equals(method) || Method.OPTIONS
-                                .equals(tunnelledMethod))) {
-                    request.setMethod(tunnelledMethod);
-                    query.removeFirst(tunnelService.getMethodParameter());
-                    queryModified = true;
-                }
-            }
+		Method tunnelledMethod = Method.valueOf(methodName);
+		// The OPTIONS method can be tunneled via GET requests.
+		if (tunnelledMethod != null && (Method.POST.equals(method) || Method.OPTIONS.equals(tunnelledMethod))) {
+		    request.setMethod(tunnelledMethod);
+		    query.removeFirst(tunnelService.getMethodParameter());
+		    queryModified = true;
+		}
+	    }
 
-            // Tunnel the client preferences
-            if (tunnelService.isPreferencesTunnel()) {
-                // Get the parameter names to look for
-                String charSetParameter = tunnelService
-                        .getCharacterSetParameter();
-                String encodingParameter = tunnelService.getEncodingParameter();
-                String languageParameter = tunnelService.getLanguageParameter();
-                String mediaTypeParameter = tunnelService
-                        .getMediaTypeParameter();
+	    // Tunnel the client preferences
+	    if (tunnelService.isPreferencesTunnel()) {
+		// Get the parameter names to look for
+		String charSetParameter = tunnelService.getCharacterSetParameter();
+		String encodingParameter = tunnelService.getEncodingParameter();
+		String languageParameter = tunnelService.getLanguageParameter();
+		String mediaTypeParameter = tunnelService.getMediaTypeParameter();
 
-                // Get the preferences from the query
-                String acceptedCharSet = query.getFirstValue(charSetParameter);
-                String acceptedEncoding = query
-                        .getFirstValue(encodingParameter);
-                String acceptedLanguage = query
-                        .getFirstValue(languageParameter);
-                String acceptedMediaType = query
-                        .getFirstValue(mediaTypeParameter);
+		// Get the preferences from the query
+		String acceptedCharSet = query.getFirstValue(charSetParameter);
+		String acceptedEncoding = query.getFirstValue(encodingParameter);
+		String acceptedLanguage = query.getFirstValue(languageParameter);
+		String acceptedMediaType = query.getFirstValue(mediaTypeParameter);
 
-                // Updates the client preferences
-                ClientInfo clientInfo = request.getClientInfo();
-                Metadata metadata = getMetadata(acceptedCharSet);
+		// Updates the client preferences
+		ClientInfo clientInfo = request.getClientInfo();
+		Metadata metadata = getMetadata(acceptedCharSet);
 
-                if ((metadata == null) && (acceptedCharSet != null)) {
-                    metadata = CharacterSet.valueOf(acceptedCharSet);
-                }
+		if ((metadata == null) && (acceptedCharSet != null)) {
+		    metadata = CharacterSet.valueOf(acceptedCharSet);
+		}
 
-                if (metadata instanceof CharacterSet) {
-                    updateMetadata(clientInfo, metadata);
-                    query.removeFirst(charSetParameter);
-                    queryModified = true;
-                }
+		if (metadata instanceof CharacterSet) {
+		    updateMetadata(clientInfo, metadata);
+		    query.removeFirst(charSetParameter);
+		    queryModified = true;
+		}
 
-                metadata = getMetadata(acceptedEncoding);
+		metadata = getMetadata(acceptedEncoding);
 
-                if ((metadata == null) && (acceptedEncoding != null)) {
-                    metadata = Encoding.valueOf(acceptedEncoding);
-                }
+		if ((metadata == null) && (acceptedEncoding != null)) {
+		    metadata = Encoding.valueOf(acceptedEncoding);
+		}
 
-                if (metadata instanceof Encoding) {
-                    updateMetadata(clientInfo, metadata);
-                    query.removeFirst(encodingParameter);
-                    queryModified = true;
-                }
+		if (metadata instanceof Encoding) {
+		    updateMetadata(clientInfo, metadata);
+		    query.removeFirst(encodingParameter);
+		    queryModified = true;
+		}
 
-                metadata = getMetadata(acceptedLanguage);
+		metadata = getMetadata(acceptedLanguage);
 
-                if ((metadata == null) && (acceptedLanguage != null)) {
-                    metadata = Language.valueOf(acceptedLanguage);
-                }
+		if ((metadata == null) && (acceptedLanguage != null)) {
+		    metadata = Language.valueOf(acceptedLanguage);
+		}
 
-                if (metadata instanceof Language) {
-                    updateMetadata(clientInfo, metadata);
-                    query.removeFirst(languageParameter);
-                    queryModified = true;
-                }
+		if (metadata instanceof Language) {
+		    updateMetadata(clientInfo, metadata);
+		    query.removeFirst(languageParameter);
+		    queryModified = true;
+		}
 
-                metadata = getMetadata(acceptedMediaType);
+		metadata = getMetadata(acceptedMediaType);
 
-                if ((metadata == null) && (acceptedMediaType != null)) {
-                    metadata = MediaType.valueOf(acceptedMediaType);
-                }
+		if ((metadata == null) && (acceptedMediaType != null)) {
+		    metadata = MediaType.valueOf(acceptedMediaType);
+		}
 
-                if (metadata instanceof MediaType) {
-                    updateMetadata(clientInfo, metadata);
-                    query.removeFirst(mediaTypeParameter);
-                    queryModified = true;
-                }
-            }
+		if (metadata instanceof MediaType) {
+		    updateMetadata(clientInfo, metadata);
+		    query.removeFirst(mediaTypeParameter);
+		    queryModified = true;
+		}
+	    }
 
-            // Update the query if it has been modified
-            if (queryModified) {
-                request.getResourceRef().setQuery(query.getQueryString(null));
-            }
-        }
+	    // Update the query if it has been modified
+	    if (queryModified) {
+		request.getResourceRef().setQuery(query.getQueryString(null));
+	    }
+	}
 
-        return queryModified;
+	return queryModified;
     }
 
     /**
@@ -458,53 +437,44 @@ public class RESTnetTunnelFilter extends Filter {
      *            the request to update.
      */
     private void processUserAgent(Request request) {
-        final Map<String, String> agentAttributes = request.getClientInfo()
-                .getAgentAttributes();
-        if (agentAttributes != null) {
-            if (getAcceptReplacers() != null) {
-                // Get the old Accept header value
-                final Form headers = (Form) request.getAttributes().get(
-                        HttpConstants.ATTRIBUTE_HEADERS);
+	final Map<String, String> agentAttributes = request.getClientInfo().getAgentAttributes();
+	if (agentAttributes != null) {
+	    if (getAcceptReplacers() != null) {
+		// Get the old Accept header value
+		final Form headers = (Form) request.getAttributes().get(HttpConstants.ATTRIBUTE_HEADERS);
 
-                final String acceptOld = (headers != null) ? headers
-                        .getFirstValue(HttpConstants.HEADER_ACCEPT, true)
-                        : null;
+		final String acceptOld = (headers != null) ? headers.getFirstValue(HttpConstants.HEADER_ACCEPT, true)
+			: null;
 
-                // Check each replacer
-                for (AcceptReplacer acceptReplacer : this.acceptReplacers) {
-                    // Check the conditions
-                    boolean checked = true;
-                    for (String key : acceptReplacer.getAgentAttributes()
-                            .keySet()) {
-                        final String attribute = agentAttributes.get(key);
-                        checked = checked
-                                && (attribute != null && attribute
-                                        .equals(acceptReplacer
-                                                .getAgentAttributes().get(key)));
+		// Check each replacer
+		for (AcceptReplacer acceptReplacer : this.acceptReplacers) {
+		    // Check the conditions
+		    boolean checked = true;
+		    for (String key : acceptReplacer.getAgentAttributes().keySet()) {
+			final String attribute = agentAttributes.get(key);
+			checked = checked
+				&& (attribute != null && attribute.equals(acceptReplacer.getAgentAttributes().get(key)));
 
-                    }
-                    if (checked) {
-                    	
-                    	if (acceptReplacer.getAcceptOld()==null) 
-                    		checked = true;
-                    	else if (acceptOld == null) {
-                            checked = acceptReplacer.getAcceptOld() == null;
-                        } else {
-                            checked = acceptOld.equals(acceptReplacer
-                                    .getAcceptOld());
-                        }
-                        if (checked) {
-                            final ClientInfo clientInfo = new ClientInfo();
-                            PreferenceUtils.parseMediaTypes(acceptReplacer
-                                    .getAcceptNew(), clientInfo);
-                            request.getClientInfo().setAcceptedMediaTypes(
-                                    clientInfo.getAcceptedMediaTypes());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+		    }
+		    if (checked) {
+
+			if (acceptReplacer.getAcceptOld() == null)
+			    checked = true;
+			else if (acceptOld == null) {
+			    checked = acceptReplacer.getAcceptOld() == null;
+			} else {
+			    checked = acceptOld.equals(acceptReplacer.getAcceptOld());
+			}
+			if (checked) {
+			    final ClientInfo clientInfo = new ClientInfo();
+			    PreferenceUtils.parseMediaTypes(acceptReplacer.getAcceptNew(), clientInfo);
+			    request.getClientInfo().setAcceptedMediaTypes(clientInfo.getAcceptedMediaTypes());
+			    break;
+			}
+		    }
+		}
+	    }
+	}
     }
 
     /**
@@ -517,26 +487,21 @@ public class RESTnetTunnelFilter extends Filter {
      *            The metadata to use.
      */
     private void updateMetadata(ClientInfo clientInfo, Metadata metadata) {
-        if (metadata != null) {
-            if (metadata instanceof CharacterSet) {
-                clientInfo.getAcceptedCharacterSets().clear();
-                clientInfo.getAcceptedCharacterSets().add(
-                        new Preference<CharacterSet>((CharacterSet) metadata));
-            } else if (metadata instanceof Encoding) {
-                clientInfo.getAcceptedEncodings().clear();
-                clientInfo.getAcceptedEncodings().add(
-                        new Preference<Encoding>((Encoding) metadata));
-            } else if (metadata instanceof Language) {
-                clientInfo.getAcceptedLanguages().clear();
-                clientInfo.getAcceptedLanguages().add(
-                        new Preference<Language>((Language) metadata));
-            } else if (metadata instanceof MediaType) {
-                clientInfo.getAcceptedMediaTypes().clear();
-                clientInfo.getAcceptedMediaTypes().add(
-                        new Preference<MediaType>((MediaType) metadata));
-            }
-        }
+	if (metadata != null) {
+	    if (metadata instanceof CharacterSet) {
+		clientInfo.getAcceptedCharacterSets().clear();
+		clientInfo.getAcceptedCharacterSets().add(new Preference<CharacterSet>((CharacterSet) metadata));
+	    } else if (metadata instanceof Encoding) {
+		clientInfo.getAcceptedEncodings().clear();
+		clientInfo.getAcceptedEncodings().add(new Preference<Encoding>((Encoding) metadata));
+	    } else if (metadata instanceof Language) {
+		clientInfo.getAcceptedLanguages().clear();
+		clientInfo.getAcceptedLanguages().add(new Preference<Language>((Language) metadata));
+	    } else if (metadata instanceof MediaType) {
+		clientInfo.getAcceptedMediaTypes().clear();
+		clientInfo.getAcceptedMediaTypes().add(new Preference<MediaType>((MediaType) metadata));
+	    }
+	}
     }
 
-	
 }

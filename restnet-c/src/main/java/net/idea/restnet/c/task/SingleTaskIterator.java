@@ -5,27 +5,29 @@ import java.util.UUID;
 
 /**
  * Iterator for a single task
+ * 
  * @author nina
- *
+ * 
  * @param <USERID>
  */
-public class SingleTaskIterator<USERID> implements Iterator<UUID>  {
-	protected UUID task;
+public class SingleTaskIterator<USERID> implements Iterator<UUID> {
+    protected UUID task;
 
-	public SingleTaskIterator(UUID task) {
-		this.task = task;
-	}
-	public boolean hasNext() {
-		return task != null;
-	}
+    public SingleTaskIterator(UUID task) {
+	this.task = task;
+    }
 
-	public UUID next() {
-		UUID theTask = task;
-		task = null;
-		return theTask;
-	}
+    public boolean hasNext() {
+	return task != null;
+    }
 
-	public void remove() {
-	}
-	
+    public UUID next() {
+	UUID theTask = task;
+	task = null;
+	return theTask;
+    }
+
+    public void remove() {
+    }
+
 }

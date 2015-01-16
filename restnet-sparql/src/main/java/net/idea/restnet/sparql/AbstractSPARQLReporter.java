@@ -20,89 +20,91 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
 
 public class AbstractSPARQLReporter<OUTPUT> extends AbstractReporter<String, OUTPUT> {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -7565253534132056732L;
+    private static final long serialVersionUID = -7565253534132056732L;
 
-	protected MediaType mediaType;
-	protected Model model;
-	protected Request request;
-	
-	public MediaType getMediaType() {
-		return mediaType;
-	}
+    protected MediaType mediaType;
+    protected Model model;
+    protected Request request;
 
-	public void setMediaType(MediaType mediaType) {
-		this.mediaType = mediaType;
-	}
+    public MediaType getMediaType() {
+	return mediaType;
+    }
 
-	public AbstractSPARQLReporter(Model model,MediaType mediaType, Request request) {
-		super();
-		this.model = model;
-		this.mediaType = mediaType;
-		this.request = request;
-	}
+    public void setMediaType(MediaType mediaType) {
+	this.mediaType = mediaType;
+    }
 
+    public AbstractSPARQLReporter(Model model, MediaType mediaType, Request request) {
+	super();
+	this.model = model;
+	this.mediaType = mediaType;
+	this.request = request;
+    }
 
+    @Override
+    public String getLicenseURI() {
+	return null;
+    }
 
-	@Override
-	public String getLicenseURI() {
-		return null;
-	}
+    @Override
+    public void setLicenseURI(String uri) {
+    }
 
+    @Override
+    public OUTPUT process(String queryString) throws Exception {
+	QueryExecution qe = null;
+	ResultSet results = null;
+	try {
 
-	@Override
-	public void setLicenseURI(String uri) {
-	}
+	    model.enterCriticalSection(Lock.READ);
 
+	    try {
+		Query query = QueryFactory.create(queryString, null, Syntax.syntaxARQ);
 
-	@Override
-	public OUTPUT process(String queryString) throws Exception {
-		QueryExecution qe = null;
-		ResultSet results = null;
+		// Execute the query and obtain results
+		qe = QueryExecutionFactory.create(query, model);
+		results = qe.execSelect();
+
+		processResults(query, results, output);
+	    } catch (Exception x) {
+
+		throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, x);
+	    } finally {
 		try {
-
-			model.enterCriticalSection(Lock.READ) ;
-		
-			try {
-				Query query = QueryFactory.create(queryString,null,Syntax.syntaxARQ);
-	
-				// Execute the query and obtain results
-				qe = QueryExecutionFactory.create(query,model );
-				results = qe.execSelect();
-
-				processResults(query, results,output);
-			} catch (Exception x) {
-	
-				throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST,x);
-			} finally {
-				try {qe.close();} catch (Exception x) {}
-			}
-		} finally {
-			if (model!=null) model.leaveCriticalSection() ; 
+		    qe.close();
+		} catch (Exception x) {
 		}
-		return getOutput();
-	}	
-	
-	public void header(OUTPUT output, String query) {
-		
+	    }
+	} finally {
+	    if (model != null)
+		model.leaveCriticalSection();
 	}
-	public void footer(OUTPUT output, String query) {
-		
+	return getOutput();
+    }
+
+    public void header(OUTPUT output, String query) {
+
+    }
+
+    public void footer(OUTPUT output, String query) {
+
+    }
+
+    public void processResults(Query query, ResultSet results, OUTPUT output) throws Exception {
+	List<String> vars = results.getResultVars();
+	while (results.hasNext()) {
+	    processItem(results.next(), vars, output);
 	}
-	
-	public void processResults(Query query, ResultSet results, OUTPUT output) throws Exception {
-		List<String> vars = results.getResultVars();
-		while (results.hasNext()) {
-			processItem(results.next(),vars,output);
-		}
-	}
-	public void processVars(List<String> vars , OUTPUT output) throws Exception {
-		
-	}
-	
-	public void processItem(QuerySolution solution, List<String> vars , OUTPUT output) throws Exception {
-		
-	}
+    }
+
+    public void processVars(List<String> vars, OUTPUT output) throws Exception {
+
+    }
+
+    public void processItem(QuerySolution solution, List<String> vars, OUTPUT output) throws Exception {
+
+    }
 }

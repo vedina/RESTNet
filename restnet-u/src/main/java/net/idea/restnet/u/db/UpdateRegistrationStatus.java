@@ -40,44 +40,53 @@ import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.u.RegistrationStatus;
 import net.idea.restnet.u.UserRegistration;
 
-public class UpdateRegistrationStatus extends AbstractUpdate<IUser,UserRegistration> implements IDBConfig {
-	
-	public static final String delete_sql = "update %s%suser_registration set status=?, confirmed=now() where user_name=?";
+public class UpdateRegistrationStatus extends AbstractUpdate<IUser, UserRegistration> implements IDBConfig {
 
-	public UpdateRegistrationStatus(IUser user,RegistrationStatus status) {
-		super();
-		UserRegistration ur = new UserRegistration();
-		ur.setStatus(status);
-		setObject(ur);
-		setGroup(user);
-	}
-	public UpdateRegistrationStatus(IUser user) {
-		this(user,RegistrationStatus.disabled);
-	}
-	public UpdateRegistrationStatus() {
-		this(null);
-	}		
-	public List<QueryParam> getParameters(int index) throws AmbitException {
-		List<QueryParam> params = new ArrayList<QueryParam>();
-		params.add(new QueryParam<String>(String.class, getObject().getStatus()==null?RegistrationStatus.disabled.name():getObject().getStatus().name()));
-		params.add(new QueryParam<String>(String.class, getGroup().getUserName()));
-		return params;
-		
-	}
+    public static final String delete_sql = "update %s%suser_registration set status=?, confirmed=now() where user_name=?";
 
-	public String[] getSQL() throws AmbitException {
-		return new String[] {String.format(delete_sql,databaseName==null?"":databaseName,databaseName==null?"":".")};
-	}
-	public void setID(int index, int id) {
-			
-	}
-	protected String databaseName = null;
-	@Override
-	public void setDatabaseName(String name) {
-		databaseName = name;
-	}
-	@Override
-	public String getDatabaseName() {
-		return databaseName;
-	}
+    public UpdateRegistrationStatus(IUser user, RegistrationStatus status) {
+	super();
+	UserRegistration ur = new UserRegistration();
+	ur.setStatus(status);
+	setObject(ur);
+	setGroup(user);
+    }
+
+    public UpdateRegistrationStatus(IUser user) {
+	this(user, RegistrationStatus.disabled);
+    }
+
+    public UpdateRegistrationStatus() {
+	this(null);
+    }
+
+    public List<QueryParam> getParameters(int index) throws AmbitException {
+	List<QueryParam> params = new ArrayList<QueryParam>();
+	params.add(new QueryParam<String>(String.class, getObject().getStatus() == null ? RegistrationStatus.disabled
+		.name() : getObject().getStatus().name()));
+	params.add(new QueryParam<String>(String.class, getGroup().getUserName()));
+	return params;
+
+    }
+
+    public String[] getSQL() throws AmbitException {
+	return new String[] { String.format(delete_sql, databaseName == null ? "" : databaseName,
+		databaseName == null ? "" : ".") };
+    }
+
+    public void setID(int index, int id) {
+
+    }
+
+    protected String databaseName = null;
+
+    @Override
+    public void setDatabaseName(String name) {
+	databaseName = name;
+    }
+
+    @Override
+    public String getDatabaseName() {
+	return databaseName;
+    }
 }

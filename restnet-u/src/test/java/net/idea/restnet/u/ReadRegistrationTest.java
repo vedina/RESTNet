@@ -8,40 +8,36 @@ import net.idea.restnet.db.aalocal.CreateUsersDatabaseProcessor;
 import net.idea.restnet.db.test.QueryTest;
 import net.idea.restnet.u.db.ReadRegistration;
 
+public class ReadRegistrationTest extends QueryTest<ReadRegistration> {
 
-public class ReadRegistrationTest  extends QueryTest<ReadRegistration> {
+    @Override
+    protected ReadRegistration createQuery() throws Exception {
+	ReadRegistration reg = new ReadRegistration("TEST");
+	reg.setDatabaseName(getDatabase());
+	return reg;
+    }
 
-	@Override
-	protected ReadRegistration createQuery() throws Exception {
-		ReadRegistration reg =  new ReadRegistration("TEST");
-		reg.setDatabaseName(getDatabase());
-		return reg;
+    @Override
+    protected void verify(ReadRegistration query, ResultSet rs) throws Exception {
+	int records = 0;
+	while (rs.next()) {
+	    UserRegistration reg = query.getObject(rs);
+	    Assert.assertEquals("TEST", reg.getConfirmationCode());
+	    Assert.assertEquals("confirmed", reg.getStatus().name());
+	    records++;
 	}
+	Assert.assertEquals(1, records);
 
-	@Override
-	protected void verify(ReadRegistration query, ResultSet rs) throws Exception {
-		int records = 0;
-		while (rs.next()) {
-			UserRegistration reg = query.getObject(rs);
-			Assert.assertEquals("TEST",reg.getConfirmationCode());
-			Assert.assertEquals("confirmed",reg.getStatus().name());
-			records++;
-		}
-		Assert.assertEquals(1,records);
-		
-	}
+    }
 
+    @Override
+    protected CreateDatabaseProcessor getDBCreateProcessor() {
+	return new CreateUsersDatabaseProcessor();
+    }
 
-	@Override
-	protected CreateDatabaseProcessor getDBCreateProcessor() {
-		return new CreateUsersDatabaseProcessor();
-	}
-	
-	@Override
-	public String getDBTables() {
-		return "src/test/resources/net/idea/restnet/db/test/tables.xml";
-	}
-
+    @Override
+    public String getDBTables() {
+	return "src/test/resources/net/idea/restnet/db/test/tables.xml";
+    }
 
 }
-

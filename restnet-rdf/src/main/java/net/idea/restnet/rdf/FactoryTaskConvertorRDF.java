@@ -18,23 +18,25 @@ import org.restlet.resource.ResourceException;
 
 /**
  * Same as the parent class, with RDF support
+ * 
  * @author nina
- *
+ * 
  * @param <USERID>
  */
 public class FactoryTaskConvertorRDF<USERID> extends FactoryTaskConvertor<USERID> {
 
-	public FactoryTaskConvertorRDF(ITaskStorage<USERID> storage,HTMLBeauty htmlbeauty) {
-		super(storage,htmlbeauty);
-	}
-	public FactoryTaskConvertorRDF(ITaskStorage<USERID> storage) {
-		super(storage);
-	}
+    public FactoryTaskConvertorRDF(ITaskStorage<USERID> storage, HTMLBeauty htmlbeauty) {
+	super(storage, htmlbeauty);
+    }
 
-	@Override
-	public synchronized Reporter<Iterator<UUID>,Writer> createTaskReporterRDF(
-			Variant variant, Request request,ResourceDoc doc) throws AmbitException, ResourceException {
-		return new TaskRDFReporter<USERID>(storage,request,variant.getMediaType(),doc);
-   }	
+    public FactoryTaskConvertorRDF(ITaskStorage<USERID> storage) {
+	super(storage);
+    }
+
+    @Override
+    public synchronized Reporter<Iterator<UUID>, Writer> createTaskReporterRDF(Variant variant, Request request,
+	    ResourceDoc doc) throws AmbitException, ResourceException {
+	return new TaskRDFReporter<USERID>(storage, request, variant.getMediaType(), doc);
+    }
 
 }

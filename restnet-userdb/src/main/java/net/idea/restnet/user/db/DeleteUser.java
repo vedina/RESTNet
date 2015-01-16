@@ -9,33 +9,39 @@ import net.idea.modbcum.q.update.AbstractObjectUpdate;
 import net.idea.restnet.c.exception.InvalidUserException;
 import net.idea.restnet.user.DBUser;
 
-
 /**
  * Delete an user
+ * 
  * @author nina
- *
+ * 
  */
 public class DeleteUser extends AbstractObjectUpdate<DBUser> {
-	protected static final String[] sql = new String[] {"DELETE from user where iduser=?"};
-	public DeleteUser(DBUser ref) {
-		super(ref);
-	}
-	public DeleteUser() {
-		this(null);
-	}		
-	public List<QueryParam> getParameters(int index) throws AmbitException {
-		if (getObject()==null || getObject().getID()<=0) throw new InvalidUserException();
-		List<QueryParam> params = new ArrayList<QueryParam>();
-		params.add(new QueryParam<Integer>(Integer.class, getObject().getID()));
-		return params;
-		
-	}
+    protected static final String[] sql = new String[] { "DELETE from user where iduser=?" };
 
-	public String[] getSQL() throws AmbitException {
-		if (getObject()==null || getObject().getID()<=0) throw new InvalidUserException();
-		return sql;
-	}
-	public void setID(int index, int id) {
-			
-	}
+    public DeleteUser(DBUser ref) {
+	super(ref);
+    }
+
+    public DeleteUser() {
+	this(null);
+    }
+
+    public List<QueryParam> getParameters(int index) throws AmbitException {
+	if (getObject() == null || getObject().getID() <= 0)
+	    throw new InvalidUserException();
+	List<QueryParam> params = new ArrayList<QueryParam>();
+	params.add(new QueryParam<Integer>(Integer.class, getObject().getID()));
+	return params;
+
+    }
+
+    public String[] getSQL() throws AmbitException {
+	if (getObject() == null || getObject().getID() <= 0)
+	    throw new InvalidUserException();
+	return sql;
+    }
+
+    public void setID(int index, int id) {
+
+    }
 }

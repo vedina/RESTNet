@@ -3,22 +3,23 @@ package net.idea.restnet.aa.opensso.users;
 import java.util.Iterator;
 
 public class SingleItemIterator<T> implements Iterator<T> {
-	protected T item;
+    protected T item;
 
-	public SingleItemIterator(T item) {
-		this.item = item;
-	}
-	public boolean hasNext() {
-		return item != null;
-	}
+    public SingleItemIterator(T item) {
+	this.item = item;
+    }
 
-	public T next() {
-		T theItem = item;
-		item = null;
-		return theItem;
-	}
+    public boolean hasNext() {
+	return item != null;
+    }
 
-	public void remove() {
-	}
-	
+    public T next() {
+	T theItem = item;
+	item = null;
+	return theItem;
+    }
+
+    public void remove() {
+    }
+
 }

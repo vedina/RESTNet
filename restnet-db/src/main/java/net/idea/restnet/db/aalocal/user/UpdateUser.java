@@ -39,39 +39,45 @@ import net.idea.modbcum.q.update.AbstractUpdate;
 /**
  * 
  * @author nina
- *
+ * 
  */
-public class UpdateUser<T> extends AbstractUpdate<T,IUser> implements IDBConfig {
+public class UpdateUser<T> extends AbstractUpdate<T, IUser> implements IDBConfig {
 
-	public static final String sql = "update %susers set user_pass=MD5(?) where user_name=?";
+    public static final String sql = "update %susers set user_pass=MD5(?) where user_name=?";
 
-	public UpdateUser(IUser user) {
-		super(user);
-	}
-	public UpdateUser() {
-		this(null);
-	}			
-	public List<QueryParam> getParameters(int index) throws AmbitException {
-		List<QueryParam> params = new ArrayList<QueryParam>();
-		params.add(new QueryParam<String>(String.class, getObject().getPassword()));
-		params.add(new QueryParam<String>(String.class, getObject().getUserName()));
-		return params;
-		
-	}
+    public UpdateUser(IUser user) {
+	super(user);
+    }
 
-	public String[] getSQL() throws AmbitException {
-		return new String[] { String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName))};
-	}
-	public void setID(int index, int id) {
-			
-	}
-	protected String databaseName = null;
-	@Override
-	public void setDatabaseName(String name) {
-		databaseName = name;
-	}
-	@Override
-	public String getDatabaseName() {
-		return databaseName;
-	}
+    public UpdateUser() {
+	this(null);
+    }
+
+    public List<QueryParam> getParameters(int index) throws AmbitException {
+	List<QueryParam> params = new ArrayList<QueryParam>();
+	params.add(new QueryParam<String>(String.class, getObject().getPassword()));
+	params.add(new QueryParam<String>(String.class, getObject().getUserName()));
+	return params;
+
+    }
+
+    public String[] getSQL() throws AmbitException {
+	return new String[] { String.format(sql, databaseName == null ? "" : String.format("`%s`.", databaseName)) };
+    }
+
+    public void setID(int index, int id) {
+
+    }
+
+    protected String databaseName = null;
+
+    @Override
+    public void setDatabaseName(String name) {
+	databaseName = name;
+    }
+
+    @Override
+    public String getDatabaseName() {
+	return databaseName;
+    }
 }

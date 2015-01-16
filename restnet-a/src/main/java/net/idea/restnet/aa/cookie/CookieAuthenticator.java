@@ -1,4 +1,5 @@
 package net.idea.restnet.aa.cookie;
+
 /**
  * Copied from https://raw.github.com/restlet/restlet-framework-java/master/modules/org.restlet.ext.crypto/src/org/restlet/ext/crypto/CookieAuthenticator.java
  * in order to be used with Restlet 2.0-M6
@@ -86,16 +87,17 @@ import org.restlet.security.ChallengeAuthenticator;
  * @author Jerome Louvel
  */
 public class CookieAuthenticator extends ChallengeAuthenticator {
-	private long sessionLength = 1000*60*45; //45 min
+    private long sessionLength = 1000 * 60 * 45; // 45 min
+
     public long getSessionLength() {
-		return sessionLength;
-	}
+	return sessionLength;
+    }
 
-	public void setSessionLength(long sessionLength) {
-		this.sessionLength = sessionLength;
-	}
+    public void setSessionLength(long sessionLength) {
+	this.sessionLength = sessionLength;
+    }
 
-	/** The name of the cookie that stores log info. */
+    /** The name of the cookie that stores log info. */
     private volatile String cookieName;
 
     /** The name of the algorithm used to encrypt the log info cookie value. */
@@ -150,20 +152,19 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @param encryptSecretKey
      *            The secret key used to encrypt the cookie value.
      */
-    public CookieAuthenticator(Context context, boolean optional, String realm,
-            byte[] encryptSecretKey) {
-        super(context, optional, ChallengeScheme.HTTP_COOKIE, realm);
-        this.cookieName = "Credentials";
-        this.interceptingLogin = true;
-        this.interceptingLogout = true;
-        this.identifierFormName = "login";
-        this.loginPath = "/login";
-        this.logoutPath = "/logout";
-        this.secretFormName = "password";
-        this.encryptAlgorithm = "AES";
-        this.encryptSecretKey = encryptSecretKey;
-        this.maxCookieAge = -1;
-        this.redirectQueryName = "targetUri";
+    public CookieAuthenticator(Context context, boolean optional, String realm, byte[] encryptSecretKey) {
+	super(context, optional, ChallengeScheme.HTTP_COOKIE, realm);
+	this.cookieName = "Credentials";
+	this.interceptingLogin = true;
+	this.interceptingLogout = true;
+	this.identifierFormName = "login";
+	this.loginPath = "/login";
+	this.logoutPath = "/logout";
+	this.secretFormName = "password";
+	this.encryptAlgorithm = "AES";
+	this.encryptSecretKey = encryptSecretKey;
+	this.maxCookieAge = -1;
+	this.redirectQueryName = "targetUri";
     }
 
     /**
@@ -176,9 +177,8 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @param encryptSecretKey
      *            The secret key used to encrypt the cookie value.
      */
-    public CookieAuthenticator(Context context, String realm,
-            byte[] encryptSecretKey) {
-        this(context, false, realm, encryptSecretKey);
+    public CookieAuthenticator(Context context, String realm, byte[] encryptSecretKey) {
+	this(context, false, realm, encryptSecretKey);
     }
 
     /**
@@ -191,12 +191,12 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The current response.
      */
     protected void attemptRedirect(Request request, Response response) {
-        Form form = request.getResourceRef().getQueryAsForm();
-        String targetUri = form.getFirstValue(getRedirectQueryName());
+	Form form = request.getResourceRef().getQueryAsForm();
+	String targetUri = form.getFirstValue(getRedirectQueryName());
 
-        if (targetUri != null) {
-            response.redirectSeeOther(Reference.decode(targetUri));
-        }
+	if (targetUri != null) {
+	    response.redirectSeeOther(Reference.decode(targetUri));
+	}
     }
 
     /**
@@ -205,15 +205,14 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      */
     @Override
     protected boolean authenticate(Request request, Response response) {
-        // Restore credentials from the cookie
-        Cookie credentialsCookie = request.getCookies().getFirst(
-                getCookieName());
+	// Restore credentials from the cookie
+	Cookie credentialsCookie = request.getCookies().getFirst(getCookieName());
 
-        if ((credentialsCookie != null) && (!"".equals(credentialsCookie))) {
-            request.setChallengeResponse(parseCredentials(credentialsCookie.getValue(),request.getClientInfo()));
-        }
+	if ((credentialsCookie != null) && (!"".equals(credentialsCookie))) {
+	    request.setChallengeResponse(parseCredentials(credentialsCookie.getValue(), request.getClientInfo()));
+	}
 
-        return super.authenticate(request, response);
+	return super.authenticate(request, response);
     }
 
     /**
@@ -222,22 +221,19 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
     @Override
     protected int authenticated(Request request, Response response) {
 
-        try {
-            CookieSetting credentialsCookie = getCredentialsCookie(request,
-                    response);
-            credentialsCookie.setValue(formatCredentials(request
-                    .getChallengeResponse(),request.getClientInfo()));
-            credentialsCookie.setMaxAge(getMaxCookieAge());
-            /**
-             * Sets HttpOnly flag
-             */
-            credentialsCookie.setAccessRestricted(true);
-        } catch (GeneralSecurityException e) {
-            getLogger().log(Level.SEVERE,
-                    "Could not format credentials cookie", e);
-        }
+	try {
+	    CookieSetting credentialsCookie = getCredentialsCookie(request, response);
+	    credentialsCookie.setValue(formatCredentials(request.getChallengeResponse(), request.getClientInfo()));
+	    credentialsCookie.setMaxAge(getMaxCookieAge());
+	    /**
+	     * Sets HttpOnly flag
+	     */
+	    credentialsCookie.setAccessRestricted(true);
+	} catch (GeneralSecurityException e) {
+	    getLogger().log(Level.SEVERE, "Could not format credentials cookie", e);
+	}
 
-        return super.authenticated(request, response);
+	return super.authenticated(request, response);
     }
 
     /**
@@ -246,13 +242,13 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      */
     @Override
     protected int beforeHandle(Request request, Response response) {
-        if (isLoggingIn(request, response)) {
-            login(request, response);
-        } else if (isLoggingOut(request, response)) {
-            return logout(request, response);
-        }
+	if (isLoggingIn(request, response)) {
+	    login(request, response);
+	} else if (isLoggingOut(request, response)) {
+	    return logout(request, response);
+	}
 
-        return super.beforeHandle(request, response);
+	return super.beforeHandle(request, response);
     }
 
     /**
@@ -260,7 +256,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      */
     @Override
     public void challenge(Response response, boolean stale) {
-        super.challenge(response, stale);
+	super.challenge(response, stale);
     }
 
     /**
@@ -272,49 +268,49 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @throws GeneralSecurityException
      */
     protected String formatCredentials(ChallengeResponse challenge, ClientInfo clientInfo)
-            throws GeneralSecurityException {
-    	if (challenge ==null) return null;
-        // Data buffer
-        StringBuffer sb = new StringBuffer();
+	    throws GeneralSecurityException {
+	if (challenge == null)
+	    return null;
+	// Data buffer
+	StringBuffer sb = new StringBuffer();
 
-        // Indexes buffer
-        StringBuffer isb = new StringBuffer();
-        String timeIssued = Long.toString(System.currentTimeMillis());
-        int i = timeIssued.length();
-        sb.append(timeIssued);
-        isb.append(i);
-        
-        //IP
-        String ip = clientInfo.getAddress()==null?" ":clientInfo.getAddress();
-        i += ip.length() + 1;
-        sb.append('/');
-        sb.append(ip);
-        isb.append(',').append(i);
-        
-        //agent
-        String agent = clientInfo.getAgent()==null?" ":clientInfo.getAgent();
-        i += agent.length() + 1;
-        sb.append('/');
-        sb.append(agent);
-        isb.append(',').append(i);        
-        
-        //identifier
-        String identifier = challenge.getIdentifier();
-        sb.append('/');
-        sb.append(identifier);
+	// Indexes buffer
+	StringBuffer isb = new StringBuffer();
+	String timeIssued = Long.toString(System.currentTimeMillis());
+	int i = timeIssued.length();
+	sb.append(timeIssued);
+	isb.append(i);
 
-        i += identifier.length() + 1;
-        isb.append(',').append(i);
+	// IP
+	String ip = clientInfo.getAddress() == null ? " " : clientInfo.getAddress();
+	i += ip.length() + 1;
+	sb.append('/');
+	sb.append(ip);
+	isb.append(',').append(i);
 
-        sb.append('/');
-        sb.append(challenge.getSecret());
+	// agent
+	String agent = clientInfo.getAgent() == null ? " " : clientInfo.getAgent();
+	i += agent.length() + 1;
+	sb.append('/');
+	sb.append(agent);
+	isb.append(',').append(i);
 
-        // Store indexes at the end of the string
-        sb.append('/');
-        sb.append(isb);
+	// identifier
+	String identifier = challenge.getIdentifier();
+	sb.append('/');
+	sb.append(identifier);
 
-        return Base64.encode(CryptoUtils.encrypt(getEncryptAlgorithm(),
-                getEncryptSecretKey(), sb.toString()), false);
+	i += identifier.length() + 1;
+	isb.append(',').append(i);
+
+	sb.append('/');
+	sb.append(challenge.getSecret());
+
+	// Store indexes at the end of the string
+	sb.append('/');
+	sb.append(isb);
+
+	return Base64.encode(CryptoUtils.encrypt(getEncryptAlgorithm(), getEncryptSecretKey(), sb.toString()), false);
     }
 
     /**
@@ -324,7 +320,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The cookie name to use for the authentication credentials.
      */
     public String getCookieName() {
-        return cookieName;
+	return cookieName;
     }
 
     /**
@@ -337,27 +333,25 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The current response.
      * @return The credentials cookie setting.
      */
-    protected CookieSetting getCredentialsCookie(Request request,
-            Response response) {
-        CookieSetting credentialsCookie = response.getCookieSettings()
-                .getFirst(getCookieName());
+    protected CookieSetting getCredentialsCookie(Request request, Response response) {
+	CookieSetting credentialsCookie = response.getCookieSettings().getFirst(getCookieName());
 
-        if (credentialsCookie == null) {
-            credentialsCookie = new CookieSetting(getCookieName(), null);
-            credentialsCookie.setAccessRestricted(true);
-            // authCookie.setVersion(1);
+	if (credentialsCookie == null) {
+	    credentialsCookie = new CookieSetting(getCookieName(), null);
+	    credentialsCookie.setAccessRestricted(true);
+	    // authCookie.setVersion(1);
 
-            if (request.getRootRef() != null) {
-                String p = request.getRootRef().getPath();
-                credentialsCookie.setPath(p == null ? "/" : p);
-            } else {
-                // authCookie.setPath("/");
-            }
+	    if (request.getRootRef() != null) {
+		String p = request.getRootRef().getPath();
+		credentialsCookie.setPath(p == null ? "/" : p);
+	    } else {
+		// authCookie.setPath("/");
+	    }
 
-            response.getCookieSettings().add(credentialsCookie);
-        }
+	    response.getCookieSettings().add(credentialsCookie);
+	}
 
-        return credentialsCookie;
+	return credentialsCookie;
     }
 
     /**
@@ -368,7 +362,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *         value.
      */
     public String getEncryptAlgorithm() {
-        return encryptAlgorithm;
+	return encryptAlgorithm;
     }
 
     /**
@@ -379,7 +373,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *         cookie value.
      */
     public byte[] getEncryptSecretKey() {
-        return encryptSecretKey;
+	return encryptSecretKey;
     }
 
     /**
@@ -389,7 +383,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The name of the HTML login form field containing the identifier.
      */
     public String getIdentifierFormName() {
-        return identifierFormName;
+	return identifierFormName;
     }
 
     /**
@@ -398,7 +392,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The URI path of the HTML login form to use to challenge the user.
      */
     public String getLoginFormPath() {
-        return loginFormPath;
+	return loginFormPath;
     }
 
     /**
@@ -407,7 +401,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The login URI path to intercept.
      */
     public String getLoginPath() {
-        return loginPath;
+	return loginPath;
     }
 
     /**
@@ -416,7 +410,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The logout URI path to intercept.
      */
     public String getLogoutPath() {
-        return logoutPath;
+	return logoutPath;
     }
 
     /**
@@ -427,7 +421,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @see CookieSetting#getMaxAge()
      */
     public int getMaxCookieAge() {
-        return maxCookieAge;
+	return maxCookieAge;
     }
 
     /**
@@ -438,7 +432,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *         the browser to after login or logout.
      */
     public String getRedirectQueryName() {
-        return redirectQueryName;
+	return redirectQueryName;
     }
 
     /**
@@ -448,7 +442,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return The name of the HTML login form field containing the secret.
      */
     public String getSecretFormName() {
-        return secretFormName;
+	return secretFormName;
     }
 
     /**
@@ -457,7 +451,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return True if the login requests should be intercepted.
      */
     public boolean isInterceptingLogin() {
-        return interceptingLogin;
+	return interceptingLogin;
     }
 
     /**
@@ -466,7 +460,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @return True if the logout requests should be intercepted.
      */
     public boolean isInterceptingLogout() {
-        return interceptingLogout;
+	return interceptingLogout;
     }
 
     /**
@@ -481,11 +475,10 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *         intercepted.
      */
     protected boolean isLoggingIn(Request request, Response response) {
-    	Reference ref = request.getResourceRef().clone();
-    	ref.setQuery(null);
-        return isInterceptingLogin()
-                && getLoginPath().equals(ref.getRemainingPart())
-                && Method.POST.equals(request.getMethod());
+	Reference ref = request.getResourceRef().clone();
+	ref.setQuery(null);
+	return isInterceptingLogin() && getLoginPath().equals(ref.getRemainingPart())
+		&& Method.POST.equals(request.getMethod());
     }
 
     /**
@@ -500,15 +493,12 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *         intercepted.
      */
     protected boolean isLoggingOut(Request request, Response response) {
-    	Reference ref = request.getResourceRef().clone();
-    	ref.setQuery(null);
-        return isInterceptingLogout()
-                && getLogoutPath().equals(
-                        ref.getRemainingPart())
-                && (Method.GET.equals(request.getMethod()) 
-                  || Method.POST.equals(request.getMethod())
-                  || Method.DELETE.equals(request.getMethod()))
-                  ;
+	Reference ref = request.getResourceRef().clone();
+	ref.setQuery(null);
+	return isInterceptingLogout()
+		&& getLogoutPath().equals(ref.getRemainingPart())
+		&& (Method.GET.equals(request.getMethod()) || Method.POST.equals(request.getMethod()) || Method.DELETE
+			.equals(request.getMethod()));
     }
 
     /**
@@ -520,32 +510,30 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The current response.
      */
     protected void login(Request request, Response response) {
-        // Login detected
-        Form form = new Form(request.getEntity());
-        request.setEntity(form.getWebRepresentation());
-        Parameter identifier = form.getFirst(getIdentifierFormName());
-        Parameter secret = form.getFirst(getSecretFormName());
+	// Login detected
+	Form form = new Form(request.getEntity());
+	request.setEntity(form.getWebRepresentation());
+	Parameter identifier = form.getFirst(getIdentifierFormName());
+	Parameter secret = form.getFirst(getSecretFormName());
 
-        // Set credentials
-        ChallengeResponse cr = new ChallengeResponse(getScheme(),
-                identifier != null ? identifier.getValue() : null,
-                secret != null ? secret.getValue() : null);
-        request.setChallengeResponse(cr);
+	// Set credentials
+	ChallengeResponse cr = new ChallengeResponse(getScheme(), identifier != null ? identifier.getValue() : null,
+		secret != null ? secret.getValue() : null);
+	request.setChallengeResponse(cr);
 
-        if (super.authenticate(request, response)) {
-        	try {
-        		 request.getCookies().removeAll(getCookieName());
-	    		 request.getCookies().add(getCookieName(), formatCredentials(cr,request.getClientInfo()));
-	        } catch (GeneralSecurityException e) {
-	            getLogger().log(Level.SEVERE,
-	                    "Could not format credentials cookie", e);
-	        }
+	if (super.authenticate(request, response)) {
+	    try {
+		request.getCookies().removeAll(getCookieName());
+		request.getCookies().add(getCookieName(), formatCredentials(cr, request.getClientInfo()));
+	    } catch (GeneralSecurityException e) {
+		getLogger().log(Level.SEVERE, "Could not format credentials cookie", e);
+	    }
 
-            // Attempt to redirect
-           // attemptRedirect(request, response);
-        } else {
-            this.logout(request, response);
-        }
+	    // Attempt to redirect
+	    // attemptRedirect(request, response);
+	} else {
+	    this.logout(request, response);
+	}
     }
 
     /**
@@ -557,19 +545,18 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The current response.
      */
     protected int logout(Request request, Response response) {
-        // Clears the credentials
-        request.setChallengeResponse(null);
-        CookieSetting credentialsCookie = getCredentialsCookie(request,
-                response);
-        credentialsCookie.setMaxAge(0);
+	// Clears the credentials
+	request.setChallengeResponse(null);
+	CookieSetting credentialsCookie = getCredentialsCookie(request, response);
+	credentialsCookie.setMaxAge(0);
 
-        // Clear for next restlet
-        request.getCookies().removeAll(getCookieName());
-                     
-        // Attempt to redirect
-        attemptRedirect(request, response);
+	// Clear for next restlet
+	request.getCookies().removeAll(getCookieName());
 
-        return STOP;
+	// Attempt to redirect
+	attemptRedirect(request, response);
+
+	return STOP;
     }
 
     /**
@@ -580,65 +567,62 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The credentials to decode from cookie value.
      * @return The credentials as a proper challenge response.
      */
-    protected ChallengeResponse parseCredentials(String cookieValue,ClientInfo clientInfo) {
-    	if ((cookieValue==null) || ("".equals(cookieValue))) return null;
-    	byte[] encrypted = null;
-    	try {
-    		encrypted = Base64.decode(cookieValue);
-    	} catch (Exception x) {
-            getLogger().warning(x.getMessage());
-            return null;
-    	}
+    protected ChallengeResponse parseCredentials(String cookieValue, ClientInfo clientInfo) {
+	if ((cookieValue == null) || ("".equals(cookieValue)))
+	    return null;
+	byte[] encrypted = null;
+	try {
+	    encrypted = Base64.decode(cookieValue);
+	} catch (Exception x) {
+	    getLogger().warning(x.getMessage());
+	    return null;
+	}
 
-        if (encrypted == null) {
-            getLogger().warning(
-                    "Cannot decode cookie credentials : " + cookieValue);
-        }
+	if (encrypted == null) {
+	    getLogger().warning("Cannot decode cookie credentials : " + cookieValue);
+	}
 
-        // 2) Decrypt the credentials
-        try {
-            String decrypted = CryptoUtils.decrypt(getEncryptAlgorithm(),
-                    getEncryptSecretKey(), encrypted);
+	// 2) Decrypt the credentials
+	try {
+	    String decrypted = CryptoUtils.decrypt(getEncryptAlgorithm(), getEncryptSecretKey(), encrypted);
 
-            // 3) Parse the decrypted cookie value
-            int lastSlash = decrypted.lastIndexOf('/');
-            String[] indexes = decrypted.substring(lastSlash + 1).split(",");
-            int ipIndex = Integer.parseInt(indexes[0]);
-            int agentIndex = Integer.parseInt(indexes[1]);
-            int identifierIndex = Integer.parseInt(indexes[2]);
-            int secretIndex = Integer.parseInt(indexes[3]);
+	    // 3) Parse the decrypted cookie value
+	    int lastSlash = decrypted.lastIndexOf('/');
+	    String[] indexes = decrypted.substring(lastSlash + 1).split(",");
+	    int ipIndex = Integer.parseInt(indexes[0]);
+	    int agentIndex = Integer.parseInt(indexes[1]);
+	    int identifierIndex = Integer.parseInt(indexes[2]);
+	    int secretIndex = Integer.parseInt(indexes[3]);
 
-            // 4) Create the challenge response
-            ChallengeResponse cr = new ChallengeResponse(getScheme());
-            cr.setRawValue(cookieValue);
-            
-            long timeIssued = Long.parseLong(decrypted.substring(0,ipIndex));
-            if ((System.currentTimeMillis()- timeIssued)>sessionLength) {
-            	//timeout
-            	return null;
-            }
-            /*
-            String ip = decrypted.substring(ipIndex+1,agentIndex);
-            if (!ip.equals(clientInfo.getAddress())) {
-            	if (isIPv4(ip)&&isIPv4(clientInfo.getAddress())) return null;
-            	if (isIPv6(ip)&&isIPv6(clientInfo.getAddress())) return null;
-            	//else go on, stupid browsers
-            }
-            */
-            String agent = decrypted.substring(agentIndex+1,identifierIndex);
-            
-            if (!agent.equals(clientInfo.getAgent())) {
-            	return null;
-            }            
-            
-            cr.setIdentifier(decrypted.substring(identifierIndex + 1, secretIndex));
-            cr.setSecret(decrypted.substring(secretIndex + 1, lastSlash));
-            return cr;
-        } catch (Exception e) {
-            getLogger().log(Level.INFO, "Unable to decrypt cookie credentials",
-                    e);
-            return null;
-        }
+	    // 4) Create the challenge response
+	    ChallengeResponse cr = new ChallengeResponse(getScheme());
+	    cr.setRawValue(cookieValue);
+
+	    long timeIssued = Long.parseLong(decrypted.substring(0, ipIndex));
+	    if ((System.currentTimeMillis() - timeIssued) > sessionLength) {
+		// timeout
+		return null;
+	    }
+	    /*
+	     * String ip = decrypted.substring(ipIndex+1,agentIndex); if
+	     * (!ip.equals(clientInfo.getAddress())) { if
+	     * (isIPv4(ip)&&isIPv4(clientInfo.getAddress())) return null; if
+	     * (isIPv6(ip)&&isIPv6(clientInfo.getAddress())) return null; //else
+	     * go on, stupid browsers }
+	     */
+	    String agent = decrypted.substring(agentIndex + 1, identifierIndex);
+
+	    if (!agent.equals(clientInfo.getAgent())) {
+		return null;
+	    }
+
+	    cr.setIdentifier(decrypted.substring(identifierIndex + 1, secretIndex));
+	    cr.setSecret(decrypted.substring(secretIndex + 1, lastSlash));
+	    return cr;
+	} catch (Exception e) {
+	    getLogger().log(Level.INFO, "Unable to decrypt cookie credentials", e);
+	    return null;
+	}
     }
 
     /**
@@ -648,7 +632,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The cookie name to use for the authentication credentials.
      */
     public void setCookieName(String cookieName) {
-        this.cookieName = cookieName;
+	this.cookieName = cookieName;
     }
 
     /**
@@ -659,7 +643,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            value.
      */
     public void setEncryptAlgorithm(String secretAlgorithm) {
-        this.encryptAlgorithm = secretAlgorithm;
+	this.encryptAlgorithm = secretAlgorithm;
     }
 
     /**
@@ -671,7 +655,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            cookie value.
      */
     public void setEncryptSecretKey(byte[] secretKey) {
-        this.encryptSecretKey = secretKey;
+	this.encryptSecretKey = secretKey;
     }
 
     /**
@@ -682,7 +666,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            identifier.
      */
     public void setIdentifierFormName(String loginInputName) {
-        this.identifierFormName = loginInputName;
+	this.identifierFormName = loginInputName;
     }
 
     /**
@@ -692,7 +676,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            True if the login requests should be intercepted.
      */
     public void setInterceptingLogin(boolean intercepting) {
-        this.interceptingLogin = intercepting;
+	this.interceptingLogin = intercepting;
     }
 
     /**
@@ -702,7 +686,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            True if the logout requests should be intercepted.
      */
     public void setInterceptingLogout(boolean intercepting) {
-        this.interceptingLogout = intercepting;
+	this.interceptingLogout = intercepting;
     }
 
     /**
@@ -713,7 +697,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            user.
      */
     public void setLoginFormPath(String loginFormPath) {
-        this.loginFormPath = loginFormPath;
+	this.loginFormPath = loginFormPath;
     }
 
     /**
@@ -723,7 +707,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The login URI path to intercept.
      */
     public void setLoginPath(String loginPath) {
-        this.loginPath = loginPath;
+	this.loginPath = loginPath;
     }
 
     /**
@@ -733,7 +717,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The logout URI path to intercept.
      */
     public void setLogoutPath(String logoutPath) {
-        this.logoutPath = logoutPath;
+	this.logoutPath = logoutPath;
     }
 
     /**
@@ -744,7 +728,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      * @see CookieSetting#setMaxAge(int)
      */
     public void setMaxCookieAge(int timeout) {
-        this.maxCookieAge = timeout;
+	this.maxCookieAge = timeout;
     }
 
     /**
@@ -756,7 +740,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            the browser to after login or logout.
      */
     public void setRedirectQueryName(String redirectQueryName) {
-        this.redirectQueryName = redirectQueryName;
+	this.redirectQueryName = redirectQueryName;
     }
 
     /**
@@ -766,13 +750,14 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
      *            The name of the HTML login form field containing the secret.
      */
     public void setSecretFormName(String passwordInputName) {
-        this.secretFormName = passwordInputName;
+	this.secretFormName = passwordInputName;
     }
-    
+
     private boolean isIPv6(String ip) {
-    	return ip.indexOf(":")>0;
+	return ip.indexOf(":") > 0;
     }
+
     private boolean isIPv4(String ip) {
-    	return ip.indexOf(".")>0;
+	return ip.indexOf(".") > 0;
     }
 }

@@ -10,13 +10,12 @@ import org.restlet.Context;
 
 public class MySQLSingleConnection extends DBConnection {
 
-	
-	public MySQLSingleConnection(Context context, String configFile) {
-		super(context, configFile);
-	}
+    public MySQLSingleConnection(Context context, String configFile) {
+	super(context, configFile);
+    }
 
-	public synchronized Connection getConnection(String connectionURI) throws AmbitException , SQLException{
-		DriverManager.registerDriver (new com.mysql.jdbc.Driver());
-		return DriverManager.getConnection(connectionURI);		
-	}
+    public synchronized Connection getConnection(String connectionURI) throws AmbitException, SQLException {
+	DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+	return DriverManager.getConnection(connectionURI);
+    }
 }

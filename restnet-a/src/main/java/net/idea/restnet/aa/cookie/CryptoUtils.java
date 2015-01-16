@@ -1,4 +1,5 @@
 package net.idea.restnet.aa.cookie;
+
 /**
  * Copied from https://raw.github.com/restlet/restlet-framework-java/master/modules/org.restlet.ext.crypto/src/org/restlet/ext/crypto/CookieAuthenticator.java
  * in order to be used with Restlet 2.0-M6
@@ -37,7 +38,6 @@ package net.idea.restnet.aa.cookie;
  * Restlet is a registered trademark of Restlet S.A.S.
  */
 
-
 import java.security.GeneralSecurityException;
 
 import javax.crypto.Cipher;
@@ -66,11 +66,10 @@ public final class CryptoUtils {
      * @return The new cipher.
      * @throws GeneralSecurityException
      */
-    private static Cipher createCipher(String algorithm, byte[] secretKey,
-            int mode) throws GeneralSecurityException {
-        Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(mode, new SecretKeySpec(secretKey, algorithm));
-        return cipher;
+    private static Cipher createCipher(String algorithm, byte[] secretKey, int mode) throws GeneralSecurityException {
+	Cipher cipher = Cipher.getInstance(algorithm);
+	cipher.init(mode, new SecretKeySpec(secretKey, algorithm));
+	return cipher;
     }
 
     /**
@@ -85,11 +84,9 @@ public final class CryptoUtils {
      * @return The decrypted content string.
      * @throws GeneralSecurityException
      */
-    public static String decrypt(String algo, byte[] secretKey, byte[] encrypted)
-            throws GeneralSecurityException {
-        byte[] original = doFinal(algo, secretKey, Cipher.DECRYPT_MODE,
-                encrypted);
-        return new String(original);
+    public static String decrypt(String algo, byte[] secretKey, byte[] encrypted) throws GeneralSecurityException {
+	byte[] original = doFinal(algo, secretKey, Cipher.DECRYPT_MODE, encrypted);
+	return new String(original);
     }
 
     /**
@@ -104,9 +101,8 @@ public final class CryptoUtils {
      * @return The decrypted content string.
      * @throws GeneralSecurityException
      */
-    public static String decrypt(String algo, String base64Secret,
-            byte[] encrypted) throws GeneralSecurityException {
-        return decrypt(algo, Base64.decode(base64Secret), encrypted);
+    public static String decrypt(String algo, String base64Secret, byte[] encrypted) throws GeneralSecurityException {
+	return decrypt(algo, Base64.decode(base64Secret), encrypted);
     }
 
     /**
@@ -124,9 +120,8 @@ public final class CryptoUtils {
      * @return The processed byte array.
      * @throws GeneralSecurityException
      */
-    private static byte[] doFinal(String algo, byte[] secretKey, int mode,
-            byte[] what) throws GeneralSecurityException {
-        return createCipher(algo, secretKey, mode).doFinal(what);
+    private static byte[] doFinal(String algo, byte[] secretKey, int mode, byte[] what) throws GeneralSecurityException {
+	return createCipher(algo, secretKey, mode).doFinal(what);
     }
 
     /**
@@ -141,9 +136,8 @@ public final class CryptoUtils {
      * @return The encrypted bytes.
      * @throws GeneralSecurityException
      */
-    public static byte[] encrypt(String algo, byte[] secretKey, String content)
-            throws GeneralSecurityException {
-        return doFinal(algo, secretKey, Cipher.ENCRYPT_MODE, content.getBytes());
+    public static byte[] encrypt(String algo, byte[] secretKey, String content) throws GeneralSecurityException {
+	return doFinal(algo, secretKey, Cipher.ENCRYPT_MODE, content.getBytes());
     }
 
     /**
@@ -158,11 +152,9 @@ public final class CryptoUtils {
      * @return The encrypted bytes.
      * @throws GeneralSecurityException
      */
-    public static byte[] encrypt(String algo, String base64Secret,
-            String content) throws GeneralSecurityException {
-        return encrypt(algo, Base64.decode(base64Secret), content);
+    public static byte[] encrypt(String algo, String base64Secret, String content) throws GeneralSecurityException {
+	return encrypt(algo, Base64.decode(base64Secret), content);
     }
-
 
     /**
      * Private constructor to ensure that the class acts as a true utility class

@@ -33,134 +33,157 @@ import com.sun.mail.imap.protocol.Status;
  * Simple alert notification. The message formatting is minimal, just URIs.
  */
 public class SimpleNotificationEngine<ITEM> implements INotificationEngine {
-  public String notificationSubject = "Alert Updates";
-  public String getNotificationSubject() {
+    public String notificationSubject = "Alert Updates";
+
+    public String getNotificationSubject() {
 	return notificationSubject;
-}
+    }
 
-public void setNotificationSubject(String notificationSubject) {
+    public void setNotificationSubject(String notificationSubject) {
 	this.notificationSubject = notificationSubject;
-}
-protected static Logger log  = Logger.getLogger(SimpleNotificationEngine.class.getName()); 
-  private INotificationUtility utility;
-  protected Reference root = null;
-  /**
-   * Uses the default configuration from the config file 
-   */
-  public SimpleNotificationEngine(Reference root,String configFile) throws IOException {
-    this(new Notification(configFile));
-    this.root = root;
-  }
-  
-  /**
-   * @param utility implements the dependencies needed by the engine
-   */
-  public SimpleNotificationEngine(INotificationUtility utility) {
-    this.utility = utility;
-  }
-    
-  @Override	
-  public boolean sendAlerts(User user, List<? extends Alert> alerts, String token) throws Exception {
-    String email = user.getEmail();
-    if (email == null) return false;
-    
-    StringBuilder content = new StringBuilder();
-    for (Alert alert : alerts) {
-    	//System.out.println(user.getEmail());
-        List<String> results = queryAlert(user, alert, token);
-        if ((results==null)||(results.size()==0)) continue;
-    	//content.append(alert.getQuery());
-    	content.append("\r\n");
-        for (String result:results) {
-        	content.append(result);
-        	content.append("\r\n");
-        }
-        content.append("\r\n");
     }
-    if (content.length()>0) {
-    	content.append("You have been sent this email because you have signed up to receive "+notificationSubject + "\r\n");
-    	//System.out.println(email + content);
-    	utility.sendNotification(email, notificationSubject, content.toString(), MediaType.TEXT_PLAIN.toString());
-    	return true;
+
+    protected static Logger log = Logger.getLogger(SimpleNotificationEngine.class.getName());
+    private INotificationUtility utility;
+    protected Reference root = null;
+
+    /**
+     * Uses the default configuration from the config file
+     */
+    public SimpleNotificationEngine(Reference root, String configFile) throws IOException {
+	this(new Notification(configFile));
+	this.root = root;
     }
-    return false;
 
-  }
+    /**
+     * @param utility
+     *            implements the dependencies needed by the engine
+     */
+    public SimpleNotificationEngine(INotificationUtility utility) {
+	this.utility = utility;
+    }
 
+    @Override
+    public boolean sendAlerts(User user, List<? extends Alert> alerts, String token) throws Exception {
+	String email = user.getEmail();
+	if (email == null)
+	    return false;
 
-  protected String formatURL(String url) {
-	  return url;
-  }
-  protected List<String> retrieve(Reference ref) throws Exception {
-	  HttpClient cli = new DefaultHttpClient();
- 	  HttpGet httpGet = new HttpGet(ref.toString());
-	  httpGet.addHeader("Accept","application/uri-list");
-	  httpGet.addHeader("Accept-Charset", "utf-8");
-	  InputStream in = null;
-	  try {
-		HttpResponse response = cli.execute(httpGet);
-		HttpEntity entity  = response.getEntity();
-		in = entity.getContent();
-		if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
-			List<String> urls = new ArrayList<String>();
-			BufferedReader r = new BufferedReader(new InputStreamReader(in));
-			String line = null;
-			while ((line = r.readLine()) != null) {
-				urls.add(formatURL(line.trim()));
-			}
-			return urls;
-		} else 	
-			 throw new IOException(String.format("Error reading URL %s\n%s",ref.toString(),response.getStatusLine()));
-		} catch (Exception x) {	
-			throw x;
-		} finally {
-			try {if (in != null) in.close();} catch (Exception x) {}
-			try {cli.getConnectionManager().shutdown();} catch (Exception x) {}
-		}     
-  }
-  
-  protected List<String> retrieveByRIAP(Reference ref) throws Exception {
-	  ClientResource cr = null;
-	  Representation repr = null;
-	  try {
-		cr = new ClientResource(ref);
-		repr = cr.get(MediaType.TEXT_URI_LIST);
-		if (org.restlet.data.Status.SUCCESS_OK.equals(cr.getStatus())) {
-			List<String> urls = new ArrayList<String>();
-			BufferedReader r = new BufferedReader(new InputStreamReader(repr.getStream()));
-			String line = null;
-			while ((line = r.readLine()) != null) {
-				urls.add(formatURL(line.trim()));
-			}
-			return urls;
+	StringBuilder content = new StringBuilder();
+	for (Alert alert : alerts) {
+	    // System.out.println(user.getEmail());
+	    List<String> results = queryAlert(user, alert, token);
+	    if ((results == null) || (results.size() == 0))
+		continue;
+	    // content.append(alert.getQuery());
+	    content.append("\r\n");
+	    for (String result : results) {
+		content.append(result);
+		content.append("\r\n");
+	    }
+	    content.append("\r\n");
+	}
+	if (content.length() > 0) {
+	    content.append("You have been sent this email because you have signed up to receive " + notificationSubject
+		    + "\r\n");
+	    // System.out.println(email + content);
+	    utility.sendNotification(email, notificationSubject, content.toString(), MediaType.TEXT_PLAIN.toString());
+	    return true;
+	}
+	return false;
+
+    }
+
+    protected String formatURL(String url) {
+	return url;
+    }
+
+    protected List<String> retrieve(Reference ref) throws Exception {
+	HttpClient cli = new DefaultHttpClient();
+	HttpGet httpGet = new HttpGet(ref.toString());
+	httpGet.addHeader("Accept", "application/uri-list");
+	httpGet.addHeader("Accept-Charset", "utf-8");
+	InputStream in = null;
+	try {
+	    HttpResponse response = cli.execute(httpGet);
+	    HttpEntity entity = response.getEntity();
+	    in = entity.getContent();
+	    if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+		List<String> urls = new ArrayList<String>();
+		BufferedReader r = new BufferedReader(new InputStreamReader(in));
+		String line = null;
+		while ((line = r.readLine()) != null) {
+		    urls.add(formatURL(line.trim()));
 		}
-		} catch (ResourceException x) {
-			if (x.getStatus().equals(org.restlet.data.Status.CLIENT_ERROR_NOT_FOUND)) {
-				//skip, this is ok
-			} else 
-				log.log(Level.WARNING,String.format("Error reading URL %s\n%s",ref.toString(),cr.getStatus()),x);
-			x.printStackTrace();
-		} catch (Exception x) {	
-			throw x;
-		} finally {
-			try {repr.release();} catch (Exception x) {}
-			try {cr.release();} catch (Exception x) {}
-		}     
-		return null;
-  }
-  protected List<String> queryAlert(User user, Alert alert, String token) throws Exception {
-    switch (alert.getQuery().getType()) {
-    case FREETEXT:
-      Reference ref = new Reference(String.format("%s%s?%s",root,alert.getTitle(),alert.getQuery().getContent()));
-      ref.addQueryParameter("modifiedSince", Long.toString(alert.getSentAt()/1000));
-
-      if ("riap".equals(ref.getScheme()))
-    	  return retrieveByRIAP(ref);
-      else 
-    	  return retrieve(ref);
-    default:
-      throw new IllegalArgumentException("Unsupported alert type: " + alert.getQuery().getType());
+		return urls;
+	    } else
+		throw new IOException(String.format("Error reading URL %s\n%s", ref.toString(),
+			response.getStatusLine()));
+	} catch (Exception x) {
+	    throw x;
+	} finally {
+	    try {
+		if (in != null)
+		    in.close();
+	    } catch (Exception x) {
+	    }
+	    try {
+		cli.getConnectionManager().shutdown();
+	    } catch (Exception x) {
+	    }
+	}
     }
-  }
+
+    protected List<String> retrieveByRIAP(Reference ref) throws Exception {
+	ClientResource cr = null;
+	Representation repr = null;
+	try {
+	    cr = new ClientResource(ref);
+	    repr = cr.get(MediaType.TEXT_URI_LIST);
+	    if (org.restlet.data.Status.SUCCESS_OK.equals(cr.getStatus())) {
+		List<String> urls = new ArrayList<String>();
+		BufferedReader r = new BufferedReader(new InputStreamReader(repr.getStream()));
+		String line = null;
+		while ((line = r.readLine()) != null) {
+		    urls.add(formatURL(line.trim()));
+		}
+		return urls;
+	    }
+	} catch (ResourceException x) {
+	    if (x.getStatus().equals(org.restlet.data.Status.CLIENT_ERROR_NOT_FOUND)) {
+		// skip, this is ok
+	    } else
+		log.log(Level.WARNING, String.format("Error reading URL %s\n%s", ref.toString(), cr.getStatus()), x);
+	    x.printStackTrace();
+	} catch (Exception x) {
+	    throw x;
+	} finally {
+	    try {
+		repr.release();
+	    } catch (Exception x) {
+	    }
+	    try {
+		cr.release();
+	    } catch (Exception x) {
+	    }
+	}
+	return null;
+    }
+
+    protected List<String> queryAlert(User user, Alert alert, String token) throws Exception {
+	switch (alert.getQuery().getType()) {
+	case FREETEXT:
+	    Reference ref = new Reference(String.format("%s%s?%s", root, alert.getTitle(), alert.getQuery()
+		    .getContent()));
+	    ref.addQueryParameter("modifiedSince", Long.toString(alert.getSentAt() / 1000));
+
+	    if ("riap".equals(ref.getScheme()))
+		return retrieveByRIAP(ref);
+	    else
+		return retrieve(ref);
+	default:
+	    throw new IllegalArgumentException("Unsupported alert type: " + alert.getQuery().getType());
+	}
+    }
 
 }

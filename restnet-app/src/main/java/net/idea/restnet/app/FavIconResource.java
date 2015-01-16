@@ -14,24 +14,24 @@ import org.restlet.resource.ServerResource;
 
 /**
  * favicon.ico support
+ * 
  * @author nina
- *
+ * 
  */
 public class FavIconResource extends ServerResource {
-	@Override
-	public Representation get(Variant variant) throws ResourceException {
-		return new OutputRepresentation(MediaType.IMAGE_PNG) {
-			@Override
-			public void write(OutputStream outputStream)
-					throws IOException {
-				try {
-					DownloadTool.download(getClass().getClassLoader().getResourceAsStream("16x16.png"), outputStream);
-					outputStream.close();				
-				} catch (Exception x) {
-					
-				}
-				
-			}
-		};
-	}
+    @Override
+    public Representation get(Variant variant) throws ResourceException {
+	return new OutputRepresentation(MediaType.IMAGE_PNG) {
+	    @Override
+	    public void write(OutputStream outputStream) throws IOException {
+		try {
+		    DownloadTool.download(getClass().getClassLoader().getResourceAsStream("16x16.png"), outputStream);
+		    outputStream.close();
+		} catch (Exception x) {
+
+		}
+
+	    }
+	};
+    }
 }

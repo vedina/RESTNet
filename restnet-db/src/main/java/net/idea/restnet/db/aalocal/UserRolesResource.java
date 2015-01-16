@@ -22,24 +22,25 @@ public class UserRolesResource extends CatalogResource<String> {
 
     /** Its role(s). */
     List<String> messages = new ArrayList<String>();
-  
-	@Override
-	protected Iterator<String> createQuery(Context context, Request request,
-			Response response) throws ResourceException {
-    	try {
-	        this.user = getClientInfo().getUser();
-	        if (user==null) messages.add("Not logged in user");
-	        else messages.add(user.getIdentifier());
-	        if (getClientInfo().getRoles()==null)
-	        	 messages.add("No roles");
-	        else
-	        for (Role role : getClientInfo().getRoles())
-	        	messages.add(role.toString());
-    	} catch (Exception x) {
-    		messages.add(x.getMessage());
-    	}		
-		return messages.iterator();
-	}
 
-	
+    @Override
+    protected Iterator<String> createQuery(Context context, Request request, Response response)
+	    throws ResourceException {
+	try {
+	    this.user = getClientInfo().getUser();
+	    if (user == null)
+		messages.add("Not logged in user");
+	    else
+		messages.add(user.getIdentifier());
+	    if (getClientInfo().getRoles() == null)
+		messages.add("No roles");
+	    else
+		for (Role role : getClientInfo().getRoles())
+		    messages.add(role.toString());
+	} catch (Exception x) {
+	    messages.add(x.getMessage());
+	}
+	return messages.iterator();
+    }
+
 }

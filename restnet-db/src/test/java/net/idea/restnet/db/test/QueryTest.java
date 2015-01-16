@@ -10,44 +10,47 @@ import org.dbunit.database.IDatabaseConnection;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public abstract class QueryTest<T extends IQueryObject> extends DbUnitTest {
-	protected T query;
-	protected QueryExecutor<T> executor;
-	protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";	
-	public String getDbFile() {
-		return dbFile;
-	}
+    protected T query;
+    protected QueryExecutor<T> executor;
+    protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";
 
-	public void setDbFile(String dbFile) {
-		this.dbFile = dbFile;
-	}
+    public String getDbFile() {
+	return dbFile;
+    }
 
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-		query = createQuery();
-		query.setId(-1);
-		executor = new QueryExecutor<T>();
+    public void setDbFile(String dbFile) {
+	this.dbFile = dbFile;
+    }
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+	super.setUp();
+	query = createQuery();
+	query.setId(-1);
+	executor = new QueryExecutor<T>();
+    }
+
+    @Test
+    public void testSelect() throws Exception {
+	setUpDatabase(getDbFile());
+	IDatabaseConnection c = getConnection();
+	ResultSet rs = null;
+	try {
+	    executor.setConnection(c.getConnection());
+	    executor.open();
+	    rs = executor.process(query);
+	    Assert.assertNotNull(rs);
+	    verify(query, rs);
+	} finally {
+	    if (rs != null)
+		rs.close();
+	    c.close();
 	}
-	
-	@Test
-	public void testSelect() throws Exception {
-		setUpDatabase(getDbFile());
-		IDatabaseConnection c = getConnection();
-		ResultSet rs = null;
-		try {
-			executor.setConnection(c.getConnection());
-			executor.open();
-			rs = executor.process(query); 
-			Assert.assertNotNull(rs);
-			verify(query,rs);
-		} finally {
-			if (rs != null) rs.close();
-			c.close();
-		}
-	}
-	protected abstract T createQuery() throws Exception;
-	protected abstract void verify(T query, ResultSet rs) throws Exception ;
+    }
+
+    protected abstract T createQuery() throws Exception;
+
+    protected abstract void verify(T query, ResultSet rs) throws Exception;
 }

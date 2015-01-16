@@ -14,55 +14,68 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
-public class OutputWriterConvertor<T,Q extends IQueryRetrieval<T>>  extends QueryRepresentationConvertor<T,Q,Writer> {
+public class OutputWriterConvertor<T, Q extends IQueryRetrieval<T>> extends QueryRepresentationConvertor<T, Q, Writer> {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -7974532412944774457L;
-	
-	public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter,MediaType mediaType) {
-		this(reporter,mediaType,null);
-	}
-	public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter,MediaType mediaType,String fileNamePrefix) {
-		super(reporter,mediaType,fileNamePrefix);
-	}
+    private static final long serialVersionUID = -7974532412944774457L;
 
-	public Representation process(final Q query) throws Exception {
-		Representation rep = new OutputRepresentation(mediaType) {
-	            @Override
-	            public void write(OutputStream stream) throws IOException {
-            		OutputStreamWriter writer = null;          	
-	            	try {
-	            		writer = new OutputStreamWriter(stream,"UTF-8");	  
-	            		getReporter().setOutput(writer);
-	            		getReporter().process(query);
-	            		//writer.flush();
-	            		//stream.flush();
-	            	} catch (NotFoundException x) {
-	            		;
-	            	} catch (Exception x) {
-	            		Throwable ex = x;
-	            		while (ex!=null) {
-	            			if (ex instanceof IOException) 
-	            				throw (IOException)ex;
-	            			ex = ex.getCause();
-	            		}
-	            		Context.getCurrentLogger().warning(x.getMessage()==null?x.toString():x.getMessage());
+    public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter, MediaType mediaType) {
+	this(reporter, mediaType, null);
+    }
 
-	            	} finally {
-	            		try {if (writer !=null) writer.flush(); } catch (Exception x) { }
-	            		writer = null;
-	            		try {if (stream !=null) stream.flush(); } catch (Exception x) { }
-	            		stream = null;
-	            		try {getReporter().close(); } catch (Exception x) { x.printStackTrace();}
-	            		setReporter(null);
-	            	}
-	            }
-	        };	
-	        setDisposition(rep);
-	        return rep;
-	};	
+    public OutputWriterConvertor(QueryAbstractReporter<T, Q, Writer> reporter, MediaType mediaType,
+	    String fileNamePrefix) {
+	super(reporter, mediaType, fileNamePrefix);
+    }
 
+    public Representation process(final Q query) throws Exception {
+	Representation rep = new OutputRepresentation(mediaType) {
+	    @Override
+	    public void write(OutputStream stream) throws IOException {
+		OutputStreamWriter writer = null;
+		try {
+		    writer = new OutputStreamWriter(stream, "UTF-8");
+		    getReporter().setOutput(writer);
+		    getReporter().process(query);
+		    // writer.flush();
+		    // stream.flush();
+		} catch (NotFoundException x) {
+		    ;
+		} catch (Exception x) {
+		    Throwable ex = x;
+		    while (ex != null) {
+			if (ex instanceof IOException)
+			    throw (IOException) ex;
+			ex = ex.getCause();
+		    }
+		    Context.getCurrentLogger().warning(x.getMessage() == null ? x.toString() : x.getMessage());
+
+		} finally {
+		    try {
+			if (writer != null)
+			    writer.flush();
+		    } catch (Exception x) {
+		    }
+		    writer = null;
+		    try {
+			if (stream != null)
+			    stream.flush();
+		    } catch (Exception x) {
+		    }
+		    stream = null;
+		    try {
+			getReporter().close();
+		    } catch (Exception x) {
+			x.printStackTrace();
+		    }
+		    setReporter(null);
+		}
+	    }
+	};
+	setDisposition(rep);
+	return rep;
+    };
 
 }

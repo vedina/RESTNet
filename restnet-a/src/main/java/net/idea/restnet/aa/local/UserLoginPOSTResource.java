@@ -23,73 +23,75 @@ import org.restlet.resource.ResourceException;
 import org.restlet.security.User;
 
 public class UserLoginPOSTResource<U extends User> extends CatalogResource<U> {
-	public static final String resource = "signin";
-	@Override
-	protected HTMLBeauty getHTMLBeauty() {
-		return new HTMLBeauty();
-	}
-	
-	
-	/**
-	 * Intercepted by {@link CookieAuthenticator} 
-	 */
-	@Override
-	protected Representation post(Representation entity, Variant variant)
-			throws ResourceException {
+    public static final String resource = "signin";
 
-		 if (getRequest().getChallengeResponse()!=null) {
-			 /*
-			 CookieSetting cS = new CookieSetting(0, "Credentials",getRequest().getChallengeResponse().getRawValue());
-			 cS.setComment("CookieAuthenticator");
-			 cS.setPath("/");
-			 this.getResponse().setStatus(Status.SUCCESS_OK);
-			 this.getResponse().getCookieSettings().removeAll("Credentials");
-		     this.getResponse().getCookieSettings().add(cS);
-		     this.getRequest().getCookies().add( "Credentials",getRequest().getChallengeResponse().getRawValue());
-		     */
-		 }
-	     this.getResponse().redirectSeeOther(String.format("%s/login",getRequest().getRootRef()));
-	     return null;
-	}
+    @Override
+    protected HTMLBeauty getHTMLBeauty() {
+	return new HTMLBeauty();
+    }
 
-	@Override
-	public IProcessor<Iterator<U>, Representation> createConvertor(
-			Variant variant) throws AmbitException, ResourceException {
+    /**
+     * Intercepted by {@link CookieAuthenticator}
+     */
+    @Override
+    protected Representation post(Representation entity, Variant variant) throws ResourceException {
 
-		if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
-			return new StringConvertor(createHTMLReporter(false),MediaType.TEXT_HTML);
-		} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
-			return new StringConvertor(	new UserLoginURIReporter(getRequest(),getDocumentation()) {
-				@Override
-				public void processItem(Object item, Writer output) {
-					super.processItem(item, output);
-					try {
-					output.write('\n');
-					} catch (Exception x) {}
-				}
-			},MediaType.TEXT_URI_LIST);
-			
-		} else //html 	
-			return new StringConvertor(createHTMLReporter(false),MediaType.TEXT_HTML);
-		
+	if (getRequest().getChallengeResponse() != null) {
+	    /*
+	     * CookieSetting cS = new CookieSetting(0,
+	     * "Credentials",getRequest().getChallengeResponse().getRawValue());
+	     * cS.setComment("CookieAuthenticator"); cS.setPath("/");
+	     * this.getResponse().setStatus(Status.SUCCESS_OK);
+	     * this.getResponse().getCookieSettings().removeAll("Credentials");
+	     * this.getResponse().getCookieSettings().add(cS);
+	     * this.getRequest().getCookies().add(
+	     * "Credentials",getRequest().getChallengeResponse().getRawValue());
+	     */
 	}
+	this.getResponse().redirectSeeOther(String.format("%s/login", getRequest().getRootRef()));
+	return null;
+    }
 
-	@Override
-	protected Reporter createHTMLReporter(boolean headles) {
-		return new UserLoginHTMLReporter(getRequest(),getDocumentation(),getHTMLBeauty());
-	}
-	@Override
-	protected Iterator<U> createQuery(Context context,
-			Request request, Response response) throws ResourceException {
-		
-		User user = request.getClientInfo().getUser();
-		if (user == null) {
-			user = new User();
+    @Override
+    public IProcessor<Iterator<U>, Representation> createConvertor(Variant variant) throws AmbitException,
+	    ResourceException {
+
+	if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
+	    return new StringConvertor(createHTMLReporter(false), MediaType.TEXT_HTML);
+	} else if (variant.getMediaType().equals(MediaType.TEXT_URI_LIST)) {
+	    return new StringConvertor(new UserLoginURIReporter(getRequest(), getDocumentation()) {
+		@Override
+		public void processItem(Object item, Writer output) {
+		    super.processItem(item, output);
+		    try {
+			output.write('\n');
+		    } catch (Exception x) {
+		    }
 		}
-		if (user instanceof User) 
-			return new SingleItemIterator(user);
-		else throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST);
+	    }, MediaType.TEXT_URI_LIST);
+
+	} else
+	    // html
+	    return new StringConvertor(createHTMLReporter(false), MediaType.TEXT_HTML);
+
+    }
+
+    @Override
+    protected Reporter createHTMLReporter(boolean headles) {
+	return new UserLoginHTMLReporter(getRequest(), getDocumentation(), getHTMLBeauty());
+    }
+
+    @Override
+    protected Iterator<U> createQuery(Context context, Request request, Response response) throws ResourceException {
+
+	User user = request.getClientInfo().getUser();
+	if (user == null) {
+	    user = new User();
 	}
-	
-	
+	if (user instanceof User)
+	    return new SingleItemIterator(user);
+	else
+	    throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST);
+    }
+
 }

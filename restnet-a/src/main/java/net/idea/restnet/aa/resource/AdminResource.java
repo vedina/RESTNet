@@ -1,4 +1,4 @@
-package  net.idea.restnet.aa.resource;
+package net.idea.restnet.aa.resource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,19 +12,20 @@ import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.resource.ResourceException;
 
-public class AdminResource  extends CatalogResource<String> {
-	public static final String resource = "admin";
-	protected List<String> topics = new ArrayList<String>();
+public class AdminResource extends CatalogResource<String> {
+    public static final String resource = "admin";
+    protected List<String> topics = new ArrayList<String>();
 
-	public AdminResource() {
-		super();
-		topics.add(String.format("%s/%s",resource,OpenSSOPoliciesResource.resource));
-	}
-	@Override
-	protected Iterator<String> createQuery(Context context, Request request,
-			Response response) throws ResourceException {
+    public AdminResource() {
+	super();
+	topics.add(String.format("%s/%s", resource, OpenSSOPoliciesResource.resource));
+    }
 
-		return topics.iterator();
-	}
+    @Override
+    protected Iterator<String> createQuery(Context context, Request request, Response response)
+	    throws ResourceException {
+
+	return topics.iterator();
+    }
 
 }

@@ -36,41 +36,43 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractUpdate;
 
-public class CreateUserCredentials<T> extends AbstractUpdate<T,IUser> implements IDBConfig{
+public class CreateUserCredentials<T> extends AbstractUpdate<T, IUser> implements IDBConfig {
 
-	public static String sql =
-			"insert into %susers (user_name,user_pass) values (?,MD5(?))"
-	;
-	
-	public CreateUserCredentials() {
-		this(null);
-	}
-	public CreateUserCredentials(IUser user) {
-		setObject(user);
-	}
-	
-	public String[] getSQL() throws AmbitException {
-		return new String[] { String.format(sql,databaseName==null?"":String.format("`%s`.",databaseName))};
-	}
-	public List<QueryParam> getParameters(int index) throws AmbitException {
-			List<QueryParam> params2 = new ArrayList<QueryParam>();
-			params2.add(new QueryParam<String>(String.class, getObject().getUserName()));
-			params2.add(new QueryParam<String>(String.class, getObject().getPassword()));
-			return params2;
-		
-	}
+    public static String sql = "insert into %susers (user_name,user_pass) values (?,MD5(?))";
 
-	public void setID(int index, int id) {
-	
-	}
-	
-	protected String databaseName = null;
-	@Override
-	public void setDatabaseName(String name) {
-		databaseName = name;
-	}
-	@Override
-	public String getDatabaseName() {
-		return databaseName;
-	}
+    public CreateUserCredentials() {
+	this(null);
+    }
+
+    public CreateUserCredentials(IUser user) {
+	setObject(user);
+    }
+
+    public String[] getSQL() throws AmbitException {
+	return new String[] { String.format(sql, databaseName == null ? "" : String.format("`%s`.", databaseName)) };
+    }
+
+    public List<QueryParam> getParameters(int index) throws AmbitException {
+	List<QueryParam> params2 = new ArrayList<QueryParam>();
+	params2.add(new QueryParam<String>(String.class, getObject().getUserName()));
+	params2.add(new QueryParam<String>(String.class, getObject().getPassword()));
+	return params2;
+
+    }
+
+    public void setID(int index, int id) {
+
+    }
+
+    protected String databaseName = null;
+
+    @Override
+    public void setDatabaseName(String name) {
+	databaseName = name;
+    }
+
+    @Override
+    public String getDatabaseName() {
+	return databaseName;
+    }
 }

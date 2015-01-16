@@ -8,26 +8,27 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class RDFResourceIterator extends RDFObjectIterator<RDFNode> {
 
-	public RDFResourceIterator(OntModel model, String topObject) {
-		super(model, topObject);
-	}
+    public RDFResourceIterator(OntModel model, String topObject) {
+	super(model, topObject);
+    }
 
-	@Override
-	protected Resource createRecord() {
-		return null;
-	}
+    @Override
+    protected Resource createRecord() {
+	return null;
+    }
 
-	@Override
-	protected Template createTemplate() {
-		return null;
-	}
+    @Override
+    protected Template createTemplate() {
+	return null;
+    }
 
-	@Override
-	protected void parseObjectURI(RDFNode uri, RDFNode record) {
-		
-	}
-	@Override
-	protected RDFNode parseRecord(RDFNode newEntry, RDFNode record) {
-		return newEntry;
-	}
+    @Override
+    protected void parseObjectURI(RDFNode uri, RDFNode record) {
+
+    }
+
+    @Override
+    protected RDFNode parseRecord(RDFNode newEntry, RDFNode record) {
+	return newEntry;
+    }
 }

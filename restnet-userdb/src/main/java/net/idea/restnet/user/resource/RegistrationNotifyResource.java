@@ -22,72 +22,70 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 
-public abstract class RegistrationNotifyResource  extends CatalogResource<String> {
-	protected List<String> dummyuser = new ArrayList<String>();
-	
-	public RegistrationNotifyResource() {
-		super();
-		setHtmlbyTemplate(true);
-		dummyuser.add(String.format("%s%s",Resources.register,Resources.notify));
-	}
-	
-	@Override
-	protected Iterator<String> createQuery(Context context, Request request,
-			Response response) throws ResourceException {
-		return dummyuser.iterator();
-	}
+public abstract class RegistrationNotifyResource extends CatalogResource<String> {
+    protected List<String> dummyuser = new ArrayList<String>();
 
-	@Override
-	public String getTemplateName() {
-		return "register_notify.ftl";
-	}
+    public RegistrationNotifyResource() {
+	super();
+	setHtmlbyTemplate(true);
+	dummyuser.add(String.format("%s%s", Resources.register, Resources.notify));
+    }
 
-	@Override
-	public void configureTemplateMap(Map<String, Object> map, Request request,
-			IFreeMarkerApplication app) {
-	
-		map.put("searchURI",Resources.register);
-		map.put("managerRole", "false");
-		map.put("editorRole", "false");
-		if (getClientInfo()!=null) {
-			if (getClientInfo().getUser()!=null)
-				map.put("username", getClientInfo().getUser().getIdentifier());
-		}
-		map.put("creator","Ideaconsult Ltd.");
-    
+    @Override
+    protected Iterator<String> createQuery(Context context, Request request, Response response)
+	    throws ResourceException {
+	return dummyuser.iterator();
+    }
+
+    @Override
+    public String getTemplateName() {
+	return "register_notify.ftl";
+    }
+
+    @Override
+    public void configureTemplateMap(Map<String, Object> map, Request request, IFreeMarkerApplication app) {
+
+	map.put("searchURI", Resources.register);
+	map.put("managerRole", "false");
+	map.put("editorRole", "false");
+	if (getClientInfo() != null) {
+	    if (getClientInfo().getUser() != null)
+		map.put("username", getClientInfo().getUser().getIdentifier());
 	}
-	
-	@Override
-	protected Reference getSourceReference(Form form, String model)
-			throws ResourceException {
-		return null;
-	}
-	@Override
-	protected Representation post(Representation entity, Variant variant)
-			throws ResourceException {
-		throw new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-	}
-	@Override
-	protected Representation put(Representation entity, Variant variant)
-			throws ResourceException {
-		throw new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-	}
-	@Override
-	protected Representation delete(Variant variant) throws ResourceException {
-		throw new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
-	}
-	@Override
-	protected ICallableTask createCallable(Method method, Form form, String item)
-			throws ResourceException {
-		return null;
-	}
-	
-	public abstract String getConfigFile() ;
-	
-	@Override
-	protected HTMLBeauty getHTMLBeauty() {
-		return null;
-	}
-	
-	
+	map.put("creator", "Ideaconsult Ltd.");
+
+    }
+
+    @Override
+    protected Reference getSourceReference(Form form, String model) throws ResourceException {
+	return null;
+    }
+
+    @Override
+    protected Representation post(Representation entity, Variant variant) throws ResourceException {
+	throw new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+    }
+
+    @Override
+    protected Representation put(Representation entity, Variant variant) throws ResourceException {
+	throw new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+    }
+
+    @Override
+    protected Representation delete(Variant variant) throws ResourceException {
+	throw new ResourceException(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+    }
+
+    @Override
+    protected ICallableTask createCallable(Method method, Form form, String item) throws ResourceException {
+	return null;
+    }
+
+    public abstract String getConfigFile();
+
+    @Override
+    protected HTMLBeauty getHTMLBeauty() {
+	return null;
+    }
+
 }

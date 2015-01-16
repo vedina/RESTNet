@@ -4,15 +4,14 @@ import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 
-
 public class TaskCreatorMultiPartForm<USERID, T> extends TaskCreator<USERID, T, List<FileItem>> {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2751369512533076728L;
+    private static final long serialVersionUID = -2751369512533076728L;
 
-	public TaskCreatorMultiPartForm(List<FileItem> input, boolean async) throws Exception {
-		super(input, async);
-	}
+    public TaskCreatorMultiPartForm(List<FileItem> input, boolean async) throws Exception {
+	super(input, async);
+    }
 }

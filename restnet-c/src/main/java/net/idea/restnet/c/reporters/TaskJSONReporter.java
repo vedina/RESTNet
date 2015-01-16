@@ -15,44 +15,52 @@ import org.restlet.Request;
 import org.restlet.data.Reference;
 
 public class TaskJSONReporter<USERID> extends TaskURIReporter<USERID> {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 9136099541989811170L;
-	protected String comma = null;
-	public TaskJSONReporter(ITaskStorage<USERID> storage) {
-		super(storage);
-	}
-	public TaskJSONReporter(ITaskStorage<USERID> storage,Request request,ResourceDoc doc) {
-		super(storage,request,doc);
-	}
-	protected TaskJSONReporter(ITaskStorage<USERID> storage,Reference baseRef,ResourceDoc doc) {
-		super(storage,baseRef,doc);
-	}	
+    private static final long serialVersionUID = 9136099541989811170L;
+    protected String comma = null;
 
-	@Override
-	public void processItem(UUID item, Writer output) {
-		try {
-			if (comma!=null) output.write(comma);
+    public TaskJSONReporter(ITaskStorage<USERID> storage) {
+	super(storage);
+    }
 
-			ITask<ITaskResult,USERID> task = storage.findTask(item);
-			output.write(task.toJSON());
-			comma = ",";
-		} catch (IOException x) {
-			Context.getCurrentLogger().severe(x.getMessage());
-		}
-	}	
-	@Override
-	public void footer(Writer output, Iterator<UUID> query) {
-		try {
-			output.write("\n]\n}");
-		} catch (Exception x) {}
-	};
-	@Override
-	public void header(Writer output, Iterator<UUID> query) {
-		try {
-			output.write("{\"task\": [");
-		} catch (Exception x) {}
-		
-	};
+    public TaskJSONReporter(ITaskStorage<USERID> storage, Request request, ResourceDoc doc) {
+	super(storage, request, doc);
+    }
+
+    protected TaskJSONReporter(ITaskStorage<USERID> storage, Reference baseRef, ResourceDoc doc) {
+	super(storage, baseRef, doc);
+    }
+
+    @Override
+    public void processItem(UUID item, Writer output) {
+	try {
+	    if (comma != null)
+		output.write(comma);
+
+	    ITask<ITaskResult, USERID> task = storage.findTask(item);
+	    output.write(task.toJSON());
+	    comma = ",";
+	} catch (IOException x) {
+	    Context.getCurrentLogger().severe(x.getMessage());
+	}
+    }
+
+    @Override
+    public void footer(Writer output, Iterator<UUID> query) {
+	try {
+	    output.write("\n]\n}");
+	} catch (Exception x) {
+	}
+    };
+
+    @Override
+    public void header(Writer output, Iterator<UUID> query) {
+	try {
+	    output.write("{\"task\": [");
+	} catch (Exception x) {
+	}
+
+    };
 }
