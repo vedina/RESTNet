@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.ideaconsult.restnet</groupId>
   <artifactId>restnet</artifactId>
-  <version>1.0.8-SNAPSHOT</version>
+  <version>1.0.8</version>
   <packaging>pom</packaging>
   <name>RESTNet</name>
   <description>Skeleton REST application
@@ -19,7 +19,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
     <junit.version>4.8.1</junit.version>
     <dbunit.version>2.4.9</dbunit.version>
     <restlet.version>2.0-M6</restlet.version>
-    <modbcum.version>1.0.5-SNAPSHOT</modbcum.version>
+    <modbcum.version>1.0.5</modbcum.version>
     <rdf.jena.version>2.6.4</rdf.jena.version>
     <rdf.arq.version>2.8.8</rdf.arq.version>
     <rdf.arqextra.version>2.7.0</rdf.arqextra.version>
@@ -30,7 +30,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
     <url>https://github.com/vedina/RESTNet/issues</url>
   </issueManagement>
   <repositories>
-      <repository>
+    <repository>
       <id>ambit-plovdiv</id>
       <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
       <snapshots>
@@ -74,7 +74,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
       <name>repo1.maven.org</name>
       <url>http://repo1.maven.org/maven2</url>
     </repository>
-        <repository>
+    <repository>
       <id>maven-restlet</id>
       <name>Public online Restlet repository</name>
       <url>http://maven.restlet.com</url>
