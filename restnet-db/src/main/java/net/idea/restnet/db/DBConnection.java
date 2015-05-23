@@ -158,7 +158,7 @@ public class DBConnection {
 
 	ResultSet rs = null;
 	Statement t = null;
-	for (int retry = 0; retry < 3; retry++)
+	for (int retry = 0; retry < 5; retry++)
 	    try {
 		DataSource ds = DatasourceFactory.getDataSource(connectionURI, loginInfo.getDriverClassName());
 		/*
