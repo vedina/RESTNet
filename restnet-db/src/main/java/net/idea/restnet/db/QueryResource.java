@@ -220,6 +220,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			throw x;
 		    } catch (NotFoundException x) {
 			Representation r = processNotFound(x, retry);
+			retry++;
 			try {
 			    if ((reporter != null) && (reporter != null))
 				reporter.close();
@@ -236,6 +237,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 
 		    } catch (SQLException x) {
 			Representation r = processSQLError(x, retry, variant);
+			retry++;
 			try {
 			    if ((reporter != null) && (reporter != null))
 				reporter.close();
@@ -256,6 +258,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			Exception batchException = null;
 			if (x.getCause() instanceof NotFoundException) {
 			    r = processNotFound((NotFoundException) x.getCause(), retry);
+			    retry++;
 			    if (r == null)
 				batchException = new ResourceException(Status.CLIENT_ERROR_NOT_FOUND, x.getCause()
 					.getMessage(), x.getCause());
@@ -332,7 +335,6 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
     protected Representation processSQLError(SQLException x, int retry, Variant variant) throws Exception {
 	Context.getCurrentLogger().severe(x.getMessage());
 	if (retry < maxRetry) {
-	    retry++;
 	    getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE, x, String.format("Retry %d ", retry));
 	    return null;
 	} else {
