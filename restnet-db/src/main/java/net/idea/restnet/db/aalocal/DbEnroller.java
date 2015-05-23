@@ -50,7 +50,7 @@ public class DbEnroller implements Enroler {
 		    clientInfo.getRoles().add(createRole(role));
 	    }
 	} catch (Exception x) {
-	    x.printStackTrace();
+	    Context.getCurrentLogger().warning(x.getMessage());
 	} finally {
 	    try {
 		executor.setConnection(null);
@@ -58,12 +58,12 @@ public class DbEnroller implements Enroler {
 	    }
 	    ;
 	    try {
-		rs.close();
+		if (rs!=null) rs.close();
 	    } catch (Exception x) {
 	    }
 	    ;
 	    try {
-		c.close();
+		if (c!=null) c.close();
 	    } catch (Exception x) {
 	    }
 	    ;
