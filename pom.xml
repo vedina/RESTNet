@@ -250,6 +250,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.2</version>
             <configuration>
               <debug>true</debug>
               <optimize>false</optimize>
@@ -265,6 +266,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.2</version>
             <configuration>
               <debug>false</debug>
               <optimize>true</optimize>
