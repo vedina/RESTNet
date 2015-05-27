@@ -27,6 +27,15 @@ public class DBConnection {
 	return loginInfo;
     }
 
+    protected String namedConfig = "ambit";
+    public String getNamedConfig() {
+        return namedConfig;
+    }
+
+    public void setNamedConfig(String namedConfig) {
+        this.namedConfig = namedConfig;
+    }
+
     public DBConnection(Context context, String configFile) {
 	super();
 	this.configFile = configFile;
@@ -135,14 +144,14 @@ public class DBConnection {
 
     }
 
-    public synchronized Connection getConnection(String user, String password) throws AmbitException, SQLException {
-	return getConnection(getConnectionURI(user, password));
+    public synchronized Connection getConnection(String namedConfig,String user, String password) throws AmbitException, SQLException {
+	return getConnectionNamedConfig(namedConfig,getConnectionURI(user, password));
     }
 
     public synchronized Connection getConnection() throws AmbitException, SQLException {
 	// if (connectionURI == null)
 	// connectionURI = getConnectionURI();
-	return getConnection(getConnectionURI(null, null));
+	return getConnectionNamedConfig(getNamedConfig(),getConnectionURI(null, null));
     }
 
     /*
@@ -152,7 +161,7 @@ public class DBConnection {
      * getConnection(getConnectionURI(request)); }
      */
 
-    public synchronized Connection getConnection(String connectionURI) throws AmbitException, SQLException {
+    public synchronized Connection getConnectionNamedConfig(String namedConfig,String connectionURI) throws AmbitException, SQLException {
 	SQLException error = null;
 	Connection c = null;
 
@@ -160,7 +169,7 @@ public class DBConnection {
 	Statement t = null;
 	for (int retry = 0; retry < 5; retry++)
 	    try {
-		DataSource ds = DatasourceFactory.getDataSource(connectionURI, loginInfo.getDriverClassName());
+		DataSource ds = DatasourceFactory.getDataSource(namedConfig,connectionURI, loginInfo.getDriverClassName());
 		/*
 		 * if ( ds instanceof PooledDataSource) { PooledDataSource pds =
 		 * (PooledDataSource) ds; System.err.println("num_connections: "
