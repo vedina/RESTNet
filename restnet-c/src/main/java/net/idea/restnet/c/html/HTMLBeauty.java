@@ -181,10 +181,6 @@ public class HTMLBeauty {
 	w.write(String.format("<html %s %s %s>", "xmlns=\"http://www.w3.org/1999/xhtml\"",
 		"xmlns:dc=\"http://purl.org/dc/elements/1.1/\"", "xmlns:ot=\"http://opentox.org/api/1.1/\""));
 
-	w.write(String.format(
-		"<head> <meta property=\"dc:creator\" content=\"%s\"/> <meta property=\"dc:title\" content=\"%s\"/>",
-		request.getResourceRef(), title));
-
 	Reference ref = request.getResourceRef().clone();
 	ref.addQueryParameter("media", Reference.encode("application/rdf+xml"));
 	w.write(String.format("<link rel=\"meta\" type=\"application/rdf+xml\" title=\"%s\" href=\"%s\"/>\n", title,
