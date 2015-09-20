@@ -27,7 +27,7 @@ public class BucketJSONReporter extends
 	protected String comma = null;
 
 	public BucketJSONReporter() {
-		this (null,null,null);
+		this ("results",null,null);
 	}
 	public BucketJSONReporter(String command, String subcommand,
 			IProcessor<Bucket, Bucket> processor) {
@@ -47,7 +47,7 @@ public class BucketJSONReporter extends
 		try {
 			output.write("{\n");
 			output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(command)));
-			output.write(": {\n\t");
+			output.write(": [\n\t");
 			if (query instanceof IJSONQueryParams)
 				if (((IJSONQueryParams) query).getJsonParams() != null) {
 					output.write(JSONUtils.jsonQuote(JSONUtils
@@ -56,8 +56,8 @@ public class BucketJSONReporter extends
 					output.write(((IJSONQueryParams) query).getJsonParams());
 					output.write(",\n");
 				}
-			output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(subcommand)));
-			output.write(":[");
+			//output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(subcommand)));
+			//output.write(":[");
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
@@ -128,7 +128,7 @@ public class BucketJSONReporter extends
 	public void footer(Writer output, IQueryRetrieval<Bucket> query) {
 		try {
 			output.write("\n]");
-			output.write("\n}");
+			//output.write("\n}");
 			footerJSON(output);
 		} catch (Exception x) {
 		}
