@@ -27,8 +27,9 @@ public class BucketJSONReporter extends
 	protected String comma = null;
 
 	public BucketJSONReporter() {
-		this ("results",null,null);
+		this("results", null, null);
 	}
+
 	public BucketJSONReporter(String command, String subcommand,
 			IProcessor<Bucket, Bucket> processor) {
 		super();
@@ -56,8 +57,8 @@ public class BucketJSONReporter extends
 					output.write(((IJSONQueryParams) query).getJsonParams());
 					output.write(",\n");
 				}
-			//output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(subcommand)));
-			//output.write(":[");
+			// output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(subcommand)));
+			// output.write(":[");
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
@@ -83,43 +84,44 @@ public class BucketJSONReporter extends
 	public void toJSON(Bucket item, Writer writer) throws IOException {
 		writer.write("\n\t{\n");
 		boolean first = true;
-		for (int i = 0; i < item.getHeader().length; i++) {
-			String header = item.getHeader()[i];
-			Object o = item.get(header);
+		if ((item!=null) && (item.getHeader() != null))
+			for (int i = 0; i < item.getHeader().length; i++) {
+				String header = item.getHeader()[i];
+				Object o = item.get(header);
 
-			if (o == null)
-				continue;
-			if (!first)
-				writer.write(",\n");
-			first = false;
-			writer.write("\t");
-			writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(header)));
-			writer.write(":");
+				if (o == null)
+					continue;
+				if (!first)
+					writer.write(",\n");
+				first = false;
+				writer.write("\t");
+				writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(header)));
+				writer.write(":");
 
-			if (o instanceof String)
-				writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(o
-						.toString())));
-			else if (o instanceof Date) {
-				writer.write(JSONUtils.jsonQuote(sdf.format((Date) o)));
-			} else if (o instanceof Timestamp) {
-				writer.write(JSONUtils.jsonQuote(sdf.format((Timestamp) o)));
-			} else if (o instanceof Number)
-				writer.write(o.toString());
-			else if (o instanceof List) {
-				writer.write("[\n");
-				String comma = "";
-				for (Object result : (List) o) {
-					writer.write(comma);
+				if (o instanceof String)
+					writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(o
+							.toString())));
+				else if (o instanceof Date) {
+					writer.write(JSONUtils.jsonQuote(sdf.format((Date) o)));
+				} else if (o instanceof Timestamp) {
+					writer.write(JSONUtils.jsonQuote(sdf.format((Timestamp) o)));
+				} else if (o instanceof Number)
+					writer.write(o.toString());
+				else if (o instanceof List) {
+					writer.write("[\n");
+					String comma = "";
+					for (Object result : (List) o) {
+						writer.write(comma);
 
-					writer.write(JSONUtils.jsonQuote(JSONUtils
-							.jsonEscape(result.toString())));
-					comma = ",\n";
-				}
-				writer.write("\n]\n");
-			} else
-				writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(o
-						.toString())));
-		}
+						writer.write(JSONUtils.jsonQuote(JSONUtils
+								.jsonEscape(result.toString())));
+						comma = ",\n";
+					}
+					writer.write("\n]\n");
+				} else
+					writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(o
+							.toString())));
+			}
 		writer.write("\n\t}");
 		writer.flush();
 	}
@@ -128,7 +130,7 @@ public class BucketJSONReporter extends
 	public void footer(Writer output, IQueryRetrieval<Bucket> query) {
 		try {
 			output.write("\n]");
-			//output.write("\n}");
+			// output.write("\n}");
 			footerJSON(output);
 		} catch (Exception x) {
 		}
