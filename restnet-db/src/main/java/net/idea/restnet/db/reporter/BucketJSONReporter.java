@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.idea.modbcum.i.IJSONQueryParams;
 import net.idea.modbcum.i.IQueryRetrieval;
+import net.idea.modbcum.i.JSONSerializable;
 import net.idea.modbcum.i.bucket.Bucket;
 import net.idea.modbcum.i.json.JSONUtils;
 import net.idea.modbcum.i.processors.IProcessor;
@@ -107,7 +108,9 @@ public class BucketJSONReporter extends
 					writer.write(JSONUtils.jsonQuote(sdf.format((Timestamp) o)));
 				} else if (o instanceof Number)
 					writer.write(o.toString());
-				else if (o instanceof List) {
+				else if (o instanceof JSONSerializable) {
+					writer.write(((JSONSerializable)o).asJSON());
+				} else if (o instanceof List) {
 					writer.write("[\n");
 					String comma = "";
 					for (Object result : (List) o) {
