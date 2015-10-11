@@ -47,7 +47,6 @@ public class OpenSSOPolicyResource extends CatalogResource<Policy> {
 	User user = request.getClientInfo().getUser();
 	if (user == null) {
 	    user = new OpenSSOUser();
-	    ((OpenSSOUser) user).setUseSecureCookie(useSecureCookie(request));
 	}
 	if (user instanceof OpenSSOUser) {
 	    String token = getToken();

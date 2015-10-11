@@ -19,6 +19,7 @@ import org.restlet.Response;
 import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
+import org.restlet.data.Protocol;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -35,7 +36,6 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser> {
 		User user = request.getClientInfo().getUser();
 		if (user == null) {
 			user = new OpenSSOUser();
-			((OpenSSOUser) user).setUseSecureCookie(useSecureCookie(request));
 		}
 		if (user instanceof OpenSSOUser)
 			return new SingleItemIterator<OpenSSOUser>(((OpenSSOUser) user));
@@ -92,6 +92,7 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser> {
 
 	}
 
+
 	@Override
 	protected Representation post(Representation entity, Variant variant)
 			throws ResourceException {
@@ -100,25 +101,36 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser> {
 			Form form = new Form(entity);
 
 			try {
-				OpenSSOToken ssoToken = new OpenSSOToken(getOpenSSOService());
+				OpenSSOToken ssoToken = new OpenSSOToken(OpenSSOServicesConfig
+						.getInstance().getOpenSSOService());
 				String username = form.getFirstValue("user");
 				String pass = form.getFirstValue("password");
+				String redirect = form.getFirstValue("targetUri", true);
+
 				if (ssoToken.login(username, pass)) {
-					System.out.println("Login successful " + ssoToken);
 					OpenSSOUser user = new OpenSSOUser();
 					user.setToken(ssoToken.getToken());
-					user.setUseSecureCookie(true);
 					getRequest().getClientInfo().setUser(user);
 					user.setIdentifier(username);
+					OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),ssoToken.getToken(), useSecureCookie(getRequest()));
+
+					if (redirect != null)
+						this.getResponse().redirectSeeOther(redirect);
+					else
+						this.getResponse().redirectSeeOther(
+								String.format("%s", getRequest().getRootRef()));
+					return null;
+
 				} else {
 					getRequest().getClientInfo().setUser(null);
 					this.getResponse().getCookieSettings()
 							.removeAll(OpenSSOCookie.CookieName);
-				}
-				queryObject = createQuery(getContext(), getRequest(),
-						getResponse());
+					queryObject = createQuery(getContext(), getRequest(),
+							getResponse());
 
-				return get(variant);
+					return get(variant);
+				}
+
 			} catch (Exception x) {
 				throw new ResourceException(new Status(
 						Status.SERVER_ERROR_BAD_GATEWAY, x));
@@ -127,7 +139,7 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser> {
 			throw new ResourceException(
 					Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
 
-	}
+	}	
 
 	@Override
 	protected Representation delete() throws ResourceException {
@@ -171,16 +183,8 @@ public class OpenSSOUserResource extends CatalogResource<OpenSSOUser> {
 	}
 
 	protected boolean useSecureCookie(Request request) {
-		boolean yes = super.useSecureCookie(request);
-		if (yes)
-			try {
-				return ((OpenSSOUser) request.getClientInfo().getUser())
-						.isUseSecureCookie();
-			} catch (Exception x) {
-				return yes;
-			}
-		else
-			return false;
+		return Protocol.HTTPS.equals(request.getProtocol());
+
 	}
 
 	/**

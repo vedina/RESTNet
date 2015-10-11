@@ -76,10 +76,6 @@ public class OpenSSOUserHTMLReporter extends OpenSSOUsersURIReporter {
 		output.write(String.format("<tr><th align='right'>%s</th><td>%s</td></tr>\n", "Token:&nbsp;", item
 			.getToken().toString()));
 
-		String warning = String.format("<h5><font color='red'>%s</font></h5>",
-			item.isUseSecureCookie() ? securecookie_warning : cookie_warning);
-		output.write(String.format("<tr><td></td><td>%s</td></tr>", warning));
-
 		output.write("<tr><td></td><td><input align='bottom' type=\"submit\" value=\"Log out\"></td></tr>\n");
 		output.write("</form>");
 
