@@ -10,7 +10,6 @@ import net.idea.restnet.i.freemarker.IFreeMarkerSupport;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
-import org.restlet.data.CookieSetting;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.ext.freemarker.TemplateRepresentation;
@@ -103,8 +102,8 @@ public class FreeMarkerResource extends ProtectedResource implements
 		setFrameOptions("SAMEORIGIN");
 		if (isHtmlbyTemplate()
 				&& MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-			this.getResponse().getCookieSettings().add(OpenSSOCookie.bake(getToken(), useSecureCookie(getRequest())));
 			
+			setTokenCookies(variant, useSecureCookie(getRequest()));
 			return getHTMLByTemplate(variant);
 		} else
 			return getRepresentation(variant);

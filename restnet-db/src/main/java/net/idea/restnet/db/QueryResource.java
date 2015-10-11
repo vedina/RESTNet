@@ -158,10 +158,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	protected Representation get(Variant variant) throws ResourceException {
 		if (isHtmlbyTemplate()
 				&& MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-			this.getResponse()
-					.getCookieSettings()
-					.add(OpenSSOCookie.bake(getToken(),
-							useSecureCookie(getRequest())));
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken(),
+							useSecureCookie(getRequest()));
 			return getHTMLByTemplate(variant);
 		} else
 			return getRepresentation(variant);
@@ -176,10 +174,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			throws ResourceException {
 		try {
 
-			this.getResponse()
-					.getCookieSettings()
-					.add(OpenSSOCookie.bake(getToken(),
-							useSecureCookie(getRequest())));
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),
+					getToken(), useSecureCookie(getRequest()));
 			setXHeaders();
 			setCacheHeaders();
 			/*

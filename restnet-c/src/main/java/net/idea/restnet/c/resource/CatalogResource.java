@@ -245,7 +245,7 @@ public abstract class CatalogResource<T> extends
 	setXHeaders();
 	setCacheHeaders();
 	if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-	    this.getResponse().getCookieSettings().add(OpenSSOCookie.bake(getToken(), useSecureCookie(getRequest())));
+		OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken(), useSecureCookie(getRequest()));
 	    return getHTMLByTemplate(variant);
 	} else
 	    return super.get(variant);

@@ -91,7 +91,7 @@ public abstract class ProtectedResource extends ServerResource implements
 
 	protected void setTokenCookies(Variant variant, boolean secure) {
 		if (((IFreeMarkerApplication) getApplication()).isSendTokenAsCookie()) {
-			this.getResponse().getCookieSettings().add(OpenSSOCookie.bake(getToken(), useSecureCookie(getRequest())));
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken(), useSecureCookie(getRequest()));
 		}
 	}
 

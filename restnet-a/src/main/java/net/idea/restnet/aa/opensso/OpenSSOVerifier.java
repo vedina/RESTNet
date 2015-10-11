@@ -90,8 +90,7 @@ public class OpenSSOVerifier implements Verifier {
 		OpenSSOUser user = new OpenSSOUser();
 		user.setToken(ssoToken.getToken());
 		user.setUseSecureCookie(useSecureCookie(request));
-		request.getCookies().removeAll(OpenSSOCookie.CookieName);
-		request.getCookies().add(OpenSSOCookie.bake(ssoToken.getToken(),useSecureCookie(request)));
+		OpenSSOCookie.setCookie(request.getCookies(),ssoToken.getToken(),useSecureCookie(request));
 		return user;
 	}
 

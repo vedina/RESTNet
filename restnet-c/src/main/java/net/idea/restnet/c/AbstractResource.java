@@ -151,8 +151,7 @@ public abstract class AbstractResource<Q, T, P extends IProcessor<Q, Representat
 
 	protected void setTokenCookies(Variant variant, boolean secure) {
 
-		this.getResponse().getCookieSettings()
-				.add(OpenSSOCookie.bake(getToken(), secure));
+		OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken(), secure);
 	}
 
 	protected Representation getHTMLByTemplate(Variant variant)
