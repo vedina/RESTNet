@@ -14,5 +14,6 @@ public interface IFreeMarkerApplication<CONFIG> {
     public boolean isEnableEmailVerification();
 
     public boolean isChangeLineSeparators();
+    public boolean isSendTokenAsCookie();
 
 }

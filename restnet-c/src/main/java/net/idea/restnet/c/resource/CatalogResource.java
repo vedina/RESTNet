@@ -13,6 +13,7 @@ import net.idea.restnet.c.StringConvertor;
 import net.idea.restnet.c.reporters.CatalogHTMLReporter;
 import net.idea.restnet.c.reporters.CatalogURIReporter;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
+import net.idea.restnet.i.aa.OpenSSOCookie;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskApplication;
@@ -25,7 +26,6 @@ import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
-import org.restlet.data.ServerInfo;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
@@ -245,9 +245,7 @@ public abstract class CatalogResource<T> extends
 	setXHeaders();
 	setCacheHeaders();
 	if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-	    CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
-	    cS.setPath("/");
-	    this.getResponse().getCookieSettings().add(cS);
+	    this.getResponse().getCookieSettings().add(OpenSSOCookie.bake(getToken(), useSecureCookie(getRequest())));
 	    return getHTMLByTemplate(variant);
 	} else
 	    return super.get(variant);

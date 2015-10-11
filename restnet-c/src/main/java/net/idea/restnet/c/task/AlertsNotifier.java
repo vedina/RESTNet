@@ -6,6 +6,8 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.idea.restnet.i.aa.OpenSSOCookie;
+
 import org.opentox.aa.exception.AAException;
 import org.opentox.aa.opensso.OpenSSOToken;
 import org.restlet.data.Form;
@@ -54,7 +56,7 @@ public abstract class AlertsNotifier implements Callable<String> {
 	    return;
 	if (ssoToken.getToken() == null)
 	    return;
-	headers.add("subjectid", ssoToken.getToken());
+	headers.add(OpenSSOCookie.CookieName, ssoToken.getToken());
 	logger.log(Level.INFO, ssoToken.getToken());
 
     }

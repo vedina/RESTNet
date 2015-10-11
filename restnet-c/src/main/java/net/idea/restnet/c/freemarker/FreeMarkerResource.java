@@ -3,6 +3,7 @@ package net.idea.restnet.c.freemarker;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.idea.restnet.i.aa.OpenSSOCookie;
 import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 import net.idea.restnet.i.freemarker.IFreeMarkerSupport;
 
@@ -26,84 +27,91 @@ import freemarker.template.Configuration;
  * @author nina
  * 
  */
-public class FreeMarkerResource extends ProtectedResource implements IFreeMarkerSupport {
+public class FreeMarkerResource extends ProtectedResource implements
+		IFreeMarkerSupport {
 
-    protected IFreeMarkerSupport fmSupport = new FreeMarkerSupport();
+	protected IFreeMarkerSupport fmSupport = new FreeMarkerSupport();
 
-    /*
-     * HTML via Freemarker
-     */
-    public boolean isHtmlbyTemplate() {
-	return fmSupport.isHtmlbyTemplate();
-    }
+	/*
+	 * HTML via Freemarker
+	 */
+	public boolean isHtmlbyTemplate() {
+		return fmSupport.isHtmlbyTemplate();
+	}
 
-    /**
-     * 
-     * @param htmlbyTemplate
-     */
-    public void setHtmlbyTemplate(boolean htmlbyTemplate) {
-	fmSupport.setHtmlbyTemplate(htmlbyTemplate);
-    }
+	/**
+	 * 
+	 * @param htmlbyTemplate
+	 */
+	public void setHtmlbyTemplate(boolean htmlbyTemplate) {
+		fmSupport.setHtmlbyTemplate(htmlbyTemplate);
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public String getTemplateName() {
-	return fmSupport.getTemplateName();
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public String getTemplateName() {
+		return fmSupport.getTemplateName();
+	}
 
-    protected Reference getSearchReference(Context context, Request request, Response response)
-	    throws ResourceException {
-	return request.getResourceRef();
-    }
+	protected Reference getSearchReference(Context context, Request request,
+			Response response) throws ResourceException {
+		return request.getResourceRef();
+	}
 
-    public void configureTemplateMap(Map<String, Object> map, Request request, IFreeMarkerApplication app) {
-	fmSupport.configureTemplateMap(map, getRequest(), ((IFreeMarkerApplication) getApplication()));
-    }
+	public void configureTemplateMap(Map<String, Object> map, Request request,
+			IFreeMarkerApplication app) {
+		fmSupport.configureTemplateMap(map, getRequest(),
+				((IFreeMarkerApplication) getApplication()));
+	}
 
-    /**
-     * @param variant
-     * @return
-     * @throws ResourceException
-     */
-    protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
-	Map<String, Object> map = new HashMap<String, Object>();
-	if (getClientInfo().getUser() != null)
-	    map.put("username", getClientInfo().getUser().getIdentifier());
+	/**
+	 * @param variant
+	 * @return
+	 * @throws ResourceException
+	 */
+	protected Representation getHTMLByTemplate(Variant variant)
+			throws ResourceException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (getClientInfo().getUser() != null)
+			map.put("username", getClientInfo().getUser().getIdentifier());
 
-	setTokenCookies(variant, useSecureCookie(getRequest()));
-	configureTemplateMap(map, null, null);
-	return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
-    }
+		setTokenCookies(variant, useSecureCookie(getRequest()));
 
-    /**
-     * 
-     * @param map
-     * @param templateName
-     * @param mediaType
-     * @return
-     */
-    protected Representation toRepresentation(Map<String, Object> map, String templateName, MediaType mediaType) {
+		configureTemplateMap(map, null, null);
+		return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
+	}
 
-	return new TemplateRepresentation(templateName,
-		(Configuration) ((IFreeMarkerApplication) getApplication()).getConfiguration(), map,
-		MediaType.TEXT_HTML);
-    }
+	/**
+	 * 
+	 * @param map
+	 * @param templateName
+	 * @param mediaType
+	 * @return
+	 */
+	protected Representation toRepresentation(Map<String, Object> map,
+			String templateName, MediaType mediaType) {
 
-    @Override
-    protected Representation get(Variant variant) throws ResourceException {
-	setFrameOptions("SAMEORIGIN");
-	if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-	    CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
-	    cS.setPath("/");
-	    this.getResponse().getCookieSettings().add(cS);
-	    return getHTMLByTemplate(variant);
-	} else
-	    return getRepresentation(variant);
-    }
+		return new TemplateRepresentation(templateName,
+				(Configuration) ((IFreeMarkerApplication) getApplication())
+						.getConfiguration(), map, MediaType.TEXT_HTML);
+	}
 
-    protected Representation getRepresentation(Variant variant) throws ResourceException {
-	return super.get(variant);
-    }
+	@Override
+	protected Representation get(Variant variant) throws ResourceException {
+		setFrameOptions("SAMEORIGIN");
+		if (isHtmlbyTemplate()
+				&& MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+			this.getResponse().getCookieSettings().add(OpenSSOCookie.bake(getToken(), useSecureCookie(getRequest())));
+			
+			return getHTMLByTemplate(variant);
+		} else
+			return getRepresentation(variant);
+	}
+
+	protected Representation getRepresentation(Variant variant)
+			throws ResourceException {
+		return super.get(variant);
+	}
 }

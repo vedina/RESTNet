@@ -1,9 +1,7 @@
 package net.idea.restnet.c;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
@@ -11,6 +9,7 @@ import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.restnet.c.task.FactoryTaskConvertor;
 import net.idea.restnet.c.task.FilteredTasksIterator;
 import net.idea.restnet.c.task.SingleTaskIterator;
+import net.idea.restnet.i.aa.OpenSSOCookie;
 import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskApplication;
 import net.idea.restnet.i.task.ITaskResult;
@@ -22,7 +21,6 @@ import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.CacheDirective;
-import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
@@ -268,9 +266,7 @@ public class SimpleTaskResource<USERID> extends
     @Override
     protected Representation get(Variant variant) throws ResourceException {
 	if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-	    CookieSetting cS = new CookieSetting(0, "subjectid", getToken());
-	    cS.setPath("/");
-	    this.getResponse().getCookieSettings().add(cS);
+	    this.getResponse().getCookieSettings().add(OpenSSOCookie.bake(getToken(), useSecureCookie(getRequest())));
 	    return getHTMLByTemplate(variant);
 	} else
 	    return super.get(variant);

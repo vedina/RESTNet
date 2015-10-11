@@ -2,6 +2,8 @@ package net.idea.restnet.aa.opensso;
 
 import java.util.Hashtable;
 
+import net.idea.restnet.i.aa.OpenSSOCookie;
+
 import org.opentox.aa.OTAAParams;
 import org.opentox.aa.opensso.OpenSSOToken;
 import org.restlet.Request;
@@ -114,7 +116,7 @@ public class OpenSSOAuthorizer extends Authorizer {
 
     protected String getTokenFromCookies(Request request) {
 	for (Cookie cookie : request.getCookies()) {
-	    if ("subjectid".equals(cookie.getName()))
+	    if (OpenSSOCookie.CookieName.equals(cookie.getName()))
 		return cookie.getValue();
 	    /*
 	     * System.out.println("name = " + cookie.getName());

@@ -16,6 +16,7 @@ import org.restlet.Request;
  * @author nina
  * 
  */
+@Deprecated
 public class OpenSSOUserHTMLReporter extends OpenSSOUsersURIReporter {
 
     /**
@@ -65,9 +66,6 @@ public class OpenSSOUserHTMLReporter extends OpenSSOUsersURIReporter {
 		output.write(String
 			.format("<tr><th align='right'>%s</th><td><input type='password' size='40' name='%s' value=''></td></tr>\n",
 				"Password:&nbsp;", "password"));
-		output.write(String
-			.format("<tr><td title=''></td><td><input type=CHECKBOX name='subjectid_secure' %s>Use secure cookie for the OpenSSO token</option></td></tr>",
-				item.isUseSecureCookie() ? "SELECTED CHECKED" : ""));
 		output.write("<tr><td></td><td><input align='bottom' type=\"submit\" value=\"Log in\"></td></tr>\n");
 		output.write("</form>");
 		output.write("</tbody></table>\n");

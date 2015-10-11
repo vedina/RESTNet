@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.idea.restnet.i.aa.IAuthToken;
+import net.idea.restnet.i.aa.OpenSSOCookie;
 
 import org.restlet.data.Form;
 import org.restlet.data.Reference;
@@ -13,7 +14,7 @@ import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
 public class ClientResourceWrapper extends ClientResource {
-    protected static final String subjectid = "subjectid";
+    protected static final String subjectid = OpenSSOCookie.CookieName;
     private static ThreadLocal<IAuthToken> tokenFactory = null;
 
     public static IAuthToken getTokenFactory() {
@@ -79,7 +80,7 @@ public class ClientResourceWrapper extends ClientResource {
 	IAuthToken tokenFactory = ClientResourceWrapper.getTokenFactory();
 	String token = tokenFactory == null ? null : tokenFactory.getToken();
 	if (token != null)
-	    uc.addRequestProperty("subjectid", token);
+	    uc.addRequestProperty(OpenSSOCookie.CookieName, token);
 	return uc;
     }
 }
