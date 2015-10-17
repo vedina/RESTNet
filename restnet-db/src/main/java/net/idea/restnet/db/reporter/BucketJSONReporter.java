@@ -1,15 +1,9 @@
 package net.idea.restnet.db.reporter;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 import net.idea.modbcum.i.IJSONQueryParams;
 import net.idea.modbcum.i.IQueryRetrieval;
-import net.idea.modbcum.i.JSONSerializable;
 import net.idea.modbcum.i.bucket.Bucket;
 import net.idea.modbcum.i.json.JSONUtils;
 import net.idea.modbcum.i.processors.IProcessor;
@@ -71,62 +65,12 @@ public class BucketJSONReporter extends
 		try {
 			if (comma != null)
 				getOutput().write(comma);
-			toJSON(item, getOutput());
+			getOutput().write(item.asJSON());
 			comma = ",";
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
 		return item;
-	}
-
-	private static final SimpleDateFormat sdf = new SimpleDateFormat(
-			"yyyy-MM-dd hh:mm:ss");
-
-	public void toJSON(Bucket item, Writer writer) throws IOException {
-		writer.write("\n\t{\n");
-		boolean first = true;
-		if ((item!=null) && (item.getHeader() != null))
-			for (int i = 0; i < item.getHeader().length; i++) {
-				String header = item.getHeader()[i];
-				Object o = item.get(header);
-
-				if (o == null)
-					continue;
-				if (!first)
-					writer.write(",\n");
-				first = false;
-				writer.write("\t");
-				writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(header)));
-				writer.write(":");
-
-				if (o instanceof String)
-					writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(o
-							.toString())));
-				else if (o instanceof Date) {
-					writer.write(JSONUtils.jsonQuote(sdf.format((Date) o)));
-				} else if (o instanceof Timestamp) {
-					writer.write(JSONUtils.jsonQuote(sdf.format((Timestamp) o)));
-				} else if (o instanceof Number)
-					writer.write(o.toString());
-				else if (o instanceof JSONSerializable) {
-					writer.write(((JSONSerializable)o).asJSON());
-				} else if (o instanceof List) {
-					writer.write("[\n");
-					String comma = "";
-					for (Object result : (List) o) {
-						writer.write(comma);
-
-						writer.write(JSONUtils.jsonQuote(JSONUtils
-								.jsonEscape(result.toString())));
-						comma = ",\n";
-					}
-					writer.write("\n]\n");
-				} else
-					writer.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(o
-							.toString())));
-			}
-		writer.write("\n\t}");
-		writer.flush();
 	}
 
 	@Override
