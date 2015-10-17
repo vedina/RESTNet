@@ -55,7 +55,7 @@ public class BucketJSONReporter extends
 			// output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(subcommand)));
 			// output.write(":[");
 		} catch (Exception x) {
-			x.printStackTrace();
+			//x.printStackTrace();
 		}
 
 	}
