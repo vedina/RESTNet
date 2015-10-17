@@ -68,7 +68,7 @@ public class BucketJSONReporter extends
 			getOutput().write(item.asJSON());
 			comma = ",";
 		} catch (Exception x) {
-			x.printStackTrace();
+			//x.printStackTrace();
 		}
 		return item;
 	}
