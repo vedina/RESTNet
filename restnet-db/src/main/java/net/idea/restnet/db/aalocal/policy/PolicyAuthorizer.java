@@ -56,7 +56,7 @@ public class PolicyAuthorizer extends RoleAuthorizer {
 
 	Connection c = null;
 	ResultSet rs = null;
-	QueryExecutor<PolicyQuery> executor = new QueryExecutor<PolicyQuery>();
+	QueryExecutor<PolicyQuery> executor = new QueryExecutor<PolicyQuery>(true);
 	try {
 
 	    DBConnection dbc = new DBConnection(context, getConfigFile());

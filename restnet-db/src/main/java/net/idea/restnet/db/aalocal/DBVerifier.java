@@ -13,7 +13,7 @@ import org.restlet.security.SecretVerifier;
 public class DBVerifier extends SecretVerifier {
     protected Context context;
     protected String config;
-    protected QueryExecutor<UserAuth> executor = new QueryExecutor<UserAuth>();
+    protected QueryExecutor<UserAuth> executor = new QueryExecutor<UserAuth>(true);
     protected UserAuth query = new UserAuth();
 
     public DBVerifier(Context context) {

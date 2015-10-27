@@ -15,7 +15,7 @@ import org.restlet.security.Role;
 public class DbEnroller implements Enroler {
     protected Context context;
     protected String config;
-    protected QueryExecutor<ReadUserRoles> executor = new QueryExecutor<ReadUserRoles>();
+    protected QueryExecutor<ReadUserRoles> executor = new QueryExecutor<ReadUserRoles>(true);
     protected ReadUserRoles query = new ReadUserRoles();
 
     public DbEnroller(Context context) {
