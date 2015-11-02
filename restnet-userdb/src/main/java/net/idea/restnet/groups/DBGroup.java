@@ -4,9 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import net.idea.modbcum.i.query.QueryParam;
-import net.toxbank.client.resource.Group;
+import net.idea.restnet.b.Group;
 
-public class DBGroup extends Group implements IDBGroup {
+public class DBGroup extends Group<String> implements IDBGroup {
     /**
 	 * 
 	 */

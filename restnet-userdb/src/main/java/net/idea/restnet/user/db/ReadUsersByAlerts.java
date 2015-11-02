@@ -6,9 +6,9 @@ import java.util.Set;
 
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
+import net.idea.restnet.b.Alert;
+import net.idea.restnet.b.Alert.RecurrenceFrequency;
 import net.idea.restnet.user.alerts.db.ReadAlert;
-import net.toxbank.client.resource.Alert;
-import net.toxbank.client.resource.Alert.RecurrenceFrequency;
 
 public class ReadUsersByAlerts extends ReadUser<Set<RecurrenceFrequency>> {
     private static final String sql_tonotify = String.format(sql, " where iduser in (",

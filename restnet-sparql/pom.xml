@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>restnet</artifactId>
-    <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.9-SNAPSHOT</version>
-  </parent>
-  <artifactId>restnet-sparql</artifactId>
-  <name>SPARQL endpoint </name>
-  <description>SPARQL endpoint  based on Jena 
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>restnet</artifactId>
+		<groupId>net.ideaconsult.restnet</groupId>
+		<version>1.0.9-SNAPSHOT</version>
+	</parent>
+	<artifactId>restnet-sparql</artifactId>
+	<name>SPARQL endpoint </name>
+	<description>SPARQL endpoint  based on Jena 
 Moved from
 https://ambit.svn.sourceforge.net/svnroot/ambit/branches/opentox/ontology-service</description>
-  <inceptionYear>2010</inceptionYear>
-  <organization>
-    <name>IdeaConsult</name>
-    <url>www.ideaconsult.net</url>
-  </organization>
-  <dependencies>
-    <dependency>
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-rdf</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-c</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>tdb</artifactId>
-      <version>0.8.10</version>
-    </dependency>
-  </dependencies>
+	<inceptionYear>2010</inceptionYear>
+	<organization>
+		<name>IdeaConsult</name>
+		<url>www.ideaconsult.net</url>
+	</organization>
+	<dependencies>
+		<dependency>
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-rdf</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-c</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-tdb</artifactId>
+			<version>${apache.jena.version}</version>
+		</dependency>
+
+	</dependencies>
 </project>

@@ -9,10 +9,10 @@ import net.idea.restnet.db.QueryURIReporter;
 import net.idea.restnet.rdf.ns.OT;
 import net.idea.restnet.rdf.ns.OT.OTClass;
 
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.DCTerms;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.DC;
+import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
 
 public abstract class AbstractStaxRDFWriter<INPUT, OUTPUT> extends DefaultAmbitProcessor<INPUT, OUTPUT> {
     /**

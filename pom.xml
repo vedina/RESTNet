@@ -18,13 +18,10 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.8.1</junit.version>
-		<dbunit.version>2.4.9</dbunit.version>
+		<dbunit.version>2.5.1</dbunit.version>
 		<restlet.version>2.0-M6</restlet.version>
 		<modbcum.version>1.0.6-SNAPSHOT</modbcum.version>
-		<rdf.jena.version>2.6.4</rdf.jena.version>
-		<rdf.arq.version>2.8.8</rdf.arq.version>
-		<rdf.arqextra.version>2.7.0</rdf.arqextra.version>
-		<rdf.iri.version>0.8</rdf.iri.version>
+		<apache.jena.version>3.0.0</apache.jena.version>
 	</properties>
 	<issueManagement>
 		<system>GitHub</system>
@@ -166,6 +163,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
 		<module>restnet-sparql</module>
 		<module>restnet-u</module>
 		<module>restnet-userdb</module>
+		<module>restnet-b</module>
 	</modules>
 	<distributionManagement>
 		<snapshotRepository>

@@ -6,7 +6,7 @@ import java.io.Writer;
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.r.QueryReporter;
-import net.toxbank.client.resource.Group;
+import net.idea.restnet.b.Group;
 
 import org.restlet.Context;
 import org.restlet.Request;

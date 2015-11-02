@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.toxbank.client.Resources;
-import net.toxbank.client.resource.Organisation;
+import net.idea.restnet.b.Organisation;
+import net.idea.restnet.resources.Resources;
 
 import org.restlet.routing.Template;
 
@@ -23,7 +23,7 @@ public class DBOrganisation extends Organisation implements IDBGroup {
 
     public DBOrganisation(URL resourceURL) {
 	this();
-	setResourceURL(resourceURL);
+	setResourceID(resourceURL);
 	this.ID = -1;
     }
 
@@ -36,7 +36,7 @@ public class DBOrganisation extends Organisation implements IDBGroup {
     public DBOrganisation(Organisation p) {
 	setTitle(p.getTitle());
 	setGroupName(p.getGroupName());
-	setResourceURL(p.getResourceURL());
+	setResourceID(p.getResourceID());
 	this.ID = -1;
     }
 
@@ -67,7 +67,7 @@ public class DBOrganisation extends Organisation implements IDBGroup {
 		Resources.organisation, DBGroup.resourceKey));
 	Map<String, Object> vars = new HashMap<String, Object>();
 	try {
-	    template.parse(getResourceURL().toString(), vars);
+	    template.parse(getResourceID().toString(), vars);
 	    return Integer.parseInt(vars.get(DBGroup.resourceKey).toString().substring(1));
 	} catch (Exception x) {
 	    return -1;
@@ -76,7 +76,7 @@ public class DBOrganisation extends Organisation implements IDBGroup {
 
     @Override
     public String toString() {
-	return String.format("<a href='%s' title='%s'>%s</a>", getResourceURL(), getTitle() == null ? getResourceURL()
-		: getTitle(), getTitle() == null ? getResourceURL() : getTitle());
+	return String.format("<a href='%s' title='%s'>%s</a>", getResourceID(), getTitle() == null ? getResourceID()
+		: getTitle(), getTitle() == null ? getResourceID() : getTitle());
     }
 }

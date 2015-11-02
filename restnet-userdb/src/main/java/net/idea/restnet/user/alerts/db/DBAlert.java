@@ -4,10 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import net.idea.restnet.b.Alert;
+import net.idea.restnet.b.Alert.RecurrenceFrequency;
+import net.idea.restnet.b.Query.QueryType;
+import net.idea.restnet.resources.Resources;
 import net.idea.restnet.user.DBUser;
-import net.toxbank.client.Resources;
-import net.toxbank.client.resource.Alert;
-import net.toxbank.client.resource.Query.QueryType;
 
 import org.restlet.data.Form;
 import org.restlet.data.Reference;

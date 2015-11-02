@@ -11,10 +11,10 @@ import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.conditions.EQCondition;
 import net.idea.modbcum.q.query.AbstractQuery;
+import net.idea.restnet.b.Alert.RecurrenceFrequency;
 import net.idea.restnet.c.exception.InvalidAlertException;
 import net.idea.restnet.c.exception.InvalidUserException;
 import net.idea.restnet.user.DBUser;
-import net.toxbank.client.resource.Alert.RecurrenceFrequency;
 
 public class ReadAlert extends AbstractQuery<DBUser, DBAlert, EQCondition, DBAlert> implements IQueryRetrieval<DBAlert> {
     protected String sql = "select idquery,name,query,qformat,rfrequency,rinterval,iduser,created,username,sent from alert join user using(iduser) where username is not null ";

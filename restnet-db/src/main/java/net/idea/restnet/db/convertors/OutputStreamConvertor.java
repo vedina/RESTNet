@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import net.idea.modbcum.i.IQueryRetrieval;
+import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.r.QueryReporter;
 
 import org.restlet.Context;
@@ -11,7 +12,6 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 
-import com.hp.hpl.jena.shared.NotFoundException;
 
 public class OutputStreamConvertor<T, Q extends IQueryRetrieval<T>> extends
 	QueryRepresentationConvertor<T, Q, OutputStream> {

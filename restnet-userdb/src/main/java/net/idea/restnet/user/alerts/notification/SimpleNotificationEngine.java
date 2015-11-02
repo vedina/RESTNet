@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.idea.restnet.b.Alert;
+import net.idea.restnet.b.User;
 import net.idea.restnet.u.mail.INotificationUtility;
 import net.idea.restnet.u.mail.Notification;
-import net.toxbank.client.resource.Alert;
-import net.toxbank.client.resource.Protocol.STATUS;
-import net.toxbank.client.resource.User;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,7 +26,6 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 
-import com.sun.mail.imap.protocol.Status;
 
 /**
  * Simple alert notification. The message formatting is minimal, just URIs.

@@ -104,6 +104,7 @@ public abstract class DbUnitTest {
     public void setUp() throws Exception {
 	IDatabaseConnection c = getConnection(getHost(), getDatabase(), getPort(), getUser(), getPWD());
 	DatabaseConfig config = c.getConfig();
+	config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, Boolean.TRUE);
 	config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
 	Connection conn = c.getConnection();
 	conn.setAutoCommit(false);
@@ -147,6 +148,7 @@ public abstract class DbUnitTest {
 	// SET NAMES utf8
 	IDatabaseConnection c = new DatabaseConnection(jdbcConnection);
 	DatabaseConfig config = c.getConfig();
+	config.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, Boolean.TRUE);
 	config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
 	return c;
     }

@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.idea.modbcum.i.query.QueryParam;
+import net.idea.restnet.b.User;
 import net.idea.restnet.db.aalocal.user.IUser;
+import net.idea.restnet.resources.Resources;
 import net.idea.restnet.u.RegistrationStatus;
 import net.idea.restnet.u.UserCredentials;
 import net.idea.restnet.user.alerts.db.DBAlert;
-import net.toxbank.client.Resources;
-import net.toxbank.client.resource.User;
 
 import org.restlet.routing.Template;
 
-public class DBUser extends User implements IUser {
+public class DBUser extends User<String> implements IUser {
     public static final String resourceKey = "key";
     public List<String> roles = null;
 
@@ -202,7 +202,7 @@ public class DBUser extends User implements IUser {
 
     public DBUser(URL resourceURL) {
 	this.id = -1;
-	setResourceURL(resourceURL);
+	setResourceID(resourceURL.toExternalForm());
     }
 
     public DBUser(User p) {
@@ -214,7 +214,7 @@ public class DBUser extends User implements IUser {
 	setOrganisations(p.getOrganisations());
 	setProjects(p.getProjects());
 	setWeblog(p.getWeblog());
-	setResourceURL(p.getResourceURL());
+	setResourceID(p.getResourceID().toString());
 	this.id = -1;
     }
 
@@ -233,7 +233,7 @@ public class DBUser extends User implements IUser {
 		Resources.user, resourceKey));
 	Map<String, Object> vars = new HashMap<String, Object>();
 	try {
-	    template.parse(getResourceURL().toString(), vars);
+	    template.parse(getResourceID().toString(), vars);
 	    return Integer.parseInt(vars.get(resourceKey).toString().substring(1));
 	} catch (Exception x) {
 	    return -1;
@@ -242,7 +242,7 @@ public class DBUser extends User implements IUser {
 
     @Override
     public String toString() {
-	return String.format("<a href='%s'>%s%s %s</a>", getResourceURL(), getTitle() == null ? "" : getTitle(),
+	return String.format("<a href='%s'>%s%s %s</a>", getResourceID(), getTitle() == null ? "" : getTitle(),
 		getFirstname() == null ? "" : getFirstname(), getLastname() == null ? "" : getLastname());
     }
 

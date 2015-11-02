@@ -6,6 +6,7 @@ import java.util.List;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.query.QueryParam;
 import net.idea.modbcum.q.update.AbstractUpdate;
+import net.idea.restnet.b.Organisation;
 import net.idea.restnet.db.aalocal.DBRole;
 import net.idea.restnet.db.aalocal.user.IDBConfig;
 import net.idea.restnet.groups.DBOrganisation;
@@ -15,7 +16,6 @@ import net.idea.restnet.u.UserCredentials;
 import net.idea.restnet.u.UserRegistration;
 import net.idea.restnet.u.db.CreateRegistration;
 import net.idea.restnet.user.DBUser;
-import net.toxbank.client.resource.Organisation;
 
 public class CreateUser extends AbstractUpdate<UserCredentials, DBUser> implements IDBConfig {
     private static String user_sql = "insert into `%s`.user (iduser,username,email,title,firstname,lastname,weblog,homepage,keywords,reviewer,institute) values (?,?,?,?,?,?,?,?,?,?,?)";

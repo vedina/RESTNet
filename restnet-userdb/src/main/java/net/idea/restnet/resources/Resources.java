@@ -15,6 +15,7 @@ public class Resources {
     public static final String alert = "/alert";
     public static final String reset = "/reset";
     public static final String policy = "/policy";
+    public static final String protocol = "/protocol";
 
     public final static String AMBIT_LOCAL_USER = "aa.local.admin.name";
     public final static String AMBIT_LOCAL_PWD = "aa.local.admin.pass";

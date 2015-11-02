@@ -15,14 +15,14 @@ import net.idea.restnet.i.task.ITaskStorage;
 import net.idea.restnet.i.task.Task;
 import net.idea.restnet.rdf.ns.OT;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.vocabulary.DC;
 import org.restlet.Request;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.resource.ResourceException;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.vocabulary.DC;
 
 /**
  * RDF generation for {@link Task}

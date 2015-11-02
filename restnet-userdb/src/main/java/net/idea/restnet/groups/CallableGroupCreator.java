@@ -48,7 +48,7 @@ public class CallableGroupCreator extends CallableDBUpdateTask<IDBGroup, Form, S
 		String uri = input.getFirstValue("organisation_uri");
 		if (uri != null)
 		    try {
-			((DBOrganisation) group).setResourceURL(new URL(uri));
+			((DBOrganisation) group).setResourceID(new URL(uri));
 			group.setID(((DBOrganisation) group).parseURI(baseReference));
 		    } catch (Exception x) {
 		    }
@@ -60,7 +60,7 @@ public class CallableGroupCreator extends CallableDBUpdateTask<IDBGroup, Form, S
 		String uri = input.getFirstValue("project_uri");
 		if (uri != null)
 		    try {
-			((DBProject) group).setResourceURL(new URL(uri));
+			((DBProject) group).setResourceID(uri);
 			group.setID(((DBProject) group).parseURI(baseReference));
 		    } catch (Exception x) {
 			x.printStackTrace();

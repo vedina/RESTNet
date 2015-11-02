@@ -9,10 +9,10 @@ import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.p.DefaultAmbitProcessor;
 import net.idea.modbcum.p.MasterDetailsProcessor;
 import net.idea.modbcum.r.QueryReporter;
+import net.idea.restnet.b.Organisation;
 import net.idea.restnet.groups.DBOrganisation;
 import net.idea.restnet.groups.db.ReadOrganisation;
 import net.idea.restnet.user.DBUser;
-import net.toxbank.client.resource.Organisation;
 
 import org.restlet.Context;
 import org.restlet.Request;

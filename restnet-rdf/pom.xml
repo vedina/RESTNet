@@ -1,60 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>restnet</artifactId>
-    <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.0.9-SNAPSHOT</version>
-  </parent>
-  <artifactId>restnet-rdf</artifactId>
-  <name>RDF related classes</name>
-  <!--
-  <repositories>
-	  <repository>
-	  <id>apache-repo-releases</id>
-	  <url>https://repository.apache.org/content/repositories/releases/</url>
-	  <releases>
-	   <enabled>true</enabled>
-	  </releases>
-	</repository>
-  </repositories>
--->
-  <dependencies>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
-      <version>${rdf.jena.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
-      <version>${rdf.arq.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>iri</artifactId>
-      <version>${rdf.iri.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq-extra</artifactId>
-      <version>${rdf.arqextra.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-c</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <!-- 
-    <dependency>
-    	<groupId>net.ideaconsult</groupId>
-    	<artifactId>opentox-dsl</artifactId>
-    	<version>1.0.5</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
-    </dependency>
-     -->
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>restnet</artifactId>
+		<groupId>net.ideaconsult.restnet</groupId>
+		<version>1.0.9-SNAPSHOT</version>
+	</parent>
+	<artifactId>restnet-rdf</artifactId>
+	<name>RDF related classes</name>
+	<!-- <repositories> <repository> <id>apache-repo-releases</id> <url>https://repository.apache.org/content/repositories/releases/</url> 
+		<releases> <enabled>true</enabled> </releases> </repository> </repositories> -->
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-core</artifactId>
+			<version>${apache.jena.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-arq</artifactId>
+			<version>${apache.jena.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-c</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<!-- <dependency> <groupId>net.ideaconsult</groupId> <artifactId>opentox-dsl</artifactId> 
+			<version>1.0.5</version> <type>jar</type> <scope>compile</scope> </dependency> -->
+	</dependencies>
 </project>

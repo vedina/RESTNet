@@ -1,6 +1,5 @@
 package net.idea.restnet.user.alerts.notification;
 
-import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Connection;
 import java.util.logging.Level;
@@ -8,12 +7,12 @@ import java.util.logging.Logger;
 
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.i.query.IQueryUpdate;
+import net.idea.restnet.b.ServiceAccount;
 import net.idea.restnet.db.update.CallableDBUpdateTask;
 import net.idea.restnet.user.DBUser;
 import net.idea.restnet.user.alerts.db.DBAlert;
 import net.idea.restnet.user.alerts.db.UpdateAlertsSentTimeStamp;
 import net.idea.restnet.user.resource.UserURIReporter;
-import net.toxbank.client.resource.Account;
 
 import org.restlet.data.Form;
 import org.restlet.data.Method;
@@ -68,11 +67,11 @@ public abstract class CallableNotification extends CallableDBUpdateTask<DBUser, 
 		    if ((email == null) || "".equals(email))
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, String.format(
 				"Invalid email address for [%s]", user.getUserName()));
-		    Account account = new Account();
+		    ServiceAccount account = new ServiceAccount();
 		    account.setService("mailto");
-		    account.setAccountName(email);
-		    account.setResourceURL(new URL(String.format("%s:%s", account.getService(),
-			    URLEncoder.encode(email))));
+		    account.setName(email);
+		    account.setResourceID(String.format("%s:%s", account.getService(),
+			    URLEncoder.encode(email)));
 		    user.addAccount(account);
 		}
 		try {

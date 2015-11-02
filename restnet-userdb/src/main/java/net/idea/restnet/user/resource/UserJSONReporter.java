@@ -11,6 +11,7 @@ import net.idea.modbcum.i.exceptions.DbAmbitException;
 import net.idea.modbcum.p.DefaultAmbitProcessor;
 import net.idea.modbcum.p.MasterDetailsProcessor;
 import net.idea.modbcum.r.QueryReporter;
+import net.idea.restnet.b.Organisation;
 import net.idea.restnet.db.QueryURIReporter;
 import net.idea.restnet.db.aalocal.user.ReadUserRoles;
 import net.idea.restnet.groups.DBOrganisation;
@@ -20,7 +21,6 @@ import net.idea.restnet.i.tools.JSONUtils;
 import net.idea.restnet.u.UserRegistration;
 import net.idea.restnet.user.DBUser;
 import net.idea.restnet.user.db.ReadRegistrationStatus;
-import net.toxbank.client.resource.Organisation;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -71,7 +71,7 @@ public class UserJSONReporter<Q extends IQueryRetrieval<DBUser>> extends QueryRe
 	    @Override
 	    protected DBUser processDetail(DBUser target, DBOrganisation detail) throws Exception {
 		if (target.getID() > 0) {
-		    detail.setResourceURL(new URL(groupURIReporter.getURI(detail)));
+		    detail.setResourceID(new URL(groupURIReporter.getURI(detail)));
 		    target.addOrganisation(detail);
 		}
 		return target;

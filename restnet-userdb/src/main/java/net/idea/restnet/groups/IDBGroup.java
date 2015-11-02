@@ -16,9 +16,9 @@ public interface IDBGroup extends Serializable {
 
     public void setGroupName(String ldapgroup);
 
-    public URL getCluster();
+    public String getSuperGroup();
 
-    public void setCluster(URL name);
+    public void setSuperGroup(String name);
 
     public int getID();
 

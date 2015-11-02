@@ -1,6 +1,5 @@
 package net.idea.restnet.groups.db;
 
-import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +67,10 @@ public abstract class ReadGroup<G extends IDBGroup> extends AbstractQuery<DBUser
 	    group.setGroupName(rs.getString(3));
 	    if (rs.getObject(4) != null)
 		try {
-		    group.setCluster(new URL(rs.getString(4)));
+		    group.setSuperGroup(rs.getString(4));
 		} catch (Exception x) {
 		    x.printStackTrace();
-		    group.setCluster(null);
+		    group.setSuperGroup(null);
 		}
 	    return group;
 	} catch (Exception x) {
