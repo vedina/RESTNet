@@ -29,7 +29,11 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<!-- <dependency> <groupId>net.ideaconsult</groupId> <artifactId>opentox-dsl</artifactId> 
-			<version>1.0.5</version> <type>jar</type> <scope>compile</scope> </dependency> -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
