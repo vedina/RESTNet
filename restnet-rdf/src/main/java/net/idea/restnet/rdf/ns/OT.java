@@ -124,12 +124,6 @@ public class OT {
 
 	/**
 	 * <p>
-	 * The RDF model that holds the vocabulary terms
-	 * </p>
-	 */
-	private static Model m_model = ModelFactory.createDefaultModel();
-	/**
-	 * <p>
 	 * The namespace of the vocabalary as a string ({@value})
 	 * </p>
 	 */
@@ -145,6 +139,12 @@ public class OT {
 	 * The namespace of the vocabalary as a resource
 	 * </p>
 	 */
+	/**
+	 * <p>
+	 * The RDF model that holds the vocabulary terms
+	 * </p>
+	 */
+	private static Model m_model = ModelFactory.createDefaultModel();	
 	public static final Resource NAMESPACE = m_model.createResource(NS);
 
 	/**
