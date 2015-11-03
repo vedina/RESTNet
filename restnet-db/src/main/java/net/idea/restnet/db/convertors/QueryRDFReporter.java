@@ -5,9 +5,10 @@ import net.idea.modbcum.r.QueryReporter;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.db.QueryURIReporter;
 
-import org.apache.jena.rdf.model.Model;
 import org.restlet.Request;
 import org.restlet.data.MediaType;
+
+import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * Parent class for RDF reporters

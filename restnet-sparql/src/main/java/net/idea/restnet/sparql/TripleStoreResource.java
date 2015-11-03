@@ -9,14 +9,6 @@ import net.idea.restnet.c.AbstractResource;
 import net.idea.restnet.c.StringConvertor;
 import net.idea.restnet.c.TaskApplication;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFErrorHandler;
-import org.apache.jena.rdf.model.RDFReader;
-import org.apache.jena.shared.Lock;
-import org.apache.jena.tdb.TDBFactory;
-import org.apache.jena.vocabulary.DC;
-import org.apache.jena.vocabulary.OWL;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -26,6 +18,15 @@ import org.restlet.data.Method;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
+
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.OWL;
 
 
 /**

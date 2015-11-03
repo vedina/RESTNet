@@ -7,10 +7,11 @@ import net.idea.modbcum.p.batch.ListReporter;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.rdf.ns.OT;
 
-import org.apache.jena.ontology.OntModel;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.data.MediaType;
+
+import com.hp.hpl.jena.ontology.OntModel;
 
 /**
  * RDF output for non DB based objects

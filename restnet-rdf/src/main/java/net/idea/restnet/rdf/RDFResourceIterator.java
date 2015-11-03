@@ -1,9 +1,11 @@
 package net.idea.restnet.rdf;
 
-import org.apache.jena.ontology.OntModel;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+
 import org.restlet.routing.Template;
+
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 public class RDFResourceIterator extends RDFObjectIterator<RDFNode> {
 

@@ -21,7 +21,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
 		<dbunit.version>2.5.1</dbunit.version>
 		<restlet.version>2.0-M6</restlet.version>
 		<modbcum.version>1.0.6-SNAPSHOT</modbcum.version>
-		<apache.jena.version>3.0.0</apache.jena.version>
+		<apache.jena.version>2.13.0</apache.jena.version>
 	</properties>
 	<issueManagement>
 		<system>GitHub</system>
