@@ -699,8 +699,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			return ".csv";
 		else if (MediaType.TEXT_PLAIN.equals(mediaType))
 			return ".txt";
-		else if (MediaType.APPLICATION_EXCEL.equals(mediaType))
-			return ".xls";
+		else if (MediaType.APPLICATION_MSOFFICE_XLSX.equals(mediaType))
+			return ".xlsx";
 		else if (MediaType.APPLICATION_PDF.equals(mediaType))
 			return ".pdf";
 		else
