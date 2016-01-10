@@ -281,7 +281,7 @@ public class OT {
 		// Client httpclient = new Client(Protocol.HTTP);
 		// httpclient.setConnectTimeout(300000);
 		HttpURLConnection uc = ClientResourceWrapper.getHttpURLConnection(
-				uri.toString(), "GET", mediaType.getName());
+				uri.toString(), "GET", mediaType.getName(),"createModel");
 
 		InputStream in = null;
 
