@@ -83,15 +83,15 @@ public abstract class RDFObjectIterator<Item> implements Iterator<Item> {
 	this(OT.createModel(null, representation, mediaType), topObject);
     }
 
-    public RDFObjectIterator(Reference reference, String topObject) throws ResourceException, MalformedURLException,
+    public RDFObjectIterator(Reference reference, String topObject,String referer) throws ResourceException, MalformedURLException,
 	    IOException {
-	this(OT.createModel(null, reference, MediaType.APPLICATION_RDF_XML), topObject);
+	this(OT.createModel(null, reference, MediaType.APPLICATION_RDF_XML,referer), topObject);
 	this.reference = reference;
     }
 
-    public RDFObjectIterator(Reference reference, MediaType mediaType, String topObject) throws ResourceException,
+    public RDFObjectIterator(Reference reference, MediaType mediaType, String topObject,String referer) throws ResourceException,
 	    MalformedURLException, IOException {
-	this(OT.createModel(null, reference, mediaType), topObject);
+	this(OT.createModel(null, reference, mediaType,referer), topObject);
 	this.reference = reference;
     }
 

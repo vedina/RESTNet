@@ -76,9 +76,9 @@ public abstract class RDFSparqlIterator<Item> implements Iterator<Item> {
      * @throws ResourceException
      */
 
-    public RDFSparqlIterator(Reference reference, String sparql) throws ResourceException, MalformedURLException,
+    public RDFSparqlIterator(Reference reference, String sparql,String referer) throws ResourceException, MalformedURLException,
 	    IOException {
-	this(OT.createModel(null, reference, MediaType.APPLICATION_RDF_XML), sparql);
+	this(OT.createModel(null, reference, MediaType.APPLICATION_RDF_XML,referer), sparql);
 	this.reference = reference;
     }
 
@@ -91,9 +91,9 @@ public abstract class RDFSparqlIterator<Item> implements Iterator<Item> {
      * @param sparql
      * @throws ResourceException
      */
-    public RDFSparqlIterator(Reference reference, MediaType mediaType, String sparql) throws ResourceException,
+    public RDFSparqlIterator(Reference reference, MediaType mediaType, String sparql,String referer) throws ResourceException,
 	    MalformedURLException, IOException {
-	this(OT.createModel(null, reference, mediaType), sparql);
+	this(OT.createModel(null, reference, mediaType,referer), sparql);
 	this.reference = reference;
     }
 

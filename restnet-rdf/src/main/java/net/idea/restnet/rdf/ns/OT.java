@@ -276,12 +276,12 @@ public class OT {
 	}
 
 	public static Model createModel(Model model, Reference uri,
-			MediaType mediaType) throws ResourceException, IOException,
+			MediaType mediaType, String referer) throws ResourceException, IOException,
 			MalformedURLException {
 		// Client httpclient = new Client(Protocol.HTTP);
 		// httpclient.setConnectTimeout(300000);
 		HttpURLConnection uc = ClientResourceWrapper.getHttpURLConnection(
-				uri.toString(), "GET", mediaType.getName(),"createModel");
+				uri.toString(), "GET", mediaType.getName(),referer);
 
 		InputStream in = null;
 
