@@ -64,6 +64,10 @@ public class ClientResourceWrapper extends ClientResource {
     }
 
     public static synchronized HttpURLConnection getHttpURLConnection(String uri, String method, String mediaType)
+    	    throws IOException, MalformedURLException {
+    	return getHttpURLConnection(uri,  method, mediaType,"http://localhost");
+    }
+    public static synchronized HttpURLConnection getHttpURLConnection(String uri, String method, String mediaType, String referer)
 	    throws IOException, MalformedURLException {
 	URL url = null;
 
@@ -74,7 +78,7 @@ public class ClientResourceWrapper extends ClientResource {
 	}
 	HttpURLConnection uc = (HttpURLConnection) url.openConnection();
 	uc.addRequestProperty("Accept", mediaType);
-	uc.addRequestProperty("Referer", "http://localhost");
+	uc.addRequestProperty("Referer", referer);
 	uc.setDoOutput(true);
 	uc.setRequestMethod(method);
 	IAuthToken tokenFactory = ClientResourceWrapper.getTokenFactory();
