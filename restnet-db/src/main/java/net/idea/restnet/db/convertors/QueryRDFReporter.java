@@ -56,7 +56,8 @@ public abstract class QueryRDFReporter<T, Q extends IQueryRetrieval<T>> extends 
 		output.setNsPrefix("am", uriReporter.getBaseReference().toString() + "/model/");
 		output.setNsPrefix("ac", uriReporter.getBaseReference().toString() + "/compound/");
 		output.setNsPrefix("ad", uriReporter.getBaseReference().toString() + "/dataset/");
-
+		output.setNsPrefix("as", uriReporter.getBaseReference().toString() + "/substance/");
+		
 		if (!"".equals(compoundInDatasetPrefix))
 		    output.setNsPrefix("cmpd", String.format("%s%s/compound/", uriReporter.getBaseReference()
 			    .toString(), compoundInDatasetPrefix));
