@@ -41,21 +41,26 @@ public class BucketJSONReporter extends
 	@Override
 	public void header(Writer output, IQueryRetrieval<Bucket> query) {
 		try {
-			output.write("{\n");
-			output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(command)));
-			output.write(": [\n\t");
-			if (query instanceof IJSONQueryParams)
-				if (((IJSONQueryParams) query).getJsonParams() != null) {
-					output.write(JSONUtils.jsonQuote(JSONUtils
-							.jsonEscape("params")));
-					output.write(":");
-					output.write(((IJSONQueryParams) query).getJsonParams());
-					output.write(",\n");
-				}
+			if (command != null) {
+				output.write("{\n");
+				if (query instanceof IJSONQueryParams)
+					if (((IJSONQueryParams) query).getJsonParams() != null) {
+						output.write(JSONUtils.jsonQuote(JSONUtils
+								.jsonEscape("params")));
+						output.write(":");
+						output.write(((IJSONQueryParams) query).getJsonParams());
+						output.write(",\n");
+					}
+
+				output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(command)));
+				output.write(": ");
+			}
+			output.write("[\n\t");
+
 			// output.write(JSONUtils.jsonQuote(JSONUtils.jsonEscape(subcommand)));
 			// output.write(":[");
 		} catch (Exception x) {
-			//x.printStackTrace();
+			// x.printStackTrace();
 		}
 
 	}
@@ -68,7 +73,7 @@ public class BucketJSONReporter extends
 			getOutput().write(item.asJSON());
 			comma = ",";
 		} catch (Exception x) {
-			//x.printStackTrace();
+			// x.printStackTrace();
 		}
 		return item;
 	}
@@ -78,7 +83,8 @@ public class BucketJSONReporter extends
 		try {
 			output.write("\n]");
 			// output.write("\n}");
-			footerJSON(output);
+			if (command != null)
+				footerJSON(output);
 		} catch (Exception x) {
 		}
 	}
