@@ -2,6 +2,7 @@ package net.idea.restnet.db.convertors;
 
 import net.idea.modbcum.i.IQueryRetrieval;
 import net.idea.modbcum.r.QueryReporter;
+import net.idea.restnet.c.ChemicalMediaType;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.db.QueryURIReporter;
 
@@ -82,6 +83,8 @@ public abstract class QueryRDFReporter<T, Q extends IQueryRetrieval<T>> extends 
 	    return "rdf";
 	else if (MediaType.TEXT_RDF_N3.equals(mediaType))
 	    return "n3";
+	else if (ChemicalMediaType.APPLICATION_JSONLD.equals(mediaType))
+	    return "jsonld";
 	return "rdf";
     }
 }
