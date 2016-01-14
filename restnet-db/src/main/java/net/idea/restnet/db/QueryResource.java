@@ -19,6 +19,7 @@ import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.restnet.c.AbstractResource;
+import net.idea.restnet.c.ChemicalMediaType;
 import net.idea.restnet.c.PageParams;
 import net.idea.restnet.c.RepresentationConvertor;
 import net.idea.restnet.c.exception.RResourceException;
@@ -693,6 +694,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			return ".turtle";
 		else if (MediaType.TEXT_RDF_N3.equals(mediaType))
 			return ".n3";
+		else if (ChemicalMediaType.APPLICATION_JSONLD.equals(mediaType))
+			return ".jsonld";
 		else if (MediaType.APPLICATION_EXCEL.equals(mediaType))
 			return ".xls";
 		else if (MediaType.TEXT_CSV.equals(mediaType))
