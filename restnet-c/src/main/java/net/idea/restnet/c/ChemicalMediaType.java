@@ -18,7 +18,8 @@ public class ChemicalMediaType {
     public static final MediaType CHEMICAL_INCHI = new MediaType("chemical/x-inchi");
     public static final MediaType WEKA_ARFF = new MediaType("text/x-arff");
     public static final MediaType APPLICATION_YAML = new MediaType("application/x-yaml");
-
+    public static final MediaType APPLICATION_JSONLD = new MediaType("application/ld+json");
+    
     protected ChemicalMediaType() {
 
     }
