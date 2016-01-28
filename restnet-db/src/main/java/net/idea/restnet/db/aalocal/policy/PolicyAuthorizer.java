@@ -15,114 +15,123 @@ import org.restlet.Response;
 import org.restlet.data.Method;
 import org.restlet.security.RoleAuthorizer;
 
-import com.mysql.fabric.xmlrpc.base.Array;
-
 public class PolicyAuthorizer extends RoleAuthorizer {
-    private Context context;
-    protected String config;
-    protected PolicyQuery query = new PolicyQuery();
+	private Context context;
+	protected String config;
+	private PolicyQuery pquery = new PolicyQuery();
 
-    protected RESTPolicy policy;
+	protected RESTPolicy policy;
 
-    public PolicyAuthorizer(Context context, String configfile, String dbName) {
-	super();
-	this.context = context;
-	this.config = configfile;
-	query.setDatabaseName(dbName);
+	public PolicyAuthorizer(Context context, String configfile, String dbName) {
+		super();
+		this.context = context;
+		this.config = configfile;
+		getPolicyQuery().setDatabaseName(dbName);
 
-    }
-
-    protected String rewriteURI(String uri) {
-	return uri;
-    }
-
-    protected Method rewriteMethod(String uri, Method method) {
-	return method;
-    }
-
-    public boolean authorizeSpecialCases(Request request, Response response, List<String> uri) {
-	return false;
-    }
-
-    @Override
-    public boolean authorize(Request request, Response response) {
-	List<String> uri = new ArrayList<String>();
-	if (authorizeSpecialCases(request, response, uri))
-	    return true;
-
-	if ((request.getClientInfo() == null) || (request.getClientInfo().getUser() == null)
-		|| (request.getClientInfo().getUser().getIdentifier() == null))
-	    return false;
-
-	Connection c = null;
-	ResultSet rs = null;
-	QueryExecutor<PolicyQuery> executor = new QueryExecutor<PolicyQuery>(true);
-	try {
-
-	    DBConnection dbc = new DBConnection(context, getConfigFile());
-	    c = dbc.getConnection();
-	    executor.setCloseConnection(false);
-	    executor.setConnection(c);
-	    executor.setCache(false);
-
-	    for (int j = uri.size() - 1; j >= 0; j--) {
-		// System.out.print(uri.get(j));
-		policy = new RESTPolicy();
-		policy.setUri(rewriteURI(uri.get(j)));
-
-		// System.out.print("\tconnection\t");
-		// System.out.print(executor.getConnection());
-		// System.out.print("\t");
-		// System.out.println(executor.getConnection().isClosed());
-		query.setMethod(rewriteMethod(uri.get(j), request.getMethod()));
-		query.setFieldname(policy);
-		query.setValue(request.getClientInfo().getUser().getIdentifier());
-		try {
-		    rs = executor.process(query);
-		    int found = 0;
-		    boolean ok = false;
-		    while (rs.next()) {
-			ok = query.getObject(rs);
-			found++;
-		    }
-		    if (found > 0)
-			return ok;
-		    else
-			continue;
-		} catch (Exception x) {
-		    x.printStackTrace();
-		} finally {
-		    try {
-			executor.closeResults(rs);
-		    } catch (Exception x) {
-		    }
-		    ;
-		}
-	    }
-	    return false;
-	} catch (Exception x) {
-	    x.printStackTrace();
-	} finally {
-	    try {
-		if (c != null)
-		    c.close();
-		c = null;
-	    } catch (Exception x) {
-	    }
-	    ;
-	    try {
-		if (executor != null)
-		    executor.close();
-		executor.setConnection(null);
-	    } catch (Exception x) {
-	    }
-	    ;
 	}
-	return false;
-    }
 
-    protected String getConfigFile() {
-	return config;
-    }
+	protected String rewriteURI(String uri) {
+		return uri;
+	}
+
+	protected Method rewriteMethod(String uri, Method method) {
+		return method;
+	}
+
+	public boolean authorizeSpecialCases(Request request, Response response,
+			List<String> uri) {
+		return false;
+	}
+	
+	protected PolicyQuery getPolicyQuery() {
+		return pquery;
+	}
+
+	@Override
+	public boolean authorize(Request request, Response response) {
+		List<String> uri = new ArrayList<String>();
+		if (authorizeSpecialCases(request, response, uri))
+			return true;
+
+		return authorizeByPolicy(request, response, uri);
+	}
+	public boolean authorizeByPolicy(Request request, Response response, List<String> uri) {
+		if ((request.getClientInfo() == null)
+				|| (request.getClientInfo().getUser() == null)
+				|| (request.getClientInfo().getUser().getIdentifier() == null))
+			return false;
+		
+		Connection c = null;
+		ResultSet rs = null;
+		QueryExecutor<PolicyQuery> executor = new QueryExecutor<PolicyQuery>(
+				true);
+		try {
+
+			DBConnection dbc = new DBConnection(context, getConfigFile());
+			c = dbc.getConnection();
+			executor.setCloseConnection(false);
+			executor.setConnection(c);
+			executor.setCache(false);
+
+			for (int j = uri.size() - 1; j >= 0; j--) {
+				// System.out.print(uri.get(j));
+				policy = new RESTPolicy();
+				policy.setUri(rewriteURI(uri.get(j)));
+
+				// System.out.print("\tconnection\t");
+				// System.out.print(executor.getConnection());
+				// System.out.print("\t");
+				// System.out.println(executor.getConnection().isClosed());
+				getPolicyQuery().setMethod(rewriteMethod(uri.get(j), request.getMethod()));
+				getPolicyQuery().setFieldname(policy);
+				getPolicyQuery().setValue(request.getClientInfo().getUser()
+						.getIdentifier());
+				try {
+					rs = executor.process(getPolicyQuery());
+					int found = 0;
+					boolean ok = false;
+					while (rs.next()) {
+						ok = getPolicyQuery().getObject(rs);
+						found++;
+					}
+					if (found > 0)
+						return ok;
+					else
+						continue;
+				} catch (Exception x) {
+					x.printStackTrace();
+				} finally {
+					try {
+						executor.closeResults(rs);
+					} catch (Exception x) {
+					}
+					;
+				}
+			}
+			return false;
+		} catch (Exception x) {
+			x.printStackTrace();
+		} finally {
+			try {
+				if (c != null)
+					c.close();
+				c = null;
+			} catch (Exception x) {
+			}
+			;
+			try {
+				if (executor != null)
+					executor.close();
+				executor.setConnection(null);
+			} catch (Exception x) {
+			}
+			;
+		}
+		return false;
+	}
+
+	protected String getConfigFile() {
+		return config;
+	}
 
 }
