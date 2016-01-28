@@ -60,7 +60,7 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 
 		return authorizeByPolicy(request, response, uri);
 	}
-	public boolean isOwner(QueryExecutor<PolicyQuery> executor,RESTPolicy policy) {
+	public boolean isOwner(String user,QueryExecutor<PolicyQuery> executor,RESTPolicy policy) {
 		return false;
 	}
 	public boolean authorizeByPolicy(Request request, Response response, List<String> uri) {
@@ -88,7 +88,8 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 				policy = new RESTPolicy();
 				policy.setUri(rewriteURI(uri.get(j)));
 				
-				if (isOwner(executor,policy)) return true;
+				if (isOwner(request.getClientInfo().getUser()
+						.getIdentifier(),executor,policy)) return true;
 
 				// System.out.print("\tconnection\t");
 				// System.out.print(executor.getConnection());
