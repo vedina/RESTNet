@@ -60,6 +60,9 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 
 		return authorizeByPolicy(request, response, uri);
 	}
+	public boolean isOwner(QueryExecutor<PolicyQuery> executor,RESTPolicy policy) {
+		return false;
+	}
 	public boolean authorizeByPolicy(Request request, Response response, List<String> uri) {
 		if ((request.getClientInfo() == null)
 				|| (request.getClientInfo().getUser() == null)
@@ -68,7 +71,7 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 		
 		Connection c = null;
 		ResultSet rs = null;
-		QueryExecutor<PQ> executor = new QueryExecutor<PQ>(
+		QueryExecutor<PolicyQuery> executor = new QueryExecutor<PolicyQuery>(
 				true);
 		try {
 
@@ -76,12 +79,16 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 			c = dbc.getConnection();
 			executor.setCloseConnection(false);
 			executor.setConnection(c);
-			executor.setCache(false);
+			executor.setCache(true);
 
+			
 			for (int j = uri.size() - 1; j >= 0; j--) {
+				
 				// System.out.print(uri.get(j));
 				policy = new RESTPolicy();
 				policy.setUri(rewriteURI(uri.get(j)));
+				
+				if (isOwner(executor,policy)) return true;
 
 				// System.out.print("\tconnection\t");
 				// System.out.print(executor.getConnection());
