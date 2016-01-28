@@ -15,21 +15,26 @@ import org.restlet.Response;
 import org.restlet.data.Method;
 import org.restlet.security.RoleAuthorizer;
 
-public class PolicyAuthorizer extends RoleAuthorizer {
+public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 	private Context context;
 	protected String config;
-	private PolicyQuery pquery = new PolicyQuery();
+	private PQ pquery;
 
 	protected RESTPolicy policy;
 
 	public PolicyAuthorizer(Context context, String configfile, String dbName) {
 		super();
+		pquery = createPolicyQuery();
 		this.context = context;
 		this.config = configfile;
 		getPolicyQuery().setDatabaseName(dbName);
 
 	}
 
+	protected PQ createPolicyQuery() {
+		PolicyQuery pq = new PolicyQuery();
+		return (PQ)pq;
+	}
 	protected String rewriteURI(String uri) {
 		return uri;
 	}
@@ -43,7 +48,7 @@ public class PolicyAuthorizer extends RoleAuthorizer {
 		return false;
 	}
 	
-	protected PolicyQuery getPolicyQuery() {
+	protected PQ getPolicyQuery() {
 		return pquery;
 	}
 
@@ -63,7 +68,7 @@ public class PolicyAuthorizer extends RoleAuthorizer {
 		
 		Connection c = null;
 		ResultSet rs = null;
-		QueryExecutor<PolicyQuery> executor = new QueryExecutor<PolicyQuery>(
+		QueryExecutor<PQ> executor = new QueryExecutor<PQ>(
 				true);
 		try {
 
