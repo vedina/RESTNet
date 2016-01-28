@@ -21,17 +21,17 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 	private PQ pquery;
 
 	protected RESTPolicy policy;
-
-	public PolicyAuthorizer(Context context, String configfile, String dbName) {
+	
+	public PolicyAuthorizer(Context context, String configfile,String datadbname,String usersdbName) {
 		super();
-		pquery = createPolicyQuery();
+		pquery = createPolicyQuery(datadbname);
 		this.context = context;
 		this.config = configfile;
-		getPolicyQuery().setDatabaseName(dbName);
+		getPolicyQuery().setDatabaseName(usersdbName);
 
 	}
 
-	protected PQ createPolicyQuery() {
+	protected PQ createPolicyQuery(String datadbname) {
 		PolicyQuery pq = new PolicyQuery();
 		return (PQ)pq;
 	}
