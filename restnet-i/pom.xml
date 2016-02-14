@@ -4,7 +4,7 @@
   <parent>
     <artifactId>restnet</artifactId>
     <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
   </parent>
   <artifactId>restnet-i</artifactId>
   <name>RESTNet interfaces</name>
