@@ -108,7 +108,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 				MediaType.APPLICATION_RDF_TURTLE, MediaType.TEXT_RDF_N3,ChemicalMediaType.APPLICATION_JSONLD,
 				MediaType.TEXT_RDF_NTRIPLES, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JAVASCRIPT,
-				MediaType.APPLICATION_JAVA_OBJECT, MediaType.APPLICATION_WADL
+				MediaType.APPLICATION_JAVA_OBJECT
 
 		});
 		if (queryObject != null) {
