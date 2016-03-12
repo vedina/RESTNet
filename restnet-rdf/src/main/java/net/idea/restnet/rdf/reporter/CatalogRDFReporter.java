@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.Iterator;
 
 import net.idea.modbcum.p.batch.ListReporter;
+import net.idea.restnet.c.ChemicalMediaType;
 import net.idea.restnet.c.ResourceDoc;
 import net.idea.restnet.rdf.ns.OT;
 
@@ -75,6 +76,8 @@ public abstract class CatalogRDFReporter<T> extends ListReporter<T, Writer> {
 			return "rdf";
 		else if (MediaType.TEXT_RDF_N3.equals(mediaType))
 			return "n3";
+		else if (ChemicalMediaType.APPLICATION_JSONLD.equals(mediaType))
+			return "jsonld";
 		return "rdf";
 	}
 }
