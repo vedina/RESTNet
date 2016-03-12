@@ -105,7 +105,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		customizeVariants(new MediaType[] { MediaType.TEXT_HTML,
 				MediaType.TEXT_PLAIN, MediaType.TEXT_URI_LIST,
 				MediaType.TEXT_CSV, MediaType.APPLICATION_RDF_XML,
-				MediaType.APPLICATION_RDF_TURTLE, MediaType.TEXT_RDF_N3,
+				MediaType.APPLICATION_RDF_TURTLE, MediaType.TEXT_RDF_N3,ChemicalMediaType.APPLICATION_JSONLD,
 				MediaType.TEXT_RDF_NTRIPLES, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JAVASCRIPT,
 				MediaType.APPLICATION_JAVA_OBJECT, MediaType.APPLICATION_WADL
