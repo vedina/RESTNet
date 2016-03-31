@@ -63,6 +63,9 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 	public boolean isOwner(String user,QueryExecutor<PolicyQuery> executor,RESTPolicy policy) {
 		return false;
 	}
+	protected RESTPolicy initRESTPolicy() {
+		return new RESTPolicy();	
+	}
 	public boolean authorizeByPolicy(Request request, Response response, List<String> uri) {
 		if ((request.getClientInfo() == null)
 				|| (request.getClientInfo().getUser() == null)
@@ -85,7 +88,7 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 			for (int j = uri.size() - 1; j >= 0; j--) {
 				
 				// System.out.print(uri.get(j));
-				policy = new RESTPolicy();
+				policy = initRESTPolicy();
 				policy.setUri(rewriteURI(uri.get(j)));
 				
 				if (isOwner(request.getClientInfo().getUser()
