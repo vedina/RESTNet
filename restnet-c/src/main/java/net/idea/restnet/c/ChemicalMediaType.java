@@ -31,6 +31,8 @@ public class ChemicalMediaType {
 	public static final MediaType THREECOL_ARFF = new MediaType(
 			"text/x-arff-3col");
 	public static final MediaType IMAGE_JSON = new MediaType("image/json");
+	public static final MediaType APPLICATION_FACETJSON = new MediaType(
+			"application/tree+json");
 
 	protected ChemicalMediaType() {
 
