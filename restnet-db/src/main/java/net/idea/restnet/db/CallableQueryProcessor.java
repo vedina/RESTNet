@@ -3,6 +3,7 @@ package net.idea.restnet.db;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.util.logging.Level;
 
 import net.idea.modbcum.i.batch.IBatchStatistics;
 import net.idea.modbcum.i.processors.IProcessor;
@@ -154,8 +155,12 @@ public abstract class CallableQueryProcessor<Target, Result, USERID> extends Cal
 
     public static Object getQueryObject(Reference reference, Reference applicationRootReference) throws Exception {
 
-	if (!applicationRootReference.isParent(reference))
-	    throw new Exception(String.format("Remote reference %s %s", applicationRootReference, reference));
+	if (!applicationRootReference.isParent(reference)) {
+		logger.log(Level.WARNING, String.format("Remote reference %s %s",
+				applicationRootReference, reference));
+		return null;
+	}	
+
 	ObjectRepresentation<Serializable> repObject = null;
 	ClientResourceWrapper resource = null;
 	try {
