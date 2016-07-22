@@ -7,63 +7,63 @@ import net.idea.restnet.i.aa.IAuthToken;
 import net.idea.restnet.i.task.ICallableTask;
 import net.idea.restnet.i.task.TaskResult;
 
-public abstract class CallableProtectedTask<USERID> implements ICallableTask, IAuthToken {
+public abstract class CallableProtectedTask<USERID> implements ICallableTask,
+		IAuthToken {
 
-    protected UUID uuid;
-    private USERID token;
-    protected String title;
-    private final Logger logger;
+	protected UUID uuid;
+	private USERID token;
+	protected String title;
+	protected static final Logger logger = Logger.getLogger(CallableProtectedTask.class.getName()); 
 
-    public String getTitle() {
-	return title;
-    }
-
-    public void setTitle(String title) {
-	this.title = title;
-    }
-
-    public CallableProtectedTask(USERID token) {
-	this.token = token;
-	logger = Logger.getLogger(getClass().getName());
-    }
-
-    @Override
-    public UUID getUuid() {
-	return uuid;
-    }
-
-    @Override
-    public void setUuid(UUID uuid) {
-	this.uuid = uuid;
-
-    }
-
-    @Override
-    public String getToken() {
-	return token == null ? null : token.toString();
-    }
-
-    public abstract TaskResult doCall() throws Exception;
-
-    @Override
-    public TaskResult call() throws Exception {
-	try {
-	    ClientResourceWrapper.setTokenFactory(this);
-	    return doCall();
-	} catch (Exception x) {
-	    throw x;
-	} finally {
-	    ClientResourceWrapper.setTokenFactory(null);
+	public String getTitle() {
+		return title;
 	}
-    }
 
-    @Override
-    public String getTaskCategory() {
-	return null;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    @Override
-    public String toString() {
-	return title;
-    }
+	public CallableProtectedTask(USERID token) {
+		this.token = token;
+	}
+
+	@Override
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	@Override
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
+
+	}
+
+	@Override
+	public String getToken() {
+		return token == null ? null : token.toString();
+	}
+
+	public abstract TaskResult doCall() throws Exception;
+
+	@Override
+	public TaskResult call() throws Exception {
+		try {
+			ClientResourceWrapper.setTokenFactory(this);
+			return doCall();
+		} catch (Exception x) {
+			throw x;
+		} finally {
+			ClientResourceWrapper.setTokenFactory(null);
+		}
+	}
+
+	@Override
+	public String getTaskCategory() {
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return title;
+	}
 }
