@@ -15,7 +15,7 @@ public class BucketJSONReporter extends AbstractBucketJsonReporter<Bucket> {
 	}
 
 	public BucketJSONReporter(String command, String subcommand,
-			IProcessor<Bucket, Bucket> processor) {
+			IProcessor<Bucket, Bucket>[] processor) {
 		super(command,subcommand,processor);
 	}
 	@Override

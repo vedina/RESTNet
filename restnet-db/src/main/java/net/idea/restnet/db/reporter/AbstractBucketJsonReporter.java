@@ -26,14 +26,15 @@ public abstract class AbstractBucketJsonReporter<T> extends
 	}
 
 	public AbstractBucketJsonReporter(String command, String subcommand,
-			IProcessor<T, T> processor) {
+			IProcessor<T, T>[] processors) {
 		super();
 		this.command = command;
 		this.subcommand = subcommand;
-		if (processor != null) {
+		if (processors != null) {
 			IProcessor itemp = getProcessors().get(0);
 			getProcessors().clear();
-			getProcessors().add(processor);
+			for (IProcessor<T, T> processor : processors)
+				getProcessors().add(processor);
 			getProcessors().add(itemp);
 		}
 	}
