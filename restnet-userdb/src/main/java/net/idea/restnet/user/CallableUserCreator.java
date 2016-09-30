@@ -59,13 +59,13 @@ public abstract class CallableUserCreator extends
 	}
 
 	protected String emailContent = "Dear %s %s,\n\n"
-			+ "Thanks for your interest in the %s. Please click the following link to activate the %s account that you have registered on %s:\n"
+			+ "Thanks for your interest in %s. Please click on the following link to activate your %s account that you have created on %s:\n"
 			+ "%s%s%s?code=%s\n\n"
 			+ "If you click the link and it appears to be broken, please copy and paste it into a new browser window.\n\n"
 			+ "Please note that your registration will be cancelled automatically if it is not activated within 48 hours "
 			+ "(before %s). "
 			+ "If you miss this deadline you should start over the registration procedure and obtain a new activation code.\n\n"
-			+ "If you did not register an account for accessing the %s, please ignore this message and let the request expire on its own.\n\n"
+			+ "If you did not register an account for accessing %s, please ignore this message and let the request expire on its own.\n\n"
 			+ "Yours faithfully,\n" + "%s\n%s\n";
 
 	public CallableUserCreator(Method method, DBUser item,
