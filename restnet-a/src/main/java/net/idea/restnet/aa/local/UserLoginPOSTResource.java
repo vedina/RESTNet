@@ -57,7 +57,7 @@ public class UserLoginPOSTResource<U extends User> extends CatalogResource<U> {
 			try {
 				Form form = new Form(entity);
 				redirect = form.getFirstValue("targetUri", true);
-				System.out.println(redirect);
+				//System.out.println(redirect);
 			} catch (Exception x) {
 				redirect = null;
 			}
