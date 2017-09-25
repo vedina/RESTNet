@@ -1,11 +1,5 @@
 package net.idea.restnet.c.freemarker;
 
-import net.idea.restnet.c.BotsGuard;
-import net.idea.restnet.c.task.ClientResourceWrapper;
-import net.idea.restnet.i.aa.IAuthToken;
-import net.idea.restnet.i.aa.OpenSSOCookie;
-import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
-
 import org.owasp.encoder.Encode;
 import org.restlet.Request;
 import org.restlet.data.CacheDirective;
@@ -18,6 +12,12 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import net.idea.restnet.c.BotsGuard;
+import net.idea.restnet.c.task.ClientResourceWrapper;
+import net.idea.restnet.i.aa.IAuthToken;
+import net.idea.restnet.i.aa.OpenSSOCookie;
+import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 
 public abstract class ProtectedResource extends ServerResource implements
 		IAuthToken {
@@ -50,7 +50,7 @@ public abstract class ProtectedResource extends ServerResource implements
 	}
 
 	@Override
-	public String getToken() {
+	public Object getToken() {
 		String token = getHeaderValue(OpenSSOCookie.CookieName);
 
 		if (token == null)
@@ -91,7 +91,7 @@ public abstract class ProtectedResource extends ServerResource implements
 
 	protected void setTokenCookies(Variant variant, boolean secure) {
 		if (((IFreeMarkerApplication) getApplication()).isSendTokenAsCookie()) {
-			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken(), useSecureCookie(getRequest()));
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken()==null?null:getToken().toString(), useSecureCookie(getRequest()));
 		}
 	}
 
