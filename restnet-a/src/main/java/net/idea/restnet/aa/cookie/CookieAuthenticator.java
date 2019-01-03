@@ -1,5 +1,6 @@
 package net.idea.restnet.aa.cookie;
 
+//TODO refactor to use the restlet class with the same name
 /**
  * Copied from https://raw.github.com/restlet/restlet-framework-java/master/modules/org.restlet.ext.crypto/src/org/restlet/ext/crypto/CookieAuthenticator.java
  * in order to be used with Restlet 2.0-M6
