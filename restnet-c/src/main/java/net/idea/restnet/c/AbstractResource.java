@@ -5,6 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.Response;
+import org.restlet.data.Cookie;
+import org.restlet.data.Form;
+import org.restlet.data.Header;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Protocol;
+import org.restlet.data.Reference;
+import org.restlet.data.ServerInfo;
+import org.restlet.data.Status;
+import org.restlet.ext.freemarker.TemplateRepresentation;
+import org.restlet.representation.ObjectRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.Variant;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
+import org.restlet.util.Series;
+
+import freemarker.template.Configuration;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
 import net.idea.modbcum.i.processors.IProcessor;
@@ -18,27 +39,6 @@ import net.idea.restnet.i.aa.OpenSSOCookie;
 import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 import net.idea.restnet.i.freemarker.IFreeMarkerSupport;
 import net.idea.restnet.i.task.ITaskStorage;
-
-import org.restlet.Context;
-import org.restlet.Request;
-import org.restlet.Response;
-import org.restlet.data.Cookie;
-import org.restlet.data.CookieSetting;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Protocol;
-import org.restlet.data.Reference;
-import org.restlet.data.ServerInfo;
-import org.restlet.data.Status;
-import org.restlet.ext.freemarker.TemplateRepresentation;
-import org.restlet.representation.ObjectRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.ServerResource;
-
-import freemarker.template.Configuration;
 
 /**
  * Abstract class for resources
@@ -179,10 +179,10 @@ public abstract class AbstractResource<Q, T, P extends IProcessor<Q, Representat
 	}
 
 	protected void setXHeaders() {
-		Form headers = (Form) getResponse().getAttributes().get(
+		Series headers = (Series) getResponse().getAttributes().get(
 				"org.restlet.http.headers");
 		if (headers == null) {
-			headers = new Form();
+			headers = new Series(Header.class);
 			getResponse().getAttributes().put("org.restlet.http.headers",
 					headers);
 		}
@@ -373,7 +373,7 @@ public abstract class AbstractResource<Q, T, P extends IProcessor<Q, Representat
 
 	private String getHeaderValue(String tag) {
 		try {
-			Form headers = (Form) getRequest().getAttributes().get(
+			Series headers = (Series) getRequest().getAttributes().get(
 					"org.restlet.http.headers");
 			if (headers == null)
 				return null;

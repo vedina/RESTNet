@@ -4,7 +4,7 @@ import org.owasp.encoder.Encode;
 import org.restlet.Request;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.Cookie;
-import org.restlet.data.Form;
+import org.restlet.data.Header;
 import org.restlet.data.Protocol;
 import org.restlet.data.Reference;
 import org.restlet.data.ServerInfo;
@@ -12,6 +12,7 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+import org.restlet.util.Series;
 
 import net.idea.restnet.c.BotsGuard;
 import net.idea.restnet.c.task.ClientResourceWrapper;
@@ -19,8 +20,7 @@ import net.idea.restnet.i.aa.IAuthToken;
 import net.idea.restnet.i.aa.OpenSSOCookie;
 import net.idea.restnet.i.freemarker.IFreeMarkerApplication;
 
-public abstract class ProtectedResource extends ServerResource implements
-		IAuthToken {
+public abstract class ProtectedResource extends ServerResource implements IAuthToken {
 
 	@Override
 	protected void doInit() throws ResourceException {
@@ -69,8 +69,7 @@ public abstract class ProtectedResource extends ServerResource implements
 
 	private String getHeaderValue(String tag) {
 		try {
-			Form headers = (Form) getRequest().getAttributes().get(
-					"org.restlet.http.headers");
+			Series headers = (Series) getRequest().getAttributes().get("org.restlet.http.headers");
 			if (headers == null)
 				return null;
 			return headers.getFirstValue(tag);
@@ -91,17 +90,16 @@ public abstract class ProtectedResource extends ServerResource implements
 
 	protected void setTokenCookies(Variant variant, boolean secure) {
 		if (((IFreeMarkerApplication) getApplication()).isSendTokenAsCookie()) {
-			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken()==null?null:getToken().toString(), useSecureCookie(getRequest()));
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),
+					getToken() == null ? null : getToken().toString(), useSecureCookie(getRequest()));
 		}
 	}
 
 	protected void setFrameOptions(String value) {
-		Form headers = (Form) getResponse().getAttributes().get(
-				"org.restlet.http.headers");
+		Series headers = (Series) getResponse().getAttributes().get("org.restlet.http.headers");
 		if (headers == null) {
-			headers = new Form();
-			getResponse().getAttributes().put("org.restlet.http.headers",
-					headers);
+			headers = new Series(Header.class);
+			getResponse().getAttributes().put("org.restlet.http.headers", headers);
 		}
 		headers.removeAll("X-Frame-Options");
 		headers.add("X-Frame-Options", value);

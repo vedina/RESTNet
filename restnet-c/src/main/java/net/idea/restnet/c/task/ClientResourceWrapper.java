@@ -5,10 +5,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.restlet.data.Form;
+import org.restlet.data.Header;
 import org.restlet.data.Reference;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
+import org.restlet.util.Series;
 
 import net.idea.restnet.i.aa.IAuthToken;
 import net.idea.restnet.i.aa.OpenSSOCookie;
@@ -52,10 +53,10 @@ public class ClientResourceWrapper extends ClientResource {
 	}
 
 	protected void addToken2Header(String token) {
-		Object extraHeaders = getRequest().getAttributes().get("org.restlet.http.headers");
+		Series extraHeaders = (Series)getRequest().getAttributes().get("org.restlet.http.headers");
 		if (extraHeaders == null)
-			extraHeaders = new Form();
-		((Form) extraHeaders).add(subjectid, token);
+			extraHeaders = new Series(Header.class);
+		((Series) extraHeaders).add(subjectid, token);
 		getRequest().getAttributes().put("org.restlet.http.headers", extraHeaders);
 	}
 
