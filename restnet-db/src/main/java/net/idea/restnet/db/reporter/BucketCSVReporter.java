@@ -14,6 +14,14 @@ public class BucketCSVReporter extends
 	protected boolean writeheader = true;
 	protected long started;
 	protected long completed;	
+	protected String delimiter=",";
+	public String getDelimiter() {
+		return delimiter;
+	}
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+
 	/**
 	 * 
 	 */
@@ -44,7 +52,7 @@ public class BucketCSVReporter extends
 				for (int i = 0; i < item.getHeader().length; i++) {
 
 					if (i > 0)
-						getOutput().write(",");
+						getOutput().write(delimiter);
 
 					getOutput().write("\"");
 					getOutput().write(item.getHeader()[i]);
@@ -55,7 +63,7 @@ public class BucketCSVReporter extends
 				writeheader = false;
 			}
 
-			item.toCSV(getOutput(), ",");
+			item.toCSV(getOutput(), delimiter);
 
 			getOutput().write("\n");
 		} catch (Exception x) {
@@ -66,7 +74,7 @@ public class BucketCSVReporter extends
 
 	@Override
 	public String getFileExtension() {
-		return ".csv";
+		return delimiter==","?".csv":".txt";
 	}
 
 	@Override
