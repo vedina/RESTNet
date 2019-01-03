@@ -667,7 +667,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 
 		String extension = getExtension(entity.getMediaType());
 		File file = null;
-		if (entity.getDownloadName() == null) {
+		
+		if (entity.getDisposition().getFilename() == null) {
 			file = File
 					.createTempFile(
 							String.format("_download_%s", UUID.randomUUID()),
@@ -676,7 +677,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		} else
 			file = new File(String.format("%s/%s",
 					System.getProperty("java.io.tmpdir"),
-					entity.getDownloadName()));
+					entity.getDisposition().getFilename()));
 		FileOutputStream out = new FileOutputStream(file);
 		entity.write(out);
 		out.flush();

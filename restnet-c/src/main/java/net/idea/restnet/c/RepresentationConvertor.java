@@ -1,11 +1,12 @@
 package net.idea.restnet.c;
 
+import org.restlet.data.Disposition;
+import org.restlet.data.MediaType;
+import org.restlet.representation.Representation;
+
 import net.idea.modbcum.i.processors.IProcessor;
 import net.idea.modbcum.i.reporter.Reporter;
 import net.idea.modbcum.r.AbstractRepresentationConvertor;
-
-import org.restlet.data.MediaType;
-import org.restlet.representation.Representation;
 
 /**
  * An abstract {@link IProcessor} , converting between arbitrary Content and
@@ -48,9 +49,10 @@ public abstract class RepresentationConvertor<Item, Content, Output, R extends R
 
     protected void setDisposition(Representation rep) {
 	if (getReporter().getFileExtension() != null) {
-	    rep.setDownloadable(true);
-	    rep.setDownloadName(String.format("%s.%s", fileNamePrefix == null ? "download" : fileNamePrefix,
-		    getReporter().getFileExtension()));
+		Disposition d = new Disposition(Disposition.TYPE_ATTACHMENT);//?
+		d.setFilename(String.format("%s.%s", fileNamePrefix == null ? "download" : fileNamePrefix,
+			    getReporter().getFileExtension()));
+		rep.setDisposition(d);
 	}
     }
 }

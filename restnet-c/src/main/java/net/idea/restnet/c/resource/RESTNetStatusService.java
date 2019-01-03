@@ -52,7 +52,7 @@ public class RESTNetStatusService extends StatusService {
 
 		if (htmlBeauty == null)
 		    htmlBeauty = new HTMLBeauty();
-		htmlBeauty.writeHTMLHeader(w, status.getName(), request, null);
+		htmlBeauty.writeHTMLHeader(w, status.getReasonPhrase(), request, null);
 
 		StringWriter details = null;
 
@@ -72,7 +72,7 @@ public class RESTNetStatusService extends StatusService {
 				"<a href=\"javascript:toggleDiv('%s');\" style=\"background-color: #fff; padding: 5px 10px;\">Details</a>\n",
 				"details");
 
-		String errName = status.getName();
+		String errName = status.getReasonPhrase() ;
 		String errDescription = status.getDescription();
 		if (Status.CLIENT_ERROR_BAD_REQUEST.equals(status))
 		    errName = "Invalid input";
@@ -90,12 +90,12 @@ public class RESTNetStatusService extends StatusService {
 				+ "<div class=\"ui-widget-content ui-corner-bottom \">\n"
 				+ "<p><label title='%s'>%s</label></p><p>" + "%s\n" + "</p>\n"
 				+ "<div class=\"ui-widget\" style='display: none;' id='details'><p>%s</p></div>\n"
-				+ "</div></div>\n", status.getUri(), errName, errDescription, status.getName(),
+				+ "</div></div>\n", status.getUri(), errName, errDescription, status.getReasonPhrase() ,
 			detailsDiv, details == null ? "" : details));
 
 		if (htmlBeauty == null)
 		    htmlBeauty = new HTMLBeauty();
-		htmlBeauty.writeHTMLFooter(w, status.getName(), request);
+		htmlBeauty.writeHTMLFooter(w, status.getReasonPhrase() , request);
 		return new StringRepresentation(w.toString(), MediaType.TEXT_HTML);
 	    } else {
 		if ((status.getThrowable() != null) && (status.getThrowable() instanceof RResourceException))
