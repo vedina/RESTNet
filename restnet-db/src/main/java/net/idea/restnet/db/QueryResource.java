@@ -668,7 +668,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		String extension = getExtension(entity.getMediaType());
 		File file = null;
 		
-		if (entity.getDisposition().getFilename() == null) {
+		String filename=entity.getDisposition()==null?null:entity.getDisposition().getFilename();
+		if (filename == null) {
 			file = File
 					.createTempFile(
 							String.format("_download_%s", UUID.randomUUID()),
