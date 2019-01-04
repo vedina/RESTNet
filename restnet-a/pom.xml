@@ -1,28 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>restnet</artifactId>
-    <groupId>net.ideaconsult.restnet</groupId>
-    <version>2.0.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>restnet-a</artifactId>
-  <name>AAA</name>
-  <dependencies>
-    <dependency>
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-c</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>restnet</artifactId>
+		<groupId>net.ideaconsult.restnet</groupId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>restnet-a</artifactId>
+	<name>AAA</name>
+	<dependencies>
+		<dependency>
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-c</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.crypto</artifactId>
+			<version>${restlet.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>
