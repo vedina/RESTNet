@@ -7,8 +7,8 @@
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `iduser` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(45) DEFAULT NULL COMMENT 'OpenAM user name',
-  `title` varchar(45) DEFAULT NULL,
+  `username` varchar(32) DEFAULT NULL COMMENT 'OpenAM user name',
+  `title` varchar(16) DEFAULT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
   `institute` varchar(128) DEFAULT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `user` (
 --
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `user_name` varchar(16) NOT NULL,
+  `user_name` varchar(32) NOT NULL,
   `user_pass` varchar(32) NOT NULL,
   PRIMARY KEY (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -197,7 +197,7 @@ CREATE TABLE `version_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
-insert into version_users (idmajor,idminor,comment) values (2,6,"AMBITDB users");
+insert into version_users (idmajor,idminor,comment) values (2,7,"AMBITDB users");
 
 -- -----------------------------------------------------
 -- Default users
