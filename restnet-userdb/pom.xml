@@ -1,77 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>restnet</artifactId>
-    <groupId>net.ideaconsult.restnet</groupId>
-    <version>1.1.4-SNAPSHOT</version>
-  </parent>
-  <artifactId>restnet-userdb</artifactId>
-  <name>Local users support</name>
-  <description>Local users support</description>
-  <repositories>
-    <repository>
-      <id>toxbank-snapshots</id>
-      <url>https://nexus.ideaconsult.net/content/repositories/toxbank-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>toxbank-releases</id>
-      <url>https://nexus.ideaconsult.net/content/repositories/toxbank-releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <dependencies>
-    <dependency>
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-u</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <!-- reuse src/test/java code from restnet-db! -->
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-db</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-      <classifier>tests</classifier>
-    </dependency>
-    <dependency>
-      <!-- reuse src/test/java code from restnet-db! -->
-      <groupId>net.ideaconsult.restnet</groupId>
-      <artifactId>restnet-b</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.dbunit</groupId>
-      <artifactId>dbunit</artifactId>
-      <version>${dbunit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- 
-    <dependency>
-      <groupId>net.toxbank</groupId>
-      <artifactId>toxbank-api-beans</artifactId>
-      <version>0.0.1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-     -->
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5</version>
-    </dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>restnet</artifactId>
+		<groupId>net.ideaconsult.restnet</groupId>
+		<version>1.1.4-SNAPSHOT</version>
+	</parent>
+	<artifactId>restnet-userdb</artifactId>
+	<name>Local users support</name>
+	<description>Local users support</description>
+	<repositories>
+		<repository>
+			<id>toxbank-snapshots</id>
+			<url>https://nexus.ideaconsult.net/content/repositories/toxbank-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>toxbank-releases</id>
+			<url>https://nexus.ideaconsult.net/content/repositories/toxbank-releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-u</artifactId>
+			<version>${project.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<!-- reuse src/test/java code from restnet-db! -->
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-db</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<classifier>tests</classifier>
+			<type>jar</type>
+
+		</dependency>
+		<dependency>
+			<!-- reuse src/test/java code from restnet-db! -->
+			<groupId>net.ideaconsult.restnet</groupId>
+			<artifactId>restnet-b</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>${dbunit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- <dependency> <groupId>net.toxbank</groupId> <artifactId>toxbank-api-beans</artifactId> 
+			<version>0.0.1</version> <type>jar</type> <scope>compile</scope> </dependency> -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5</version>
+		</dependency>
+		
+		
+	</dependencies>
 </project>

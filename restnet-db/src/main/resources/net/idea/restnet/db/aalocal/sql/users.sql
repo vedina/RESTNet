@@ -1,5 +1,5 @@
 -- Database: ambit_users
--- CREATE DATABASE `ambit_users`  DEFAULT CHARACTER SET utf8 ;
+-- CREATE DATABASE `aalocal_test`  DEFAULT CHARACTER SET utf8 ;
 -- ------------------------------------------------------
 --
 -- Table structure for table `user`
@@ -181,29 +181,21 @@ CREATE TABLE `user_project` (
   CONSTRAINT `FK_user_project_2` FOREIGN KEY (`idproject`) REFERENCES `project` (`idproject`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-delimiter $$
-
+DROP TABLE IF EXISTS `apps`;
 CREATE TABLE `apps` (
-  `idapp` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `key` varchar(64) DEFAULT NULL,
+  `username` varchar(32) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `token` varchar(64) NOT NULL,
+  `tokentype` varchar(16) DEFAULT NULL,
   `referer` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`idapp`),
-  UNIQUE KEY `xapp` (`key`),
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expire` timestamp ,
+  `scope` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`username`,`token`),
+  UNIQUE KEY `xapp` (`token`),
   KEY `referer` (`referer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-delimiter $$
-
-CREATE TABLE `user_apps` (
-  `iduser` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `idapp` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`iduser`,`idapp`),
-  KEY `FK_user_app_2` (`idapp`),
-  CONSTRAINT `FK_user_app_1` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_app_2` FOREIGN KEY (`idapp`) REFERENCES `apps` (`idapp`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8$$
 
 
 --
@@ -220,28 +212,6 @@ CREATE TABLE `version_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
-
-DROP TABLE IF EXISTS `apps`;
-CREATE TABLE `apps` (
-  `idapp` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `key` varchar(64) DEFAULT NULL,
-  `referer` varchar(128) DEFAULT NULL,
-  PRIMARY KEY (`idapp`),
-  UNIQUE KEY `xapp` (`key`),
-  KEY `referer` (`referer`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `user_apps`;
-CREATE TABLE `user_apps` (
-  `iduser` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `idapp` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`iduser`,`idapp`),
-  KEY `FK_user_app_2` (`idapp`),
-  CONSTRAINT `FK_user_app_1` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_app_2` FOREIGN KEY (`idapp`) REFERENCES `apps` (`idapp`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 insert into version_users (idmajor,idminor,comment) values (2,8,"AMBITDB users");
 

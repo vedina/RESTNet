@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+  <user username="test" firstname="" lastname="" email="me@example.org"/>
   <users user_name="test" user_pass="098f6bcd4621d373cade4e832627b4f6"/>
   <users user_name="admin" user_pass="098f6bcd4621d373cade4e832627b4f6"/>
   <roles role_name="user"/>
@@ -10,5 +11,5 @@
   <user_registration user_name="admin" confirmed="2009-10-05 15:44:33.0" created="2009-10-05 00:00:00.0" code="ABCDEF" status="confirmed"/>
   <policy idpolicy="1" role_name="user" prefix="" resource="/dataset" mget="1" mput="0" mpost="0" mdelete="0"/>
   <policy idpolicy="2" role_name="admin" prefix="" resource="/dataset" mget="1" mput="1" mpost="1" mdelete="1"/>
-  
+  <apps token="rQ5Eb6EdH1T4J34+4W66Jh7sTNxvbKYWVKkTJjQPXLA=" name="testapp" username="test" created="2019-01-11 00:00:00.0" expire="2019-03-11 00:00:00.0" />
 </dataset>

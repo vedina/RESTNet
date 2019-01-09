@@ -29,14 +29,14 @@
 
 package net.idea.restnet.db.test;
 
-import junit.framework.Assert;
-import net.idea.modbcum.i.query.IQueryUpdate;
-import net.idea.modbcum.p.UpdateExecutor;
-
 import org.dbunit.database.IDatabaseConnection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import junit.framework.Assert;
+import net.idea.modbcum.i.query.IQueryUpdate;
+import net.idea.modbcum.p.UpdateExecutor;
 
 /**
  * C-UD test
@@ -47,85 +47,85 @@ import org.junit.Test;
  * @param <T>
  */
 public abstract class CRUDTest<G, T> extends DbUnitTest {
-    protected UpdateExecutor<IQueryUpdate<G, T>> executor;
+	protected UpdateExecutor<IQueryUpdate<G, T>> executor;
 
-    protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";
+	protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-	super.setUp();
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		super.setUp();
 
-	executor = new UpdateExecutor<IQueryUpdate<G, T>>();
-    }
+		executor = new UpdateExecutor<IQueryUpdate<G, T>>();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-	if (executor != null)
-	    executor.close();
-    }
+	@After
+	public void tearDown() throws Exception {
+		if (executor != null)
+			executor.close();
+	}
 
-    @Test
-    public void testUpdate() throws Exception {
-	IQueryUpdate<G, T> query = updateQuery();
-	setUpDatabase(dbFile);
-	IDatabaseConnection c = getConnection();
-	executor.setConnection(c.getConnection());
-	executor.open();
-	Assert.assertTrue(executor.process(query) >= 1);
-	updateVerify(query);
-	c.close();
-    }
+	@Test
+	public void testUpdate() throws Exception {
+		IQueryUpdate<G, T> query = updateQuery();
+		setUpDatabase(dbFile);
+		IDatabaseConnection c = getConnection();
+		executor.setConnection(c.getConnection());
+		executor.open();
+		Assert.assertTrue(executor.process(query) >= 1);
+		updateVerify(query);
+		c.close();
+	}
 
-    @Test
-    public void testCreate() throws Exception {
-	setUpDatabase(dbFile);
-	IQueryUpdate<G, T> query = createQuery();
-	IDatabaseConnection c = getConnection();
-	executor.setConnection(c.getConnection());
-	executor.open();
-	Assert.assertTrue(executor.process(query) >= 1);
-	createVerify(query);
-	c.close();
-    }
+	@Test
+	public void testCreate() throws Exception {
+		setUpDatabase(dbFile);
+		IQueryUpdate<G, T> query = createQuery();
+		IDatabaseConnection c = getConnection();
+		executor.setConnection(c.getConnection());
+		executor.open();
+		Assert.assertTrue(executor.process(query) >= 1);
+		createVerify(query);
+		c.close();
+	}
 
-    @Test
-    public void testCreateNew() throws Exception {
-	IQueryUpdate<G, T> query = createQueryNew();
-	setUpDatabase(dbFile);
-	IDatabaseConnection c = getConnection();
-	executor.setConnection(c.getConnection());
-	executor.open();
-	Assert.assertTrue(executor.process(query) >= 1);
-	createVerifyNew(query);
-	c.close();
-    }
+	@Test
+	public void testCreateNew() throws Exception {
+		IQueryUpdate<G, T> query = createQueryNew();
+		setUpDatabase(dbFile);
+		IDatabaseConnection c = getConnection();
+		executor.setConnection(c.getConnection());
+		executor.open();
+		Assert.assertTrue(executor.process(query) >= 1);
+		createVerifyNew(query);
+		c.close();
+	}
 
-    @Test
-    public void testDelete() throws Exception {
-	IQueryUpdate<G, T> query = deleteQuery();
-	setUpDatabase(dbFile);
-	IDatabaseConnection c = getConnection();
-	executor.setConnection(c.getConnection());
-	executor.open();
-	Assert.assertTrue(executor.process(query) >= 1);
-	deleteVerify(query);
-	c.close();
-    }
+	@Test
+	public void testDelete() throws Exception {
+		IQueryUpdate<G, T> query = deleteQuery();
+		setUpDatabase(dbFile);
+		IDatabaseConnection c = getConnection();
+		executor.setConnection(c.getConnection());
+		executor.open();
+		Assert.assertTrue(executor.process(query) >= 1);
+		deleteVerify(query);
+		c.close();
+	}
 
-    protected abstract IQueryUpdate<G, T> createQuery() throws Exception;
+	protected abstract IQueryUpdate<G, T> createQuery() throws Exception;
 
-    protected abstract IQueryUpdate<G, T> createQueryNew() throws Exception;
+	protected abstract IQueryUpdate<G, T> createQueryNew() throws Exception;
 
-    protected abstract IQueryUpdate<G, T> updateQuery() throws Exception;
+	protected abstract IQueryUpdate<G, T> updateQuery() throws Exception;
 
-    protected abstract IQueryUpdate<G, T> deleteQuery() throws Exception;
+	protected abstract IQueryUpdate<G, T> deleteQuery() throws Exception;
 
-    protected abstract void createVerify(IQueryUpdate<G, T> query) throws Exception;
+	protected abstract void createVerify(IQueryUpdate<G, T> query) throws Exception;
 
-    protected abstract void createVerifyNew(IQueryUpdate<G, T> query) throws Exception;
+	protected abstract void createVerifyNew(IQueryUpdate<G, T> query) throws Exception;
 
-    protected abstract void updateVerify(IQueryUpdate<G, T> query) throws Exception;
+	protected abstract void updateVerify(IQueryUpdate<G, T> query) throws Exception;
 
-    protected abstract void deleteVerify(IQueryUpdate<G, T> query) throws Exception;
+	protected abstract void deleteVerify(IQueryUpdate<G, T> query) throws Exception;
 }
