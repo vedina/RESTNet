@@ -1,8 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-<users/>
+<version_users/>
+<user_project/>
+<user_organisation/>
+<project/>
+<policy_bundle/>
+<organisation/>
 <policy/>
-<roles/>
 <user_registration/>
+<roles/>
+<users/>
+<user/>
 <user_roles/>
 </dataset>
