@@ -270,7 +270,7 @@ public class CookieAuthenticator extends ChallengeAuthenticator {
 	 */
 	protected String formatCredentials(ChallengeResponse challenge, ClientInfo clientInfo)
 			throws GeneralSecurityException {
-		if (challenge == null || !getScheme().equals(challenge))
+		if (challenge == null || !getScheme().equals(challenge.getScheme()))
 			return null;
 		// Data buffer
 		StringBuffer sb = new StringBuffer();
