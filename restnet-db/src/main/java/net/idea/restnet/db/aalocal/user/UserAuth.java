@@ -22,7 +22,7 @@ public class UserAuth extends AbstractAuth {
 	protected final String sql = "select user_name from %susers join %suser_registration using(user_name) where status='confirmed' and user_name = ? and user_pass = md5(?)";
 
 	@Override
-	public double calculateMetric(Boolean object) {
+	public double calculateMetric(String object) {
 		return 1;
 	}
 

@@ -47,7 +47,7 @@ public class DBVerifier<Q extends AbstractAuth> extends SecretVerifier {
 					rs = executor.process(query);
 					boolean ok = false;
 					while (rs.next()) {
-						ok = query.getObject(rs);
+						ok = query.getObject(rs) != null;
 						break;
 					}
 					return ok;

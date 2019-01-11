@@ -20,10 +20,10 @@ public class TokenAuth extends AbstractAuth {
 	 * 
 	 */
 	private static final long serialVersionUID = -7099610858192657006L;
-	protected final String sql = "select user_name from %sapps a join %suser_registration r on a.username=r.user_name where status='confirmed' and token = ? and expire >= now();";
+	protected final String sql = "select user_name from %sapps a join %suser_registration r on a.username=r.user_name where status='confirmed' and token = ? and expire >= now()";
 
 	@Override
-	public double calculateMetric(Boolean object) {
+	public double calculateMetric(String object) {
 		return 1;
 	}
 
@@ -35,7 +35,7 @@ public class TokenAuth extends AbstractAuth {
 	@Override
 	public List<QueryParam> getParameters() throws AmbitException {
 
-		if ((getValue() == null) || (getFieldname() == null))
+		if (getValue() == null)
 			throw new AmbitException("Empty parameters");
 		List<QueryParam> params = new ArrayList<QueryParam>();
 		params.add(new QueryParam<String>(String.class, getValue()));
