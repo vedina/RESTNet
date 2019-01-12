@@ -16,6 +16,7 @@ public class DBVerifier<Q extends AbstractAuth> extends SecretVerifier {
 	protected String config;
 	protected QueryExecutor<AbstractAuth> executor = new QueryExecutor<AbstractAuth>(true);
 	protected AbstractAuth query;
+	
 
 	public DBVerifier(Context context, AbstractAuth query) {
 		this(context, null, null, query);
@@ -30,6 +31,9 @@ public class DBVerifier<Q extends AbstractAuth> extends SecretVerifier {
 		this.query.setDatabaseName(dbName);
 	}
 
+	protected boolean processQueryResult(String identifier) {
+		return identifier != null;
+	}
 	@Override
 	public boolean verify(String identifier, char[] inputSecret) {
 		int maxRetry = 3;
@@ -47,7 +51,7 @@ public class DBVerifier<Q extends AbstractAuth> extends SecretVerifier {
 					rs = executor.process(query);
 					boolean ok = false;
 					while (rs.next()) {
-						ok = query.getObject(rs) != null;
+						ok = processQueryResult(query.getObject(rs));
 						break;
 					}
 					return ok;

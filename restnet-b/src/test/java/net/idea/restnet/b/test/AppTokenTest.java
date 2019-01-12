@@ -11,7 +11,7 @@ public class AppTokenTest {
 		AppToken t = new AppToken();
 		Assert.assertEquals("random32", t.getTokenType());
 		AppToken t1 = new AppToken();
-		//System.out.println(t);
+		System.out.println(t);
 		Assert.assertFalse(t.equals(t1));
 	}
 }
