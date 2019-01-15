@@ -23,6 +23,14 @@ public class ReadApp extends AbstractQuery<DBUser, DBUApp, EQCondition, DBUApp>
 	 */
 	private static final long serialVersionUID = 888018870900333768L;
 	protected String databaseName = null;
+	protected int howMany = -1;
+	public int getHowMany() {
+		return howMany;
+	}
+
+	public void setHowMany(int howMany) {
+		this.howMany = howMany;
+	}
 
 	@Override
 	public void setDatabaseName(String name) {
@@ -69,6 +77,8 @@ public class ReadApp extends AbstractQuery<DBUser, DBUApp, EQCondition, DBUApp>
 			b.append(d);
 			b.append(DBUApp._fields.token.getCondition());
 		}
+		if (howMany>-1)
+			b.append(String.format(" HAVING COUNT(*)<%s ", howMany));
 
 		return b.toString();
 	}
