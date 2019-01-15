@@ -17,13 +17,15 @@ import net.idea.restnet.user.alerts.db.DBAlert;
 
 public class ReadApp extends AbstractQuery<DBUser, DBUApp, EQCondition, DBUApp>
 		implements IQueryRetrieval<DBUApp>, IDBConfig {
-	protected String sql = "select username,token,tokentype,name,referer,created,expire,scope from `%s`.apps  ";
+	protected String sql_having = "select username,token,tokentype,name,referer,created,expire,scope,enabled from user left join `%s`.apps using(username) ";
+	protected String sql = "select username,token,tokentype,name,referer,created,expire,scope,enabled from `%s`.apps ";
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 888018870900333768L;
 	protected String databaseName = null;
 	protected int howMany = -1;
+
 	public int getHowMany() {
 		return howMany;
 	}
@@ -59,7 +61,10 @@ public class ReadApp extends AbstractQuery<DBUser, DBUApp, EQCondition, DBUApp>
 	@Override
 	public String getSQL() throws AmbitException {
 		StringBuilder b = new StringBuilder();
-		b.append(String.format(sql,getDatabaseName(),getDatabaseName(),getDatabaseName()));
+		if (howMany > -1)
+			b.append(String.format(sql_having, getDatabaseName(), getDatabaseName(), getDatabaseName()));
+		else
+			b.append(String.format(sql, getDatabaseName(), getDatabaseName(), getDatabaseName()));
 		String d = " where ";
 		if (getFieldname() != null) {
 			if (getFieldname().getID() > 0) {
@@ -77,8 +82,10 @@ public class ReadApp extends AbstractQuery<DBUser, DBUApp, EQCondition, DBUApp>
 			b.append(d);
 			b.append(DBUApp._fields.token.getCondition());
 		}
-		if (howMany>-1)
-			b.append(String.format(" HAVING COUNT(*)<%s ", howMany));
+		// do we have too many valid tokens ?
+		if (howMany > -1)
+			b.append(String.format(" and expire > date_add(now(),interval 7 day) and enabled=1 HAVING COUNT(*)<%s ",
+					howMany));
 
 		return b.toString();
 	}
@@ -127,7 +134,5 @@ public class ReadApp extends AbstractQuery<DBUser, DBUApp, EQCondition, DBUApp>
 	public double calculateMetric(DBUApp object) {
 		return 1;
 	}
-
-	
 
 }

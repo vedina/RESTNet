@@ -20,6 +20,15 @@ public class UApp<USER extends User<String>> extends BeanResource<String> {
 	protected long created;
 	protected long expire;
 	protected String scope;
+	protected boolean enabled;
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public String getScope() {
 		return scope;
 	}

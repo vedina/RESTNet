@@ -8,7 +8,7 @@ import net.idea.modbcum.i.query.QueryParam;
 import net.idea.restnet.user.DBUser;
 
 public class DeleteApp extends AbstractAppUpdate<DBUser> {
-	protected static final String[] sql_key = { "DELETE from apps where token=?" };
+	protected static final String[] sql_key = { "UPDATE apps set enabled=0 where token=?" };
 
 	public DeleteApp(DBUApp app, DBUser user) {
 		super(app);

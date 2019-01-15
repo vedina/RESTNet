@@ -14,6 +14,7 @@ import net.idea.restnet.db.aalocal.user.IDBConfig;
 import net.idea.restnet.db.update.CallableDBUpdateTask;
 import net.idea.restnet.user.app.db.AddApp;
 import net.idea.restnet.user.app.db.DBUApp;
+import net.idea.restnet.user.app.db.DeleteApp;
 import net.idea.restnet.user.db.ReadUser;
 
 public class CallableTokenCreator extends CallableDBUpdateTask<DBUApp, Form, String> implements IDBConfig {
@@ -46,11 +47,17 @@ public class CallableTokenCreator extends CallableDBUpdateTask<DBUApp, Form, Str
 		String username = input.getFirstValue(ReadUser.fields.username.name());
 		if (username == null || !username.equals(item.getUser().getUserName()))
 			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST);
-		
+
 		if (Method.POST.equals(method)) {
 			DBUApp app = new DBUApp();
 			app.setKey(new AppToken());
 			app.setName(UUID.randomUUID().toString().substring(1, 32));
+			app.setUser(item.getUser());
+			return app;
+		} else if (Method.PUT.equals(method)) {
+			String token = input.getFirstValue("token");
+			DBUApp app = new DBUApp();
+			app.setKey(new AppToken(token));
 			app.setUser(item.getUser());
 			return app;
 		}
@@ -60,10 +67,19 @@ public class CallableTokenCreator extends CallableDBUpdateTask<DBUApp, Form, Str
 
 	@Override
 	protected IQueryUpdate<? extends Object, DBUApp> createUpdate(DBUApp target) throws Exception {
-		AddApp q = new AddApp();
-		q.setObject(target);
-		q.setGroup(target.getUser());
-		return q;
+		if (Method.POST.equals(method)) {
+			AddApp q = new AddApp();
+			q.setObject(target);
+			q.setGroup(target.getUser());
+			return q;
+		} else if (Method.PUT.equals(method)) {
+			DeleteApp q = new DeleteApp();
+			q.setObject(target);
+			q.setGroup(target.getUser());
+			return q;
+
+		}
+		return null;
 	}
 
 	@Override

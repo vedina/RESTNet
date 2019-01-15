@@ -55,7 +55,7 @@ public class UAppJsonReporter<Q extends IQueryRetrieval<DBUApp>> extends QueryRe
 
 	};
 
-	final String format = "{\"token\" : %s, \"name\":%s , \"referer\" : %s,  \"expire\" : %s}";
+	final String format = "{\"token\" : %s, \"name\":%s , \"referer\" : %s,  \"expire\" : %s , \"enabled\" : %s }";
 
 	@Override
 	public Object processItem(DBUApp item) throws Exception {
@@ -67,7 +67,7 @@ public class UAppJsonReporter<Q extends IQueryRetrieval<DBUApp>> extends QueryRe
 					JSONUtils.jsonQuote(JSONUtils.jsonEscape(item.getKey().getToken())),
 					JSONUtils.jsonQuote(JSONUtils.jsonEscape(item.getName())),
 					item.getReferer()==null?"\"\"":JSONUtils.jsonQuote(JSONUtils.jsonEscape(item.getReferer())),
-					item.getExpire())); 
+					item.getExpire(),item.isEnabled())); 
 			comma = ",";
 		} catch (IOException x) {
 			Context.getCurrentLogger().severe(x.getMessage());

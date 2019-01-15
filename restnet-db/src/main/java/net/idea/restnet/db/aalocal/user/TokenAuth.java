@@ -20,7 +20,7 @@ public class TokenAuth extends AbstractAuth {
 	 * 
 	 */
 	private static final long serialVersionUID = -7099610858192657006L;
-	protected final String sql = "select user_name from %sapps a join %suser_registration r on a.username=r.user_name where status='confirmed' and token = ? and expire >= now()";
+	protected final String sql = "select user_name from %sapps a join %suser_registration r on a.username=r.user_name where status='confirmed' and token = ? and enabled = 1 and expire >= now()";
 
 	public TokenAuth() {
 		super();

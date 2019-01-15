@@ -10,10 +10,10 @@ import net.idea.restnet.user.DBUser;
 
 public class AddApp extends AbstractAppUpdate<DBUser> {
 	public static final String[] sql_addApp_byuserid = new String[] {
-			"insert into apps SELECT username,?,?,?,?,now(),DATE_ADD(now(), INTERVAL 60 DAY),? from user where iduser=? ",
+			"insert into apps SELECT username,?,?,?,?,now(),DATE_ADD(now(), INTERVAL 60 DAY),?,1 from user where iduser=? ",
 			};
 	public static final String[] sql_addApp_byusername = new String[] {
-			"insert into apps SELECT username,?,?,?,?,now(),DATE_ADD(now(), INTERVAL 60 DAY),? from user where username=? ",
+			"insert into apps SELECT username,?,?,?,?,now(),DATE_ADD(now(), INTERVAL 60 DAY),?,1 from user where username=? ",
 			};
 	
 

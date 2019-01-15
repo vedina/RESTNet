@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `apps`;
+
 CREATE TABLE `apps` (
   `username` varchar(32) NOT NULL,
   `name` varchar(32) DEFAULT NULL,
@@ -6,12 +7,18 @@ CREATE TABLE `apps` (
   `tokentype` varchar(16) DEFAULT NULL,
   `referer` varchar(128) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `expire` timestamp ,
+  `expire` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `scope` varchar(128) DEFAULT NULL,
+  `enabled` tinyint(4) DEFAULT '1',
   PRIMARY KEY (`username`,`token`),
   UNIQUE KEY `xapp` (`token`),
-  KEY `referer` (`referer`)
+  KEY `referer` (`referer`),
+  KEY `xenabled` (`enabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ALTER TABLE `apps` ADD COLUMN `enabled` TINYINT NULL DEFAULT 1  AFTER `scope` ;
+-- ALTER TABLE `apps` ADD INDEX `xenabled` (`enabled` ASC) ;
 
 
 

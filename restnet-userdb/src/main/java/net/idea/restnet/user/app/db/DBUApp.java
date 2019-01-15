@@ -166,6 +166,26 @@ public class DBUApp extends UApp<DBUser> {
 			public Object getValue(DBUApp item) {
 				return item.getUser();
 			}
+		},
+		enabled {
+			@Override
+			public void setValue(DBUApp item, String value) throws SQLException {
+				item.setEnabled(Integer.parseInt(value)>0);
+			}
+
+			@Override
+			public void setParam(DBUApp item, ResultSet rs) throws SQLException {
+				try {
+					item.setEnabled(rs.getBoolean(name()));
+				} catch (Exception x) {
+					item.setEnabled(true);
+				}
+			}
+
+			@Override
+			public Object getValue(DBUApp item) {
+				return item.getCreated();
+			}
 		};
 		public String getCondition() {
 			return String.format("%s=?", name());
