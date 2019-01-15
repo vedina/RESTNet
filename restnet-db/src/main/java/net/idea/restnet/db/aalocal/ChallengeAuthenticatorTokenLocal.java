@@ -35,9 +35,11 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 					char[] secret = getSecret(request, response);
 
 					if (verify(identifier, secret)) {
-						request.getClientInfo().setUser(new User(query.getFieldname()));
+						request.getClientInfo()
+								.setUser(new User(query.getFieldname(), TokenAuth.APIKEY.getTechnicalName()));
 					} else {
 						result = RESULT_INVALID;
+						request.getClientInfo().setUser(new User(null, TokenAuth.APIKEY.getTechnicalName()));
 					}
 				}
 
@@ -54,7 +56,8 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 
 			@Override
 			protected String getIdentifier(Request request, Response response) {
-				// with plain random token we don't know this before the db lookup
+				// with plain random token we don't know this before the db
+				// lookup
 				return null;
 			}
 
@@ -69,7 +72,42 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 		setEnroler(new DbEnroller(context, configFile, realm));
 		setRechallenging(true);
 	}
+	
+	@Override
+	protected int unauthenticated(Request request, Response response) {
+		if (isOptional()) {
+			//if we got here because of wrong token, stop
+			if (request.getClientInfo() != null && request.getClientInfo().getUser() != null
+					&& request.getClientInfo().getUser().getIdentifier() == null && TokenAuth.APIKEY.getTechnicalName()
+							.equals(String.valueOf(request.getClientInfo().getUser().getSecret()))) {
+				//that's it
+			} else
+				return CONTINUE;
+		}
 
+		// Update the challenge response accordingly
+		if (request.getChallengeResponse() != null) {
+			request.getChallengeResponse().setAuthenticated(false);
+		}
+
+		// Update the client info accordingly
+		if (request.getClientInfo() != null) {
+			request.getClientInfo().setAuthenticated(false);
+		}
+
+		// Stop the filtering chain
+		return STOP;
+	}
+
+	/**
+	 * Missing APIKEY will be handled by the next authenticator, otherwise stop
+	 * 
+	 * @param verifier_result
+	 * @return
+	 */
+	protected boolean isOptional(int verifier_result) {
+		return isOptional() && (Verifier.RESULT_MISSING == verifier_result);
+	}
 
 	@Override
 	protected boolean authenticate(Request request, Response response) {
@@ -99,7 +137,7 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 					getLogger().fine("Authentication failed. No credentials provided.");
 				}
 
-				if (!isOptional()) {
+				if (!isOptional(Verifier.RESULT_MISSING)) {
 					challenge(response, false);
 				}
 				break;
@@ -109,7 +147,7 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 					getLogger().fine("Authentication failed. Invalid credentials provided.");
 				}
 
-				if (!isOptional()) {
+				if (!isOptional(Verifier.RESULT_INVALID)) {
 					if (isRechallenging()) {
 						challenge(response, false);
 					} else {
@@ -122,7 +160,7 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 					getLogger().fine("Authentication failed. Stale credentials provided.");
 				}
 
-				if (!isOptional()) {
+				if (!isOptional(Verifier.RESULT_STALE)) {
 					challenge(response, true);
 				}
 				break;
@@ -133,6 +171,5 @@ public class ChallengeAuthenticatorTokenLocal extends ChallengeAuthenticator {
 
 		return result;
 	}
-	
 
 }
