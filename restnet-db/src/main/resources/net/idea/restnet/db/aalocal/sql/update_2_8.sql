@@ -16,7 +16,8 @@ CREATE TABLE `apps` (
   KEY `xenabled` (`enabled`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+ insert into roles values ("ambit_apps");
+ 
 -- ALTER TABLE `apps` ADD COLUMN `enabled` TINYINT NULL DEFAULT 1  AFTER `scope` ;
 -- ALTER TABLE `apps` ADD INDEX `xenabled` (`enabled` ASC) ;
 
