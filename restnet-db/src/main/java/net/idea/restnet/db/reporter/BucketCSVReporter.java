@@ -74,7 +74,7 @@ public class BucketCSVReporter extends
 
 	@Override
 	public String getFileExtension() {
-		return delimiter==","?".csv":".txt";
+		return delimiter==","?"csv":"txt";
 	}
 
 	@Override
