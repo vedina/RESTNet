@@ -10,9 +10,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.owasp.encoder.Encode;
+import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.data.CacheDirective;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Reference;
+import org.restlet.data.Status;
+import org.restlet.ext.fileupload.RestletFileUpload;
+import org.restlet.representation.ObjectRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.Variant;
+import org.restlet.resource.ResourceException;
+
 import net.idea.modbcum.i.IDBProcessor;
 import net.idea.modbcum.i.IQueryObject;
 import net.idea.modbcum.i.IQueryRetrieval;
+import net.idea.modbcum.i.config.ConfigProperties;
 import net.idea.modbcum.i.exceptions.AmbitException;
 import net.idea.modbcum.i.exceptions.BatchProcessingException;
 import net.idea.modbcum.i.exceptions.NotFoundException;
@@ -36,24 +55,6 @@ import net.idea.restnet.i.task.ITask;
 import net.idea.restnet.i.task.ITaskApplication;
 import net.idea.restnet.i.task.ITaskResult;
 import net.idea.restnet.i.task.ITaskStorage;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.owasp.encoder.Encode;
-import org.restlet.Context;
-import org.restlet.Request;
-import org.restlet.data.CacheDirective;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Method;
-import org.restlet.data.Reference;
-import org.restlet.data.Status;
-import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.representation.ObjectRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.representation.Variant;
-import org.restlet.resource.ResourceException;
 
 /**
  * Abstract parent class for all resources , which retrieves something from the
@@ -102,13 +103,10 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	@Override
 	protected void doInit() throws ResourceException {
 		super.doInit();
-		customizeVariants(new MediaType[] { MediaType.TEXT_HTML,
-				MediaType.TEXT_PLAIN, MediaType.TEXT_URI_LIST,
-				MediaType.TEXT_CSV, MediaType.APPLICATION_RDF_XML,
-				MediaType.APPLICATION_RDF_TURTLE, MediaType.TEXT_RDF_N3,ChemicalMediaType.APPLICATION_JSONLD,
-				MediaType.TEXT_RDF_NTRIPLES, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JAVASCRIPT,
-				MediaType.APPLICATION_JAVA_OBJECT
+		customizeVariants(new MediaType[] { MediaType.TEXT_HTML, MediaType.TEXT_PLAIN, MediaType.TEXT_URI_LIST,
+				MediaType.TEXT_CSV, MediaType.APPLICATION_RDF_XML, MediaType.APPLICATION_RDF_TURTLE,
+				MediaType.TEXT_RDF_N3, ChemicalMediaType.APPLICATION_JSONLD, MediaType.TEXT_RDF_NTRIPLES,
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JAVASCRIPT, MediaType.APPLICATION_JAVA_OBJECT
 
 		});
 		if (queryObject != null) {
@@ -126,73 +124,77 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		return queryObject;
 	}
 
-	public void configureDatasetMembersPrefixOption(boolean prefix) {
-		dataset_prefixed_compound_uri = prefix;
+	protected void configureProperties(String configfile) {
+		Object config = getContext().getAttributes().get(ConfigProperties.class.getName());
+		String RDFwriter = "jena";
+		ConfigProperties p = null;
+		if (config != null && config instanceof ConfigProperties) 
+			p = (ConfigProperties) config;
+		
+		
+		configureRDFWriterOption(p);
+		configureSDFLineSeparators(p);
+		configureDatasetMembersPrefixOption(p);
 	}
 
-	protected void configureRDFWriterOption(String defaultWriter) {
+	public void configureDatasetMembersPrefixOption(ConfigProperties p) {
+		dataset_prefixed_compound_uri = false;
+	}
+
+	protected void configureRDFWriterOption(ConfigProperties p) {
 		try {
-			Object jenaOption = getRequest().getResourceRef().getQueryAsForm()
-					.getFirstValue("rdfwriter");
+			Object jenaOption = getRequest().getResourceRef().getQueryAsForm().getFirstValue("rdfwriter");
 			// if no option ?rdfwriter=jena|stax , then take from properties
 			// rdf.writer
 			// if not defined there, use jena
-			rdfwriter = RDF_WRITER.valueOf(jenaOption == null ? defaultWriter
-					: jenaOption.toString().toLowerCase());
+			String defaultWriter = p==null?"jena":p.getPropertyWithDefault("rdf.writer", configFile, "jena");
+			rdfwriter = RDF_WRITER.valueOf(jenaOption == null ? defaultWriter : jenaOption.toString().toLowerCase());
 		} catch (Exception x) {
 			rdfwriter = RDF_WRITER.jena;
 		}
 	}
 
-	protected void configureSDFLineSeparators(boolean defaultSeparator) {
+	protected void configureSDFLineSeparators(ConfigProperties p) {
 		try {
-			Object lsOption = getResourceRef(getRequest()).getQueryAsForm()
-					.getFirstValue("changeLineSeparators");
-			changeLineSeparators = lsOption == null ? defaultSeparator
-					: Boolean.parseBoolean(lsOption.toString());
+			Object lsOption = getResourceRef(getRequest()).getQueryAsForm().getFirstValue("changeLineSeparators");
+			boolean defaultSeparator = p==null?false:p.getBooleanPropertyWithDefault("changeLineSeparators", configFile, false);
+			changeLineSeparators = lsOption == null ? defaultSeparator : Boolean.parseBoolean(lsOption.toString());
 		} catch (Exception x) {
-			changeLineSeparators = defaultSeparator;
+			changeLineSeparators = false;
 		}
 	}
 
 	@Override
 	protected Representation get(Variant variant) throws ResourceException {
-		if (isHtmlbyTemplate()
-				&& MediaType.TEXT_HTML.equals(variant.getMediaType())) {
-			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),getToken(),
-							useSecureCookie(getRequest()));
+		if (isHtmlbyTemplate() && MediaType.TEXT_HTML.equals(variant.getMediaType())) {
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(), getToken(),
+					useSecureCookie(getRequest()));
 			return getHTMLByTemplate(variant);
 		} else
 			return getRepresentation(variant);
 	}
 
-	protected DBConnection getConnection(Context context, String configFile)
-			throws SQLException, AmbitException {
+	protected DBConnection getConnection(Context context, String configFile) throws SQLException, AmbitException {
 		return new DBConnection(context, configFile);
 	}
 
-	protected Representation getRepresentation(Variant variant)
-			throws ResourceException {
+	protected Representation getRepresentation(Variant variant) throws ResourceException {
 		try {
 
-			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(),
-					getToken(), useSecureCookie(getRequest()));
+			OpenSSOCookie.setCookieSetting(this.getResponse().getCookieSettings(), getToken(),
+					useSecureCookie(getRequest()));
 			setXHeaders();
 			setCacheHeaders();
 			/*
 			 * if (variant.getMediaType().equals(MediaType.APPLICATION_WADL)) {
 			 * return new WadlRepresentation(); } else
 			 */
-			if (MediaType.APPLICATION_JAVA_OBJECT
-					.equals(variant.getMediaType())) {
-				if ((queryObject != null)
-						&& (queryObject instanceof Serializable))
-					return new ObjectRepresentation(
-							(Serializable) returnQueryObject(),
+			if (MediaType.APPLICATION_JAVA_OBJECT.equals(variant.getMediaType())) {
+				if ((queryObject != null) && (queryObject instanceof Serializable))
+					return new ObjectRepresentation((Serializable) returnQueryObject(),
 							MediaType.APPLICATION_JAVA_OBJECT);
 				else
-					throw new ResourceException(
-							Status.CLIENT_ERROR_NOT_ACCEPTABLE);
+					throw new ResourceException(Status.CLIENT_ERROR_NOT_ACCEPTABLE);
 			}
 			if (queryObject != null) {
 
@@ -204,19 +206,13 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 					DBConnection dbc = null;
 					try {
 						dbc = getConnection(getContext(), getConfigFile());
-						configureRDFWriterOption(dbc.rdfWriter());
-						configureSDFLineSeparators(((IFreeMarkerApplication) getApplication())
-								.isChangeLineSeparators());
-						configureDatasetMembersPrefixOption(dbc
-								.dataset_prefixed_compound_uri());
+						configureProperties(getConfigFile());
 						convertor = createConvertor(variant);
 						if (convertor instanceof RepresentationConvertor)
-							((RepresentationConvertor) convertor)
-									.setLicenseURI(getLicenseURI());
+							((RepresentationConvertor) convertor).setLicenseURI(getLicenseURI());
 
 						connection = dbc.getConnection();
-						reporter = ((RepresentationConvertor) convertor)
-								.getReporter();
+						reporter = ((RepresentationConvertor) convertor).getReporter();
 						if (reporter instanceof IDBProcessor)
 							((IDBProcessor) reporter).setConnection(connection);
 						Representation r = convertor.process(queryObject);
@@ -275,14 +271,11 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 						Representation r = null;
 						Exception batchException = null;
 						if (x.getCause() instanceof NotFoundException) {
-							r = processNotFound(
-									(NotFoundException) x.getCause(), retry);
+							r = processNotFound((NotFoundException) x.getCause(), retry);
 							retry++;
 							if (r == null)
-								batchException = new ResourceException(
-										Status.CLIENT_ERROR_NOT_FOUND, x
-												.getCause().getMessage(),
-										x.getCause());
+								batchException = new ResourceException(Status.CLIENT_ERROR_NOT_FOUND,
+										x.getCause().getMessage(), x.getCause());
 						}
 						try {
 							if ((reporter != null) && (reporter != null))
@@ -297,9 +290,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 						;
 						if (r != null)
 							return r;
-						batchException = batchException == null ? new RResourceException(
-								Status.SERVER_ERROR_INTERNAL, x, variant)
-								: batchException;
+						batchException = batchException == null
+								? new RResourceException(Status.SERVER_ERROR_INTERNAL, x, variant) : batchException;
 						Context.getCurrentLogger().severe(x.getMessage());
 						throw batchException;
 					} catch (Exception x) {
@@ -315,8 +307,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 						}
 						;
 						Context.getCurrentLogger().severe(x.getMessage());
-						throw new RResourceException(
-								Status.SERVER_ERROR_INTERNAL, x, variant);
+						throw new RResourceException(Status.SERVER_ERROR_INTERNAL, x, variant);
 
 					} finally {
 						dbc = null;
@@ -332,12 +323,10 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 						Representation r = convertor.process(null);
 						return r;
 					} catch (Exception x) {
-						throw new RResourceException(
-								Status.CLIENT_ERROR_BAD_REQUEST, x, variant);
+						throw new RResourceException(Status.CLIENT_ERROR_BAD_REQUEST, x, variant);
 					}
 				else {
-					throw new RResourceException(
-							Status.CLIENT_ERROR_BAD_REQUEST, error, variant);
+					throw new RResourceException(Status.CLIENT_ERROR_BAD_REQUEST, error, variant);
 				}
 
 			}
@@ -346,29 +335,24 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		} catch (ResourceException x) {
 			throw new RResourceException(x.getStatus(), x, variant);
 		} catch (Exception x) {
-			throw new RResourceException(Status.SERVER_ERROR_INTERNAL, x,
-					variant);
+			throw new RResourceException(Status.SERVER_ERROR_INTERNAL, x, variant);
 		} finally {
 
 		}
 	}
 
-	protected Representation processNotFound(NotFoundException x, int retry)
-			throws Exception {
+	protected Representation processNotFound(NotFoundException x, int retry) throws Exception {
 		throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND,
 				String.format("Query returns no results! %s", x.getMessage()));
 	}
 
-	protected Representation processSQLError(SQLException x, int retry,
-			Variant variant) throws Exception {
+	protected Representation processSQLError(SQLException x, int retry, Variant variant) throws Exception {
 		Context.getCurrentLogger().severe(x.getMessage());
 		if (retry < maxRetry) {
-			getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE, x,
-					String.format("Retry %d ", retry));
+			getResponse().setStatus(Status.SERVER_ERROR_SERVICE_UNAVAILABLE, x, String.format("Retry %d ", retry));
 			return null;
 		} else {
-			throw new RResourceException(
-					Status.SERVER_ERROR_SERVICE_UNAVAILABLE, x, variant);
+			throw new RResourceException(Status.SERVER_ERROR_SERVICE_UNAVAILABLE, x, variant);
 		}
 	}
 
@@ -438,8 +422,7 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	 * getResponse().setStatus(Status.SUCCESS_OK); return new
 	 * EmptyRepresentation(); };
 	 */
-	protected QueryURIReporter<T, Q> getURIReporter(Request baseReference)
-			throws ResourceException {
+	protected QueryURIReporter<T, Q> getURIReporter(Request baseReference) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED,
 				String.format("%s getURUReporter()", getClass().getName()));
 	}
@@ -535,25 +518,21 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	}
 
 	@Override
-	protected Representation processAndGenerateTask(final Method method,
-			Representation entity, Variant variant, boolean async)
-			throws ResourceException {
+	protected Representation processAndGenerateTask(final Method method, Representation entity, Variant variant,
+			boolean async) throws ResourceException {
 
 		Connection conn = null;
 		try {
 
-			IQueryRetrieval<T> query = createUpdateQuery(method, getContext(),
-					getRequest(), getResponse());
+			IQueryRetrieval<T> query = createUpdateQuery(method, getContext(), getRequest(), getResponse());
 
-			TaskCreator taskCreator = getTaskCreator(entity, variant, method,
-					async);
+			TaskCreator taskCreator = getTaskCreator(entity, variant, method, async);
 
 			List<UUID> r = null;
 			if (query == null) { // no db querying, just return the task
 				r = taskCreator.process(null);
 			} else {
-				DBConnection dbc = new DBConnection(getApplication()
-						.getContext(), getConfigFile());
+				DBConnection dbc = new DBConnection(getApplication().getContext(), getConfigFile());
 				conn = dbc.getConnection();
 
 				try {
@@ -580,27 +559,22 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			if ((r == null) || (r.size() == 0))
 				throw new ResourceException(Status.CLIENT_ERROR_NOT_FOUND);
 			else {
-				ITaskStorage storage = ((ITaskApplication) getApplication())
-						.getTaskStorage();
+				ITaskStorage storage = ((ITaskApplication) getApplication()).getTaskStorage();
 				FactoryTaskConvertor<Object> tc = getFactoryTaskConvertor(storage);
 				if (r.size() == 1) {
-					ITask<ITaskResult, Object> task = storage
-							.findTask(r.get(0));
+					ITask<ITaskResult, Object> task = storage.findTask(r.get(0));
 					task.update();
 					if (variant.getMediaType().equals(MediaType.TEXT_HTML)) {
 						getResponse().redirectSeeOther(task.getUri().getUri());
 						return null;
 					} else {
-						setStatus(task.isDone() ? Status.SUCCESS_OK
-								: Status.SUCCESS_ACCEPTED);
-						return tc
-								.createTaskRepresentation(r.get(0), variant,
-										getRequest(), getResponse(),
-										getDocumentation());
+						setStatus(task.isDone() ? Status.SUCCESS_OK : Status.SUCCESS_ACCEPTED);
+						return tc.createTaskRepresentation(r.get(0), variant, getRequest(), getResponse(),
+								getDocumentation());
 					}
 				} else
-					return tc.createTaskRepresentation(r.iterator(), variant,
-							getRequest(), getResponse(), getDocumentation());
+					return tc.createTaskRepresentation(r.iterator(), variant, getRequest(), getResponse(),
+							getDocumentation());
 
 			}
 		} catch (RResourceException x) {
@@ -608,14 +582,11 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		} catch (ResourceException x) {
 			throw new RResourceException(x.getStatus(), x, variant);
 		} catch (AmbitException x) {
-			throw new RResourceException(new Status(
-					Status.SERVER_ERROR_INTERNAL, x), variant);
+			throw new RResourceException(new Status(Status.SERVER_ERROR_INTERNAL, x), variant);
 		} catch (SQLException x) {
-			throw new RResourceException(new Status(
-					Status.SERVER_ERROR_INTERNAL, x), variant);
+			throw new RResourceException(new Status(Status.SERVER_ERROR_INTERNAL, x), variant);
 		} catch (Exception x) {
-			throw new RResourceException(new Status(
-					Status.SERVER_ERROR_INTERNAL, x), variant);
+			throw new RResourceException(new Status(Status.SERVER_ERROR_INTERNAL, x), variant);
 		} finally {
 			try {
 				if (conn != null)
@@ -636,8 +607,8 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	 * @return
 	 * @throws Exception
 	 */
-	protected TaskCreator getTaskCreator(Representation entity,
-			Variant variant, Method method, boolean async) throws Exception {
+	protected TaskCreator getTaskCreator(Representation entity, Variant variant, Method method, boolean async)
+			throws Exception {
 
 		if (entity == null) {
 			return getTaskCreator(null, method, async, null);
@@ -645,38 +616,29 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 			Form form = new Form(entity);
 			final Reference reference = new Reference(getObjectURI(form));
 			return getTaskCreator(form, method, async, reference);
-		} else if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),
-				true)) {
+		} else if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(), true)) {
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			// factory.setSizeThreshold(100);
 			RestletFileUpload upload = new RestletFileUpload(factory);
 			List<FileItem> items = upload.parseRequest((Request) getRequest());
 			return getTaskCreator(items, method, async);
 		} else if (isAllowedMediaType(entity.getMediaType())) {
-			return getTaskCreator(downloadRepresentation(entity, variant),
-					entity.getMediaType(), method, async);
+			return getTaskCreator(downloadRepresentation(entity, variant), entity.getMediaType(), method, async);
 
 		} else
-			throw new ResourceException(
-					Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
+			throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE);
 
 	}
 
-	protected File downloadRepresentation(Representation entity, Variant variant)
-			throws Exception {
+	protected File downloadRepresentation(Representation entity, Variant variant) throws Exception {
 
 		String extension = getExtension(entity.getMediaType());
 		File file = null;
 		if (entity.getDownloadName() == null) {
-			file = File
-					.createTempFile(
-							String.format("_download_%s", UUID.randomUUID()),
-							extension);
+			file = File.createTempFile(String.format("_download_%s", UUID.randomUUID()), extension);
 			file.deleteOnExit();
 		} else
-			file = new File(String.format("%s/%s",
-					System.getProperty("java.io.tmpdir"),
-					entity.getDownloadName()));
+			file = new File(String.format("%s/%s", System.getProperty("java.io.tmpdir"), entity.getDownloadName()));
 		FileOutputStream out = new FileOutputStream(file);
 		entity.write(out);
 		out.flush();
@@ -720,17 +682,15 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	 * @return
 	 * @throws Exception
 	 */
-	protected TaskCreator getTaskCreator(File file, MediaType mediaType,
-			final Method method, boolean async) throws Exception {
+	protected TaskCreator getTaskCreator(File file, MediaType mediaType, final Method method, boolean async)
+			throws Exception {
 		return new TaskCreatorFile<Object, T>(file, mediaType, async) {
-			protected ICallableTask getCallable(File file, T item)
-					throws ResourceException {
+			protected ICallableTask getCallable(File file, T item) throws ResourceException {
 				return createCallable(method, file, mediaType, item);
 			}
 
 			@Override
-			protected ITask<Reference, Object> createTask(
-					ICallableTask callable, T item) throws ResourceException {
+			protected ITask<Reference, Object> createTask(ICallableTask callable, T item) throws ResourceException {
 				return addTask(callable, item, null);
 			}
 		};
@@ -746,18 +706,16 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	 * @return
 	 * @throws Exception
 	 */
-	protected TaskCreator getTaskCreator(Form form, final Method method,
-			boolean async, final Reference reference) throws Exception {
+	protected TaskCreator getTaskCreator(Form form, final Method method, boolean async, final Reference reference)
+			throws Exception {
 		return new TaskCreatorForm<Object, T>(form, async) {
 			@Override
-			protected ICallableTask getCallable(Form form, T item)
-					throws ResourceException {
+			protected ICallableTask getCallable(Form form, T item) throws ResourceException {
 				return createCallable(method, form, item);
 			}
 
 			@Override
-			protected ITask<Reference, Object> createTask(
-					ICallableTask callable, T item) throws ResourceException {
+			protected ITask<Reference, Object> createTask(ICallableTask callable, T item) throws ResourceException {
 				return addTask(callable, item, reference);
 			}
 		};
@@ -773,58 +731,53 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 	 * @return
 	 * @throws Exception
 	 */
-	protected TaskCreator getTaskCreator(List<FileItem> fileItems,
-			final Method method, boolean async) throws Exception {
+	protected TaskCreator getTaskCreator(List<FileItem> fileItems, final Method method, boolean async)
+			throws Exception {
 		return new TaskCreatorMultiPartForm<Object, T>(fileItems, async) {
-			protected ICallableTask getCallable(java.util.List<FileItem> input,
-					T item) throws ResourceException {
+			protected ICallableTask getCallable(java.util.List<FileItem> input, T item) throws ResourceException {
 				return createCallable(method, input, item);
 			};
 
 			@Override
-			protected ITask createTask(ICallableTask callable, T item)
-					throws ResourceException {
+			protected ITask createTask(ICallableTask callable, T item) throws ResourceException {
 				return addTask(callable, item, (Reference) null);
 			}
 		};
 	}
 
-	protected ITask<Reference, Object> addTask(ICallableTask callable, T item,
-			Reference reference) throws ResourceException {
+	protected ITask<Reference, Object> addTask(ICallableTask callable, T item, Reference reference)
+			throws ResourceException {
 
-		return ((ITaskApplication) getApplication()).addTask(String.format(
-				"Apply %s %s %s", item == null ? "" : item.toString(),
-				reference == null ? "" : "to", reference == null ? ""
-						: reference), callable, getRequest().getRootRef(),
-				getToken());
+		return ((ITaskApplication) getApplication())
+				.addTask(
+						String.format("Apply %s %s %s", item == null ? "" : item.toString(),
+								reference == null ? "" : "to", reference == null ? "" : reference),
+						callable, getRequest().getRootRef(), getToken());
 
 	}
 
-	protected CallableProtectedTask<String> createCallable(Method method,
-			File file, MediaType mediaType, T item) throws ResourceException {
+	protected CallableProtectedTask<String> createCallable(Method method, File file, MediaType mediaType, T item)
+			throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 
-	protected CallableProtectedTask<String> createCallable(Method method,
-			Form form, T item) throws ResourceException {
+	protected CallableProtectedTask<String> createCallable(Method method, Form form, T item) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 
-	protected CallableProtectedTask<String> createCallable(Method method,
-			List<FileItem> input, T item) throws ResourceException {
+	protected CallableProtectedTask<String> createCallable(Method method, List<FileItem> input, T item)
+			throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 
 	protected void setPaging(Form form, IQueryObject queryObject) {
 		String max = form.getFirstValue(max_hits);
 		String page = form.getFirstValue(PageParams.params.page.toString());
-		String pageSize = form.getFirstValue(PageParams.params.pagesize
-				.toString());
+		String pageSize = form.getFirstValue(PageParams.params.pagesize.toString());
 		if (max != null)
 			try {
 				queryObject.setPage(0);
-				queryObject.setPageSize(Long.parseLong(form.getFirstValue(
-						max_hits).toString()));
+				queryObject.setPageSize(Long.parseLong(form.getFirstValue(max_hits).toString()));
 				return;
 			} catch (Exception x) {
 
@@ -882,18 +835,15 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		return null;
 	}
 
-	protected boolean isAllowedMediaType(MediaType mediaType)
-			throws ResourceException {
+	protected boolean isAllowedMediaType(MediaType mediaType) throws ResourceException {
 		throw new ResourceException(Status.SERVER_ERROR_NOT_IMPLEMENTED);
 	}
 
-	protected Representation getHTMLByTemplate(Variant variant)
-			throws ResourceException {
+	protected Representation getHTMLByTemplate(Variant variant) throws ResourceException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (getClientInfo().getUser() != null)
 			map.put("username", getClientInfo().getUser().getIdentifier());
-		configureTemplateMap(map, getRequest(),
-				(IFreeMarkerApplication) getApplication());
+		configureTemplateMap(map, getRequest(), (IFreeMarkerApplication) getApplication());
 		return toRepresentation(map, getTemplateName(), MediaType.TEXT_PLAIN);
 	}
 
@@ -907,4 +857,5 @@ public abstract class QueryResource<Q extends IQueryRetrieval<T>, T extends Seri
 		// getResponse().getCacheDirectives().add(CacheDirective.maxAge(2700));
 		getResponse().getCacheDirectives().add(CacheDirective.noCache());
 	}
+
 }
