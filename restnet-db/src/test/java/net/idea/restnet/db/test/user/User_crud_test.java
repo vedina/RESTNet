@@ -29,6 +29,9 @@
 
 package net.idea.restnet.db.test.user;
 
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.ITable;
+
 import junit.framework.Assert;
 import net.idea.modbcum.i.query.IQueryUpdate;
 import net.idea.restnet.db.CreateDatabaseProcessor;
@@ -41,103 +44,100 @@ import net.idea.restnet.db.aalocal.user.IUser;
 import net.idea.restnet.db.aalocal.user.UpdateUser;
 import net.idea.restnet.db.test.CRUDTest;
 
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.ITable;
-
 public class User_crud_test<T extends Object> extends CRUDTest<T, IUser> {
 
-    @Override
-    protected CreateDatabaseProcessor getDBCreateProcessor() {
-	return new CreateUsersDatabaseProcessor();
-    }
+	@Override
+	protected CreateDatabaseProcessor getDBCreateProcessor() {
+		return new CreateUsersDatabaseProcessor();
+	}
 
-    @Override
-    public String getDBTables() {
-	return "src/test/resources/net/idea/restnet/db/test/tables.xml";
-    }
+	@Override
+	public String getDBTables() {
+		return "net/idea/restnet/db/test/tables.xml";
+	}
 
-    @Override
-    protected IQueryUpdate<T, IUser> createQuery() throws Exception {
-	IUser ref = new TestUser();
-	ref.setUserName("QWERTY");
-	ref.setPassword("ASDFG");
-	CreateUserCredentials q = new CreateUserCredentials(ref);
-	q.setDatabaseName(getDatabase());
-	return q;
-    }
+	@Override
+	protected IQueryUpdate<T, IUser> createQuery() throws Exception {
+		IUser ref = new TestUser();
+		ref.setUserName("QWERTY");
+		ref.setPassword("ASDFG");
+		CreateUserCredentials q = new CreateUserCredentials(ref);
+		q.setDatabaseName(getDatabase());
+		return q;
+	}
 
-    @Override
-    protected void createVerify(IQueryUpdate<T, IUser> query) throws Exception {
-	IDatabaseConnection c = getConnection();
-	ITable table = c.createQueryTable("EXPECTED", String.format("SELECT * from users where user_name='QWERTY'"));
+	@Override
+	protected void createVerify(IQueryUpdate<T, IUser> query) throws Exception {
+		IDatabaseConnection c = getConnection();
+		ITable table = c.createQueryTable("EXPECTED", String.format("SELECT * from users where user_name='QWERTY'"));
 
-	Assert.assertEquals(1, table.getRowCount());
-	c.close();
-    }
+		Assert.assertEquals(1, table.getRowCount());
+		c.close();
+	}
 
-    @Override
-    protected IQueryUpdate<T, IUser> deleteQuery() throws Exception {
-	IUser ref = new TestUser();
-	ref.setUserName("test");
-	DBRole role = new DBRole("user", "");
-	DeleteUserRole q = new DeleteUserRole();
-	q.setGroup(role);
-	q.setObject(ref);
-	q.setDatabaseName(getDatabase());
-	return (IQueryUpdate<T, IUser>) q;
-    }
+	@Override
+	protected IQueryUpdate<T, IUser> deleteQuery() throws Exception {
+		IUser ref = new TestUser();
+		ref.setUserName("test");
+		DBRole role = new DBRole("user", "");
+		DeleteUserRole q = new DeleteUserRole();
+		q.setGroup(role);
+		q.setObject(ref);
+		q.setDatabaseName(getDatabase());
+		return (IQueryUpdate<T, IUser>) q;
+	}
 
-    @Override
-    protected void deleteVerify(IQueryUpdate<T, IUser> query) throws Exception {
-	IDatabaseConnection c = getConnection();
-	ITable table = c.createQueryTable("EXPECTED",
-		String.format("SELECT user_name from user_roles where user_name='test' and role_name='user'"));
+	@Override
+	protected void deleteVerify(IQueryUpdate<T, IUser> query) throws Exception {
+		IDatabaseConnection c = getConnection();
+		ITable table = c.createQueryTable("EXPECTED",
+				String.format("SELECT user_name from user_roles where user_name='test' and role_name='user'"));
 
-	Assert.assertEquals(0, table.getRowCount());
-	c.close();
+		Assert.assertEquals(0, table.getRowCount());
+		c.close();
 
-    }
+	}
 
-    @Override
-    protected IQueryUpdate<T, IUser> updateQuery() throws Exception {
-	IUser ref = new TestUser();
-	ref.setUserName("test");
-	ref.setPassword("NEW");
-	UpdateUser q = new UpdateUser(ref);
-	q.setDatabaseName(getDatabase());
-	return q;
-    }
+	@Override
+	protected IQueryUpdate<T, IUser> updateQuery() throws Exception {
+		IUser ref = new TestUser();
+		ref.setUserName("test");
+		ref.setPassword("NEW");
+		UpdateUser q = new UpdateUser(ref);
+		q.setDatabaseName(getDatabase());
+		return q;
+	}
 
-    @Override
-    protected void updateVerify(IQueryUpdate<T, IUser> query) throws Exception {
-	IDatabaseConnection c = getConnection();
-	ITable table = c.createQueryTable("EXPECTED", "SELECT user_name FROM users where user_pass=md5('NEW')");
-	Assert.assertEquals(1, table.getRowCount());
-	Assert.assertEquals("test", table.getValue(0, "user_name"));
-	c.close();
+	@Override
+	protected void updateVerify(IQueryUpdate<T, IUser> query) throws Exception {
+		IDatabaseConnection c = getConnection();
+		ITable table = c.createQueryTable("EXPECTED", "SELECT user_name FROM users where user_pass=md5('NEW')");
+		Assert.assertEquals(1, table.getRowCount());
+		Assert.assertEquals("test", table.getValue(0, "user_name"));
+		c.close();
 
-    }
+	}
 
-    @Override
-    protected IQueryUpdate<T, IUser> createQueryNew() throws Exception {
-	IUser user = new TestUser();
-	user.setUserName("test");
-	DBRole role = new DBRole("newrole", "newrole");
-	CreateUserRole q = new CreateUserRole(role, user);
-	q.setDatabaseName(getDatabase());
-	return (IQueryUpdate<T, IUser>) q;
-    }
+	@Override
+	protected IQueryUpdate<T, IUser> createQueryNew() throws Exception {
+		IUser user = new TestUser();
+		user.setUserName("test");
+		DBRole role = new DBRole("newrole", "newrole");
+		CreateUserRole q = new CreateUserRole(role, user);
+		q.setDatabaseName(getDatabase());
+		return (IQueryUpdate<T, IUser>) q;
+	}
 
-    @Override
-    protected void createVerifyNew(IQueryUpdate<T, IUser> query) throws Exception {
-	IDatabaseConnection c = getConnection();
-	ITable table = c.createQueryTable("EXPECTED",
-		"SELECT user_name,role_name FROM user_roles where user_name='test' and role_name='newrole'");
-	Assert.assertEquals(1, table.getRowCount());
-	table = c.createQueryTable("EXPECTED", "SELECT role_name FROM roles where role_name='newrole'");
-	Assert.assertEquals(1, table.getRowCount());
-	c.close();
+	@Override
+	protected void createVerifyNew(IQueryUpdate<T, IUser> query) throws Exception {
+		IDatabaseConnection c = getConnection();
+		ITable table = c.createQueryTable("EXPECTED",
+				"SELECT user_name,role_name FROM user_roles where user_name='test' and role_name='newrole'");
+		Assert.assertEquals(1, table.getRowCount());
+		table = c.createQueryTable("EXPECTED", "SELECT role_name FROM roles where role_name='newrole'");
+		Assert.assertEquals(1, table.getRowCount());
+		c.close();
 
-    }
+	}
 
 }

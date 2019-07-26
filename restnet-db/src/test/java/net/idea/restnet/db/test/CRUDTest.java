@@ -49,7 +49,7 @@ import net.idea.modbcum.p.UpdateExecutor;
 public abstract class CRUDTest<G, T> extends DbUnitTest {
 	protected UpdateExecutor<IQueryUpdate<G, T>> executor;
 
-	protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";
+	protected String dbFile = "net/idea/restnet/db/test/aalocal.xml";
 
 	@Override
 	@Before

@@ -54,7 +54,7 @@ public class CallableTokenCreatorTest extends DbUnitTest {
 		}
 	}
 
-	protected String dbFile = "src/test/resources/net/idea/restnet/db/test/aalocal.xml";
+	protected String dbFile = "net/idea/restnet/db/test/aalocal.xml";
 
 	@Override
 	protected CreateDatabaseProcessor getDBCreateProcessor() {
@@ -63,7 +63,7 @@ public class CallableTokenCreatorTest extends DbUnitTest {
 
 	@Override
 	public String getDBTables() {
-		return "src/test/resources/net/idea/restnet/db/test/tables.xml";
+		return "net/idea/restnet/db/test/tables.xml";
 	}
 
 }

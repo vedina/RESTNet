@@ -29,73 +29,62 @@
 
 package net.idea.restnet.db.test;
 
-import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
+import java.util.Set;
+import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.database.statement.IBatchStatement;
+import org.dbunit.database.statement.IStatementFactory;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITableIterator;
+import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
 
+import junit.framework.Assert;
+import net.idea.modbcum.i.config.ConfigProperties;
 import net.idea.restnet.db.CreateDatabaseProcessor;
 
 public abstract class DbUnitTest {
-	protected Properties properties;
-
-	protected void loadProperties() {
-		try {
-			if (properties == null) {
-				properties = new Properties();
-				InputStream in = this.getClass().getClassLoader().getResourceAsStream(getConfig());
-				properties.load(in);
-				in.close();
-			}
-		} catch (Exception x) {
-			properties = null;
-		}
-	}
+	protected ConfigProperties properties = new ConfigProperties();
+	protected static Logger logger = Logger.getLogger(DbUnitTest.class.getName());
 
 	protected String getConfig() {
 		return "net/idea/restnet/db/aalocal/aalocal.pref";
 	}
 
 	protected String getHost() {
-		loadProperties();
-		String p = properties.getProperty("Host");
-		return p == null ? "localhost" : p.startsWith("$") ? "localhost" : p;
+		return properties.getPropertyWithDefault("Host", getConfig(), "localhost");
 	}
 
 	protected String getDatabase() {
-		loadProperties();
-		String p = properties.getProperty("database.test");
-		return (p == null) || (p.startsWith("$")) ? "test" : p;
+		return properties.getPropertyWithDefault("database.test", getConfig(), "test");
 	}
 
 	protected String getPort() {
-		loadProperties();
-		String p = properties.getProperty("database.test.port");
-		return p == null ? "3306" : p;
+		return properties.getPropertyWithDefault("database.test.port", getConfig(), "3306");
 	}
 
 	protected String getUser() {
-		loadProperties();
-		String p = properties.getProperty("database.user.test");
-		return (p == null) || (p.startsWith("$")) ? "guest" : p;
+		return properties.getPropertyWithDefault("database.user.test", getConfig(), "guest");
 	}
 
 	protected String getPWD() {
-		loadProperties();
-		String p = properties.getProperty("database.user.test.password");
-		return (p == null) || (p.startsWith("$")) ? "guest" : p;
+		return properties.getPropertyWithDefault("database.user.test.password", getConfig(), "guest");
 	}
 
 	protected abstract CreateDatabaseProcessor getDBCreateProcessor();
@@ -140,7 +129,7 @@ public abstract class DbUnitTest {
 
 	protected IDatabaseConnection getConnection(String host, String db, String port, String user, String pass)
 			throws Exception {
-
+		System.out.println(String.format("%s\t%s\t%s\t%s", host, db, port, user));
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection jdbcConnection = DriverManager.getConnection(String.format(
 				"jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8&profileSQL=%s",
@@ -169,29 +158,38 @@ public abstract class DbUnitTest {
 	public abstract String getDBTables();
 
 	public void setUpDatabase(String xmlfile) throws Exception {
+
 		// This ensures all tables as defined in the schema are cleaned up, and
 		// is a single place to modify if a schema changes
-		initDB(getDBTables(), DatabaseOperation.DELETE_ALL, true);
+		String dbtables = getDBTables();
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream(dbtables)) {
+			initDB(in, DatabaseOperation.DELETE_ALL, true);
+		}
 		// This will import only records, defined in the xmlfile
-		initDB(xmlfile, DatabaseOperation.INSERT, false);
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream(xmlfile)) {
+			initDB(in, DatabaseOperation.INSERT, false);
+		}
 	}
 
-	private void initDB(String xmlfile, DatabaseOperation op, boolean admin) throws Exception {
+	private void initDB(InputStream xmlin, DatabaseOperation op, boolean admin) throws Exception {
+		Assert.assertNotNull(xmlin);
 		IDatabaseConnection connection = admin ? getConnection(getHost(), getDatabase(), getPort(), getUser(), getPWD())
 				: getConnection();
-		// getAdminUser(),getAdminPWD()):getConnection();
+
 		FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
 		builder.setCaseSensitiveTableNames(false);
-		IDataSet dataSet = builder.build(new File(xmlfile));
+		IDataSet dataSet = builder.build(xmlin);
 		try {
 			// DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+			
 			op.execute(connection, dataSet);
 		} catch (Exception x) {
-			x.printStackTrace();
+			logger.log(Level.SEVERE, x.getMessage(), x);
 			throw x;
 		} finally {
 			connection.close();
-
+			if (xmlin != null)
+				xmlin.close();
 		}
 	}
 
