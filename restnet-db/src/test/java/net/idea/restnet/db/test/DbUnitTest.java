@@ -129,10 +129,10 @@ public abstract class DbUnitTest {
 
 	protected IDatabaseConnection getConnection(String host, String db, String port, String user, String pass)
 			throws Exception {
-		System.out.println(String.format("%s\t%s\t%s\t%s", host, db, port, user));
+		//System.out.println(String.format("%s\t%s\t%s\t%s", host, db, port, user));
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection jdbcConnection = DriverManager.getConnection(String.format(
-				"jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8&profileSQL=%s",
+				"jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=UTF8&characterSetResults=UTF-8&profileSQL=%s&useSSL=false",
 				host, port, db, Boolean.toString(isProfileSQL())), user, pass);
 		// SET NAMES utf8
 		IDatabaseConnection c = new DatabaseConnection(jdbcConnection);

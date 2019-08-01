@@ -82,7 +82,6 @@ public abstract class CreateDatabaseProcessor extends AbstractDBProcessor<String
 					while (true) {
 
 						line = reader.readLine();
-						System.out.println(line);
 						if (line == null)
 							break;
 						if (line.toUpperCase().startsWith("DELIMITER")) {
