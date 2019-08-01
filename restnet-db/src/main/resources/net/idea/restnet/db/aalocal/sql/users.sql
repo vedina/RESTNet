@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `user_registration`;
 CREATE TABLE `user_registration` (
   `user_name` varchar(16) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `confirmed` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `confirmed` timestamp NOT NULL DEFAULT '2019-01-01 00:00:00',
   `code` varchar(45) NOT NULL,
   `status` enum('disabled','commenced','confirmed') NOT NULL DEFAULT 'disabled',
   PRIMARY KEY (`user_name`),
@@ -189,7 +189,7 @@ CREATE TABLE `apps` (
   `tokentype` varchar(16) DEFAULT NULL,
   `referer` varchar(128) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `expire` timestamp ,
+  `expire` timestamp  NOT NULL DEFAULT '2019-01-01 00:00:00',
   `scope` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`username`,`token`),
   UNIQUE KEY `xapp` (`token`),
@@ -213,7 +213,7 @@ CREATE TABLE `version_users` (
 
 
 
-insert into version_users (idmajor,idminor,comment) values (2,8,"AMBITDB users");
+insert into version_users (idmajor,idminor,comment) values (2,9,"AMBITDB users");
 
 -- -----------------------------------------------------
 -- Default users
