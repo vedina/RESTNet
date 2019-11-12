@@ -241,6 +241,9 @@ insert ignore into policy values(null,"ambit_admin","/ambit2","/algorithm",1,1,1
 insert ignore into policy values(null,"ambit_admin","/ambit2","/model",1,1,1,1,1);
 insert ignore into policy values(null,"ambit_admin","/ambit2","/substance",1,1,1,1,1);
 insert ignore into policy values(null,"ambit_admin","/ambit2","/dataset",1,1,1,1,1);
+insert ignore into policy values(null,"ambit_admin","/ambit2","/bundle",1,1,1,1,1);
+insert ignore into policy values(null,"ambit_admin","/ambit2","/dir",1,1,1,1,1);
+insert ignore into policy values(null,"ambit_admin","/ambit2","/dir/bd",2,1,1,1,1);
 insert ignore into policy values(null,"ambit_admin","/ambit2","/ui/updatesubstance1",2,1,1,1,1);
 insert ignore into policy values(null,"ambit_admin","/ambit2","/ui/updatesubstancei5",2,1,1,1,1);
 insert ignore into policy values(null,"ambit_admin","/ambit2","/ui/uploadsubstance",2,1,1,1,1);
@@ -257,6 +260,7 @@ insert ignore into policy values(null,"ambit_user","/ambit2","/dataset",1,1,0,0,
 insert ignore into policy values(null,"ambit_user","/ambit2","/algorithm",1,1,0,0,0);
 insert ignore into policy values(null,"ambit_user","/ambit2","/model",1,1,0,0,0);
 insert ignore into policy values(null,"ambit_user","/ambit2","/substance",1,1,0,0,0);
+insert ignore into policy values(null,"ambit_user","/ambit2","/bundle",1,1,1,1,1);
 
 DROP PROCEDURE IF EXISTS `deleteUser`;
 DELIMITER $$
