@@ -82,7 +82,7 @@ public class PolicyAuthorizer<PQ extends PolicyQuery> extends RoleAuthorizer {
 			c = dbc.getConnection();
 			executor.setCloseConnection(false);
 			executor.setConnection(c);
-			executor.setCache(true);
+			executor.setUseCache(true);
 
 			
 			for (int j = uri.size() - 1; j >= 0; j--) {
