@@ -9,8 +9,8 @@ import org.restlet.routing.Filter;
 public class BotsGuard extends Filter {
     public static String[] filter = { "googlebot", "msnbot", "yahoo-slurp", "teoma", "twiceler", "gigabot", "scrubby",
 	    "robozilla", "nutch", "ia_archiver", "baiduspider", "naverbot", "yeti", "googlebot-image",
-	    "googlebot-mobile", "yahoo-mmcrawler", "psbot", "asterias", "yahoo-blogs", "yandexbot", "mj12bot", "twitterbot",
-		"twitterbotcrawler","bytespider"
+	    "googlebot-mobile", "yahoo-mmcrawler", "psbot", "asterias", "yahoo-blogs", "yandexbot", "mj12bot", "twitterbot", 
+		"twitterbotcrawler","bytespider","bingbot","semrushbot","seokicks"
 
     };
 
