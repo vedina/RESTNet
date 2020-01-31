@@ -36,6 +36,7 @@ public class DBVerifier<Q extends AbstractAuth> extends SecretVerifier {
 	}
 	@Override
 	public boolean verify(String identifier, char[] inputSecret) {
+		if (inputSecret == null) return false;
 		int maxRetry = 3;
 		Connection c = null;
 		ResultSet rs = null;
