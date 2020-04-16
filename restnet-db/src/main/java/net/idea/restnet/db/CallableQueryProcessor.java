@@ -48,7 +48,8 @@ public abstract class CallableQueryProcessor<Target, Result, USERID> extends Cal
 
     protected void processForm(Reference applicationRootReference, Form form) {
 	Object dataset = form.getFirstValue("dataset_uri");
-	String[] xvars = form.getValuesArray("feature_uris[]");
+	//String[] xvars = form.getValuesArray("feature_uris[]");
+	String[] xvars = form.getValuesArray("feature_uris");
 	Reference datasetURI = dataset == null ? null : new Reference(dataset.toString());
 	if ((dataset != null) && (xvars != null))
 	    try {
@@ -57,7 +58,8 @@ public abstract class CallableQueryProcessor<Target, Result, USERID> extends Cal
 		    String[] xx = xvar.split("\n");
 		    for (String x : xx)
 			if (!x.trim().equals(""))
-			    datasetURI.addQueryParameter("feature_uris[]", x);
+				datasetURI.addQueryParameter("feature_uris", x);
+			    //datasetURI.addQueryParameter("feature_uris[]", x);
 		}
 
 	    } catch (Exception x) {
