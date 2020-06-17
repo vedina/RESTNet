@@ -88,6 +88,7 @@ import org.restlet.engine.util.Base64;
  */
 public class CookieAuthenticator extends MultiChallengeAuthenticator {
 
+	protected String pathInCookie = null;
 	private long sessionLength = 1000 * 60 * 45; // 45 min
 
 	public long getSessionLength() {
@@ -150,6 +151,9 @@ public class CookieAuthenticator extends MultiChallengeAuthenticator {
 	 * @param encryptSecretKey The secret key used to encrypt the cookie value.
 	 */
 	public CookieAuthenticator(Context context, boolean optional, String realm, byte[] encryptSecretKey) {
+		this(context,optional,realm,encryptSecretKey,null);
+	}
+	public CookieAuthenticator(Context context, boolean optional, String realm, byte[] encryptSecretKey, String pathInCookie) {
 		super(context, optional, ChallengeScheme.HTTP_COOKIE, realm);
 		this.cookieName = "Credentials";
 		this.interceptingLogin = true;
@@ -162,6 +166,7 @@ public class CookieAuthenticator extends MultiChallengeAuthenticator {
 		this.encryptSecretKey = encryptSecretKey;
 		this.maxCookieAge = -1;
 		this.redirectQueryName = "targetUri";
+		this.pathInCookie = pathInCookie;
 	}
 
 	/**
@@ -171,8 +176,8 @@ public class CookieAuthenticator extends MultiChallengeAuthenticator {
 	 * @param realm            The name of the security realm.
 	 * @param encryptSecretKey The secret key used to encrypt the cookie value.
 	 */
-	public CookieAuthenticator(Context context, String realm, byte[] encryptSecretKey) {
-		this(context, false, realm, encryptSecretKey);
+	public CookieAuthenticator(Context context, String realm, byte[] encryptSecretKey, String pathInCookie) {
+		this(context, false, realm, encryptSecretKey,pathInCookie);
 	}
 
 	/**
@@ -323,6 +328,7 @@ public class CookieAuthenticator extends MultiChallengeAuthenticator {
 	 * @param response The current response.
 	 * @return The credentials cookie setting.
 	 */
+	
 	protected CookieSetting getCredentialsCookie(Request request, Response response) {
 		CookieSetting credentialsCookie = response.getCookieSettings().getFirst(getCookieName());
 
@@ -331,12 +337,15 @@ public class CookieAuthenticator extends MultiChallengeAuthenticator {
 			credentialsCookie.setAccessRestricted(true);
 			// authCookie.setVersion(1);
 
-			if (request.getRootRef() != null) {
-				String p = request.getRootRef().getPath();
-				credentialsCookie.setPath(p == null ? "/" : p);
-			} else {
-				// authCookie.setPath("/");
-			}
+			if (pathInCookie==null)
+				if (request.getRootRef() != null) {
+					String p = request.getRootRef().getPath();
+					credentialsCookie.setPath(p == null ? "/" : p);
+				} else {
+					// authCookie.setPath("/");
+				}
+			else
+				credentialsCookie.setPath(pathInCookie);
 
 			response.getCookieSettings().add(credentialsCookie);
 		}
