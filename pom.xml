@@ -61,7 +61,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
     <repository>
       <id>mvnrepository</id>
       <name>mvnrepository</name>
-      <url>http://mvnrepository.com/</url>
+      <url>https://mvnrepository.com/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -69,12 +69,12 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
     <repository>
       <id>repo1.maven.org</id>
       <name>repo1.maven.org</name>
-      <url>http://repo1.maven.org/maven2</url>
+      <url>https://repo1.maven.org/maven2</url>
     </repository>
     <repository>
       <id>maven-restlet</id>
       <name>Public online Restlet repository</name>
-      <url>http://maven.restlet.com</url>
+      <url>https://maven.restlet.com</url>
     </repository>
   </repositories>
   <dependencies>
@@ -87,7 +87,7 @@ Code extracted from ambit:ambit-rest module  http://ambit.sourceforge.net</descr
   </dependencies>
   <organization>
     <name>IdeaConsult Ltd.</name>
-    <url>http://www.ideaconsult.net</url>
+    <url>https://www.ideaconsult.net</url>
   </organization>
   <build>
     <finalName>RESTNet</finalName>
