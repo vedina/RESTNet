@@ -29,6 +29,7 @@
 
 package net.idea.restnet.db.test.user;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.ITable;
 
@@ -59,7 +60,7 @@ public class User_crud_test<T extends Object> extends CRUDTest<T, IUser> {
 	@Override
 	protected IQueryUpdate<T, IUser> createQuery() throws Exception {
 		IUser ref = new TestUser();
-		ref.setUserName("QWERTY");
+		ref.setUserName(StringUtils.repeat("x", 32));
 		ref.setPassword("ASDFG");
 		CreateUserCredentials q = new CreateUserCredentials(ref);
 		q.setDatabaseName(getDatabase());
@@ -78,7 +79,7 @@ public class User_crud_test<T extends Object> extends CRUDTest<T, IUser> {
 	@Override
 	protected IQueryUpdate<T, IUser> deleteQuery() throws Exception {
 		IUser ref = new TestUser();
-		ref.setUserName("test");
+		ref.setUserName(StringUtils.repeat("x", 32));
 		DBRole role = new DBRole("user", "");
 		DeleteUserRole q = new DeleteUserRole();
 		q.setGroup(role);
@@ -101,7 +102,7 @@ public class User_crud_test<T extends Object> extends CRUDTest<T, IUser> {
 	@Override
 	protected IQueryUpdate<T, IUser> updateQuery() throws Exception {
 		IUser ref = new TestUser();
-		ref.setUserName("test");
+		ref.setUserName(StringUtils.repeat("x", 32));
 		ref.setPassword("NEW");
 		UpdateUser q = new UpdateUser(ref);
 		q.setDatabaseName(getDatabase());
@@ -121,7 +122,7 @@ public class User_crud_test<T extends Object> extends CRUDTest<T, IUser> {
 	@Override
 	protected IQueryUpdate<T, IUser> createQueryNew() throws Exception {
 		IUser user = new TestUser();
-		user.setUserName("test");
+		user.setUserName(StringUtils.repeat("x", 32));
 		DBRole role = new DBRole("newrole", "newrole");
 		CreateUserRole q = new CreateUserRole(role, user);
 		q.setDatabaseName(getDatabase());
