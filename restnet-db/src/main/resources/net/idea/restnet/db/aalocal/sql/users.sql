@@ -46,7 +46,7 @@ CREATE TABLE `roles` (
 --
 DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE `user_roles` (
-  `user_name` varchar(16) NOT NULL,
+  `user_name` varchar(32) NOT NULL,
   `role_name` varchar(40) NOT NULL,
   PRIMARY KEY (`user_name`,`role_name`),
   KEY `urolefk_idx` (`role_name`),
@@ -59,14 +59,14 @@ CREATE TABLE `user_roles` (
 --
 DROP TABLE IF EXISTS `user_registration`;
 CREATE TABLE `user_registration` (
-  `user_name` varchar(16) NOT NULL,
+  `user_name` varchar(32) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `confirmed` timestamp NOT NULL DEFAULT '2019-01-01 00:00:00',
   `code` varchar(45) NOT NULL,
   `status` enum('disabled','commenced','confirmed') NOT NULL DEFAULT 'disabled',
   PRIMARY KEY (`user_name`),
   UNIQUE KEY `kur2` (`code`) USING BTREE,
-  CONSTRAINT `` FOREIGN KEY (`user_name`) REFERENCES `users` (`user_name`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `userregfk` FOREIGN KEY (`user_name`) REFERENCES `users` (`user_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -213,7 +213,7 @@ CREATE TABLE `version_users` (
 
 
 
-insert into version_users (idmajor,idminor,comment) values (2,9,"AMBITDB users");
+insert into version_users (idmajor,idminor,comment) values (2,10,"AMBITDB users");
 
 -- -----------------------------------------------------
 -- Default users
