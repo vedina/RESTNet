@@ -1,4 +1,6 @@
 enableEmailVerification=${enableEmailVerification}
+mail.smtp.ssl.protocols=${notification.mail.smtp.ssl.protocols}
+mail.smtp.ssl.ciphersuites=${notification.mail.smtp.ssl.ciphersuites}
 mail.smtp.starttls.enable=${notification.mail.smtp.starttls.enable}
 mail.smtp.auth=${notification.mail.smtp.auth}
 mail.transport.protocol=${notification.mail.transport.protocol}
